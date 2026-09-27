@@ -1,0 +1,1 @@
+export const DBH_CONFIG={supabaseUrl:'',supabaseAnonKey:'',apiBaseUrl:'',firebase:{apiKey:'',authDomain:'',projectId:'',storageBucket:'',messagingSenderId:'',appId:'',vapidKey:''}};
