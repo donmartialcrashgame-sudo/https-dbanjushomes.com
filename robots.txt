@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard.html
+Disallow: /admin.html
+Disallow: /profile.html
+Disallow: /saved.html
+Disallow: /enquiries.html
+Disallow: /notifications.html
+Sitemap: https://dbanjushomes.com/sitemap.xml
