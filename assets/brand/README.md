@@ -1,0 +1,1 @@
+Place the official owner-approved DBH logo image here as assets/brand/dbh-logo.jpg. The same image is used for the logo, favicon and loader.
