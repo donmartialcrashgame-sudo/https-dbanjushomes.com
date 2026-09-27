@@ -1,0 +1,1 @@
+{"name":"dbanjus-homes","version":"0.1.0","private":true,"scripts":{"start":"npx serve . -l 10000"}}
