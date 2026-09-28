@@ -72,3 +72,7 @@
 
 /* Emergency shell safety: the page must never be blocked by the decorative loader. */
 .app-loader{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+
+
+/* Emergency shell safety: never let the decorative loader block the page. */
+.app-loader{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
