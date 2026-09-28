@@ -4,7 +4,7 @@ function hideLoader(){const l=document.getElementById('app-loader');if(l){l.clas
 window.addEventListener('error',hideLoader);
 window.addEventListener('unhandledrejection',hideLoader);
 document.addEventListener('DOMContentLoaded',()=>{hideLoader();safe(bootShell);safe(loadData);safe(setupSearch);safe(setupNotifications);safe(initHeroSlider);});
-function bootShell(){applyTheme();initAuthState();initMenu();setupCurrency();setupConsent();document.querySelectorAll('[data-theme-toggle]').forEach(b=>b.addEventListener('click',toggleTheme));}
+function bootShell(){applyTheme();initAuthState();initMenu();setupCurrency();document.querySelectorAll('[data-theme-toggle]').forEach(b=>b.addEventListener('click',toggleTheme));}
 function getSettings(){try{return JSON.parse(localStorage.getItem(DBH.settingsKey))||{}}catch{return{}}}
 function saveSettings(s){localStorage.setItem(DBH.settingsKey,JSON.stringify(s));applyTheme()}
 function applyTheme(){const s=getSettings(),r=document.documentElement;r.style.setProperty('--blue',s.primary||DBH.theme.blue);r.style.setProperty('--navy',s.sidebar||DBH.theme.sidebar);r.style.setProperty('--bg',s.background||'#f6f9fd');r.classList.toggle('dbh-dark',s.mode==='dark')}
@@ -49,7 +49,7 @@ function setupCurrency(){const host=document.querySelector('.header-actions')||d
 window.DBH=DBH;DBH.formatPrice=formatPrice
 function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function initSidebarController(){const s=document.getElementById('dbh-sidebar'),openBtn=document.getElementById('desktop-menu-button'),mobileBtn=document.getElementById('mobile-menu-button'),closeBtn=document.getElementById('sidebar-close'),back=document.getElementById('sidebar-backdrop');if(!s)return;const open=()=>{document.documentElement.classList.add('sidebar-open');[openBtn,mobileBtn].forEach(b=>b?.setAttribute('aria-expanded','true'))};const close=()=>{document.documentElement.classList.remove('sidebar-open');[openBtn,mobileBtn].forEach(b=>b?.setAttribute('aria-expanded','false'))};[openBtn,mobileBtn].forEach(b=>b?.addEventListener('click',open));closeBtn?.addEventListener('click',close);back?.addEventListener('click',close);s.querySelectorAll('a').forEach(x=>x.addEventListener('click',close));document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});}
-window.addEventListener('DOMContentLoaded',()=>safe(initSidebarController));
+
 function initHeroSlider(){
   const hero=document.getElementById('dbh-hero'), slides=[...document.querySelectorAll('.hero-slide')], dots=[...document.querySelectorAll('[data-hero-slide]')];
   if(!hero||slides.length<2)return;
