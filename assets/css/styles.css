@@ -68,3 +68,7 @@
 /* DBH shell control fix */
 @media(max-width:820px){.mobile-menu-button{display:grid!important}.menu-button{display:none!important}}
 @media(min-width:821px){.mobile-menu-button{display:none!important}.menu-button{display:inline-grid!important}}
+
+
+/* Emergency shell safety: the page must never be blocked by the decorative loader. */
+.app-loader{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
