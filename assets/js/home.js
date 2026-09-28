@@ -29,7 +29,9 @@ function card(p){
  '<div class="property-provider"><span class="provider-avatar">DBH</span><span class="provider-copy"><small>Provider</small><strong>'+esc(p.provider_name||p.agency_name||'D Banjus Homes Nig Ltd')+'</strong></span></div>'+
  '</div></article>';
 }
+function hideLoader(){const l=document.getElementById('app-loader');if(l){l.classList.add('fade');l.style.pointerEvents='none';setTimeout(()=>l.remove(),700)}}
 async function boot(){
+ hideLoader();
  const box=document.getElementById('featured-properties');
  if(!box)return;
  try{
