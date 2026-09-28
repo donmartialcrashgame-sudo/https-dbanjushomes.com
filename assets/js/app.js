@@ -54,7 +54,65 @@ async function supabaseFetch(path){
 }
 function normaliseProperty(p){const images=Array.isArray(p.property_images)?p.property_images.slice().sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)).map(x=>x.image_url).filter(Boolean):[];return {...p,images,cover_image:images[0]||p.og_image_url||'/dbh-logo.jpg'}}
 function setupSearch(){document.getElementById('property-search')?.addEventListener('submit',e=>{e.preventDefault();location.href='/properties.html?'+new URLSearchParams(new FormData(e.currentTarget)).toString()})}
-async function loadData(){const query='properties?select=*,property_images(*)&is_published=eq.true&order=created_at.desc';const data=await supabaseFetch(query);const rows=Array.isArray(data)?data.map(normaliseProperty):[];const featured=document.getElementById('featured-properties');const results=document.getElementById('property-results');const count=document.getElementById('result-count');if(!Array.isArray(data)){if(count)count.textContent='Unable to load properties';if(results)results.innerHTML='<div class="panel"><strong>Properties could not be loaded.</strong><br><small>Please refresh the page. If this continues, the DBH database connection needs attention.</small></div>';if(featured)featured.innerHTML='<div class="panel">Properties could not be loaded.</div>';return;}if(featured){renderProperties(featured,rows.filter(p=>p.is_featured).slice(0,6));}if(results){if(count)count.textContent=rows.length+' properties';renderProperties(results,rows);}const loc=document.getElementById('popular-locations');if(loc){const names=[...new Set(rows.flatMap(p=>[p.area,p.city,p.lga,p.state].filter(Boolean)))].slice(0,8);loc.innerHTML=names.map(x=>'<a class="location-card reveal" href="/properties.html?location='+encodeURIComponent(x)+'">'+escapeHtml(x)+'</a>').join('')||'<div class="panel">Popular locations will appear here from the backend.</div>';document.querySelectorAll('.reveal').forEach(x=>x.classList.add('visible'));}}
+async function loadData(){
+  const results=document.getElementById('property-results');
+  const featured=document.getElementById('featured-properties');
+  const count=document.getElementById('result-count');
+  if(count)count.textContent='Loading properties…';
+
+  // Load the property rows first. Do not make the whole marketplace depend on
+  // PostgREST's nested property_images relationship.
+  const data=await supabaseFetch('properties?select=*&is_published=eq.true&order=created_at.desc');
+  if(!Array.isArray(data)){
+    if(count)count.textContent='Unable to load properties';
+    const message='<div class="panel"><strong>Properties could not be loaded.</strong><br><small>Please refresh the page. If this continues, the DBH database connection needs attention.</small></div>';
+    if(results)results.innerHTML=message;
+    if(featured)featured.innerHTML=message;
+    return;
+  }
+
+  const rows=data.map(normaliseProperty);
+
+  // Images are optional. If this request fails, the property cards still render.
+  if(rows.length){
+    const images=await supabaseFetch('property_images?select=property_id,image_url,sort_order,is_cover&order=sort_order.asc');
+    if(Array.isArray(images)){
+      const byProperty={};
+      images.forEach(image=>{
+        if(!image?.property_id||!image?.image_url)return;
+        (byProperty[image.property_id] ||= []).push(image.image_url);
+      });
+      rows.forEach(p=>{
+        const imgs=byProperty[p.id]||[];
+        p.images=imgs;
+        p.cover_image=imgs[0]||p.og_image_url||'/dbh-logo.jpg';
+      });
+    }
+  }
+
+  if(featured)renderProperties(featured,rows.filter(p=>p.is_featured).slice(0,6));
+  if(results){
+    if(count)count.textContent=rows.length+' '+(rows.length===1?'property':'properties');
+    renderProperties(results,rows);
+  }
+
+  const loc=document.getElementById('popular-locations');
+  if(loc){
+    const names=[...new Set(rows.flatMap(p=>[p.area,p.city,p.lga,p.state].filter(Boolean)))].slice(0,8);
+    loc.innerHTML=names.map(x=>'<a class="location-card reveal" href="/properties.html?location='+encodeURIComponent(x)+'">'+escapeHtml(x)+'</a>').join('')||'<div class="panel">Popular locations will appear here from the backend.</div>';
+    document.querySelectorAll('.reveal').forEach(x=>x.classList.add('visible'));
+  }
+
+  const total=rows.length;
+  const locations=new Set(rows.flatMap(p=>[p.state,p.lga,p.city,p.area].filter(Boolean))).size;
+  const commercial=rows.filter(p=>String(p.property_type||p.category||'').toLowerCase().includes('commercial')).length;
+  const land=rows.filter(p=>String(p.property_type||'').toLowerCase()==='land'||String(p.category||'').toLowerCase().includes('land')).length;
+  const stat=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=String(value)};
+  stat('stat-properties',total);
+  stat('stat-locations',locations);
+  stat('stat-commercial',commercial);
+  stat('stat-land',land);
+}
 
 function icon(name){const icons={shield:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5.5c0 4.8-3.3 7.8-8 9.5-4.7-1.7-8-4.7-8-9.5V6l8-3Z"/><path d="m8.5 11.8 2.2 2.2 4.8-5"/></svg>`,pin:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>`,building:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V4.5A1.5 1.5 0 0 1 5.5 3H14v18M14 8h4.5A1.5 1.5 0 0 1 20 9.5V21M7 7h3M7 11h3M7 15h3M16 12h2M16 16h2M2 21h20"/></svg>`,users:`<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c.6-3.4 2.6-5 6-5s5.4 1.6 6 5M16 5.5a3 3 0 0 1 0 5.8M17 15c2.4.3 3.7 1.8 4 5"/></svg>`};return icons[name]||''}
 function firstValue(obj,keys,fallback=''){for(const k of keys){const v=obj?.[k];if(v!==undefined&&v!==null&&String(v).trim()!=='')return v}return fallback}
