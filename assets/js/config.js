@@ -1,1 +1,1 @@
-export const DBH_CONFIG={supabaseUrl:'',supabaseAnonKey:'',apiBaseUrl:'',firebase:{apiKey:'',authDomain:'',projectId:'',storageBucket:'',messagingSenderId:'',appId:'',vapidKey:''}};
+window.DBH_CONFIG={supabaseUrl:'https://cpgajlsyuieeengdnamy.supabase.co',supabaseAnonKey:'sb_publishable_fbcJT-QGKyZg0tDkpbDkOQ_CcQf2ugW',apiBaseUrl:'',firebase:{apiKey:'',authDomain:'',projectId:'',storageBucket:'',messagingSenderId:'',appId:'',vapidKey:''}};
