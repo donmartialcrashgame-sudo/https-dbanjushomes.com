@@ -42,7 +42,7 @@ document.getElementById('register-form')?.addEventListener('submit',async e=>{
   const email=f.get('email'),password=f.get('password'),fullName=f.get('fullName');
   try{
     const d=await supabaseAuth('signup',{email,password,data:{full_name:fullName,role:'customer'}});
-    if(d.access_token) localStorage.setItem('dbh_session',JSON.stringify(d));
+    if(d.access_token){localStorage.setItem('dbh_session',JSON.stringify(d));try{await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/profiles',{method:'POST',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+d.access_token,Prefer:'resolution=merge-duplicates'},body:JSON.stringify({id:d.user.id,full_name:fullName,email,role:'customer'})});}catch{}}
     msg.textContent=d.access_token?'Account created. Redirecting…':'Account created. Check your email to confirm your account.';
     if(d.access_token) location.href=redirect();
   }catch(primary){
