@@ -1,0 +1,13 @@
+project_id = "cpgajlsyuieeengdnamy"
+
+[api]
+enabled = true
+
+[db]
+major_version = 17
+
+[storage]
+enabled = true
+
+[auth]
+enabled = true
