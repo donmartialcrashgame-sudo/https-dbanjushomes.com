@@ -1,15 +1,21 @@
-create type public.property_currency as enum ('NGN','USD','GBP','EUR','CAD');
+do $$ begin
+  create type public.property_currency as enum ('NGN','USD','GBP','EUR','CAD');
+exception when duplicate_object then null; end $$;
 alter table public.properties alter column currency drop default;
 alter table public.properties alter column currency type public.property_currency using upper(coalesce(nullif(currency,''),'NGN'))::public.property_currency;
 alter table public.properties alter column currency set default 'NGN';
 
-create type public.property_verification_status as enum ('pending','verified','rejected','needs_information');
+do $$ begin
+  create type public.property_verification_status as enum ('pending','verified','rejected','needs_information');
+exception when duplicate_object then null; end $$;
 alter table public.properties drop constraint if exists properties_verification_status_check;
 alter table public.properties alter column verification_status drop default;
 alter table public.properties alter column verification_status type public.property_verification_status using coalesce(nullif(verification_status,''),'pending')::public.property_verification_status;
 alter table public.properties alter column verification_status set default 'pending';
 
-create type public.property_type as enum ('house','land','commercial');
+do $$ begin
+  create type public.property_type as enum ('house','land','commercial');
+exception when duplicate_object then null; end $$;
 alter table public.properties drop constraint if exists properties_property_type_check;
 alter table public.properties alter column property_type drop default;
 alter table public.properties alter column property_type type public.property_type using coalesce(nullif(property_type,''),'house')::public.property_type;
