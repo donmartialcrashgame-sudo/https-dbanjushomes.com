@@ -76,3 +76,10 @@
 
 /* Emergency shell safety: never let the decorative loader block the page. */
 .app-loader{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+
+/* DBH property-page skeleton loader */
+.property-skeleton{height:390px;border-radius:20px;background:#fff;border:1px solid var(--line);padding-bottom:20px;overflow:hidden;position:relative}
+.property-skeleton-image{height:235px;background:linear-gradient(100deg,#e7eef7 25%,#f8fbff 40%,#e7eef7 55%);background-size:300% 100%;animation:dbhSkeleton 1.25s ease-in-out infinite}
+.property-skeleton-line{height:13px;border-radius:8px;background:linear-gradient(100deg,#e7eef7 25%,#f8fbff 40%,#e7eef7 55%);background-size:300% 100%;animation:dbhSkeleton 1.25s ease-in-out infinite;margin:16px 18px 0;width:68%}
+.property-skeleton-line.wide{width:82%;height:18px;margin-top:20px}.property-skeleton-line.short{width:42%;margin-top:12px}
+@keyframes dbhSkeleton{0%{background-position:100% 0}100%{background-position:-100% 0}}
