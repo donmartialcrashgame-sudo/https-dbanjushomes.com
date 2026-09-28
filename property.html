@@ -53,7 +53,7 @@ async function get(path){try{const r=await fetch(c.supabaseUrl+'/rest/v1/'+path,
 const money=(v,currency='NGN')=>window.DBH?.formatPrice?window.DBH.formatPrice(v,currency):(v==null||v===''?'Price on request':'₦'+Number(v).toLocaleString('en-NG'));
 async function run(){
 const params=new URLSearchParams(location.search), id=params.get('id'), slug=params.get('slug');
-const filter=id?'id=eq.'+encodeURIComponent(id):slug?'slug=eq.'+encodeURIComponent(slug):'slug=eq.dbh-demo-modern-residence-lagos';
+const filter=id?(id.toUpperCase().startsWith('DBH-')?'property_code=eq.'+encodeURIComponent(id):'id=eq.'+encodeURIComponent(id)):slug?'slug=eq.'+encodeURIComponent(slug):'slug=eq.dbh-demo-modern-residence-lagos';
 const rows=await get('properties?select=*,property_images(*)&'+filter+'&is_published=eq.true&limit=1');
 const p=rows?.[0], root=document.getElementById('property-detail');
 if(!p){root.innerHTML='<div class="error-panel"><h1>Property not found</h1><p>This property is not currently published on DBH.</p><a class="btn btn-primary" href="/properties.html">Browse properties</a></div>';return}
