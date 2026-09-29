@@ -1,1 +1,34 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Login | DBH Homes</title><link rel="icon" href="/dbh-logo.jpg"><link rel="stylesheet" href="/assets/css/styles.css"><link rel="stylesheet" href="/assets/css/consent.css"></head><body class="auth-page"><main class="auth-shell"><a class="brand auth-brand" href="/"><img src="/dbh-logo.jpg" alt="DBH"></a><section class="auth-card"><span class="eyebrow">WELCOME BACK</span><h1>Sign in to DBH Homes</h1><form id="login-form"><label>Email<input name="email" type="email" autocomplete="email" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><button class="btn btn-primary" type="submit">Sign in</button><p id="auth-message" class="form-message"></p></form><p>New to DBH Homes? <a href="/register.html">Create an account</a></p></section></main><script src="/assets/js/config.js"></script><script src="/assets/js/app.js"></script><script type="module" src="/assets/js/auth.js"></script><script src="/assets/js/shell.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign in | DBH — D Banjus Homes Nig Ltd</title><meta name="description" content="Sign in to your DBH property account.">
+<link rel="icon" href="/dbh-logo.jpg"><link rel="stylesheet" href="/assets/css/styles.css"><link rel="stylesheet" href="/assets/css/consent.css">
+</head>
+<body class="auth-page">
+<main class="auth-shell">
+<section class="auth-visual">
+<a class="auth-brand" href="/"><img src="/dbh-logo.jpg" alt="DBH"><span><strong>DBH</strong><small>D Banjus Homes Nig Ltd</small></span></a>
+<span class="eyebrow">WELCOME TO DBH</span>
+<h1>Find the right property with confidence.</h1>
+<p>Sign in to save properties, manage your requests, receive property alerts and keep your DBH account in one place.</p>
+<div class="auth-points">
+<div class="auth-point"><span class="auth-point-icon"><svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5V20H4z"/><path d="M9 20v-5h6v5"/></svg></span>Save and revisit properties</div>
+<div class="auth-point"><span class="auth-point-icon"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h6M8 16h5"/></svg></span>Manage your property requests</div>
+<div class="auth-point"><span class="auth-point-icon"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></span>Receive useful property alerts</div>
+</div>
+</section>
+<section class="auth-card">
+<div class="auth-card-head"><span class="eyebrow">ACCOUNT ACCESS</span><h1>Sign in</h1><p class="auth-subtitle">Welcome back. Enter your details to continue.</p></div>
+<form id="login-form" class="auth-form">
+<label class="auth-field"><span>Email address</span><input name="email" type="email" autocomplete="email" placeholder="you@example.com" required></label>
+<label class="auth-field"><span>Password</span><div class="auth-input-wrap"><input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required><button class="auth-toggle-password" type="button" data-password-toggle="login-password" aria-label="Show password"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div></label>
+<div class="auth-row"><label class="auth-check"><input name="remember" type="checkbox" checked> Remember me</label><a class="auth-link" href="/forgot-password.html">Forgot password?</a></div>
+<button class="btn btn-primary auth-submit" type="submit">Sign in</button>
+<p id="auth-message" class="form-message" aria-live="polite"></p>
+</form>
+<div class="auth-divider">SECURE ACCOUNT</div>
+<p class="auth-bottom">Don't have an account? <a href="/register.html">Create one</a></p>
+</section>
+</main>
+<script src="/assets/js/config.js"></script><script src="/assets/js/app.js"></script><script type="module" src="/assets/js/auth.js"></script><script src="/assets/js/shell.js"></script>
+</body></html>
