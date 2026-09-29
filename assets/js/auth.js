@@ -135,8 +135,8 @@ async function handleGoogleCredential(response){
       body:JSON.stringify({credential:response.credential})
     });
     const data=await r.json().catch(()=>({}));
-    if(!r.ok||!data?.access_token)throw new Error(data?.error||data?.message||'Google sign-in could not be completed.');
-    localStorage.setItem('dbh_session',JSON.stringify(data));
+    if(!r.ok||!data?.success||!data?.user)throw new Error(data?.error||data?.message||'Google sign-in could not be completed.');
+    localStorage.setItem('dbh_session',JSON.stringify({authenticated:true,provider:'google',user:data.user}));
     sessionStorage.setItem('dbh_google_completed','1');
     setMessage('Google sign-in successful. Opening your account…','success');
     location.href='/callback.html?google=1';
