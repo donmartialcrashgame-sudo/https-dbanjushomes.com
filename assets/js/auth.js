@@ -106,78 +106,38 @@ registerForm?.addEventListener('submit',async e=>{
   }
 });
 
-let googleReadyPromise=null;
-function loadGoogleIdentityServices(){
-  if(window.google?.accounts?.id)return Promise.resolve();
-  if(googleReadyPromise)return googleReadyPromise;
-  googleReadyPromise=new Promise((resolve,reject)=>{
-    const script=document.createElement('script');
-    script.src='https://accounts.google.com/gsi/client';
-    script.async=true;
-    script.defer=true;
-    script.onload=()=>resolve();
-    script.onerror=()=>reject(new Error('Google Identity Services could not be loaded.'));
-    document.head.appendChild(script);
-  });
-  return googleReadyPromise;
-}
-async function handleGoogleCredential(response){
-  const form=document.getElementById('login-form')||document.getElementById('register-form');
-  try{
-    if(!response?.credential)throw new Error('Google did not return a sign-in credential.');
-    setLoading(form,true);
-    setMessage('Verifying your Google account…');
-    const d=await supabaseAuth('token?grant_type=id_token',{provider:'google',id_token:response.credential});
-    localStorage.setItem('dbh_session',JSON.stringify(d));
-    setMessage('Google sign-in successful. Opening your account…','success');
-    location.href=await postAuthRedirect('/dashboard.html');
-  }catch(error){
-    console.error('DBH Google sign-in error:',error);
-    setMessage(error.message||'Unable to sign in with Google.');
-    setLoading(form,false);
-  }
-}
 async function startGoogleSignIn(){
   const form=document.getElementById('login-form')||document.getElementById('register-form');
   try{
+    setLoading(form,true);
     setMessage('Opening Google securely…');
-    await loadGoogleIdentityServices();
     const clientId=DBH_CONFIG.googleClientId;
     if(!clientId)throw new Error('Google sign-in is not configured.');
-    google.accounts.id.initialize({client_id:clientId,callback:handleGoogleCredential,auto_select:false,cancel_on_tap_outside:true});
-    google.accounts.id.prompt(notification=>{
-      if(notification?.isNotDisplayed?.()||notification?.isSkippedMoment?.()){
-        setMessage('Google could not open. Please click the Google icon again.');
-        setLoading(form,false);
-      }
+
+    // Test Google directly first. No Supabase Auth call is made here.
+    // The authorization code will be received by google-test-callback.html.
+    const state=crypto.randomUUID();
+    sessionStorage.setItem('dbh_google_oauth_state',state);
+    const redirectUri=new URL('/google-test-callback.html',location.origin).href;
+    const params=new URLSearchParams({
+      client_id:clientId,
+      redirect_uri:redirectUri,
+      response_type:'code',
+      scope:'openid email profile',
+      state,
+      prompt:'select_account'
     });
+    location.href='https://accounts.google.com/o/oauth2/v2/auth?'+params.toString();
   }catch(error){
-    console.error('DBH Google initialization error:',error);
+    console.error('DBH Google redirect error:',error);
     setMessage(error.message||'Unable to start Google sign-in.');
     setLoading(form,false);
   }
 }
-async function setupGoogleSignIn(){
-  const buttons=document.querySelectorAll('[data-google-signin]');
-  if(!buttons.length)return;
-  try{
-    await loadGoogleIdentityServices();
-    const clientId=DBH_CONFIG.googleClientId;
-    if(!clientId)throw new Error('Google sign-in is not configured.');
-    google.accounts.id.initialize({client_id:clientId,callback:handleGoogleCredential,auto_select:false,cancel_on_tap_outside:true});
-    buttons.forEach(button=>{
-      const host=document.createElement('div');
-      host.className='auth-google-host';
-      host.setAttribute('aria-label','Continue with Google');
-      button.replaceWith(host);
-      google.accounts.id.renderButton(host,{type:'icon',theme:'outline',size:'large',shape:'circle',logo_alignment:'center'});
-    });
-  }catch(error){
-    console.error('DBH Google setup error:',error);
-    buttons.forEach(button=>button.addEventListener('click',startGoogleSignIn,{once:true}));
-  }
-}
-setupGoogleSignIn();
+
+document.querySelectorAll('[data-google-signin]').forEach(button=>{
+  button.addEventListener('click',startGoogleSignIn);
+});
 
 async function startOAuth(provider){
   const providers={facebook:'facebook',twitter:'twitter',github:'github',gitlab:'gitlab'};
