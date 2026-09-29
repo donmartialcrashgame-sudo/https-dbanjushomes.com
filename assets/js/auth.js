@@ -4,52 +4,67 @@ const msg=document.getElementById('auth-message');
 const redirect=()=>new URLSearchParams(location.search).get('redirect')||'/dashboard.html';
 
 async function supabaseAuth(path,body){
-  const r=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/'+path,{
-    method:'POST',
-    headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey},
-    body:JSON.stringify(body)
-  });
+  const r=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/'+path,{method:'POST',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey},body:JSON.stringify(body)});
   const data=await r.json().catch(()=>({}));
-  if(!r.ok) throw new Error(data.error_description||data.msg||data.message||'Authentication failed');
+  if(!r.ok)throw new Error(data.error_description||data.msg||data.message||'Authentication failed');
   return data;
 }
-
 async function fallback(path,payload){
   const r=await fetch((DBH_CONFIG.apiBaseUrl||'')+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
   if(!r.ok)throw new Error('Request failed');
   return r.json();
 }
+function setMessage(text,type=''){if(!msg)return;msg.textContent=text;msg.className='form-message'+(type?' '+type:'')}
+function setLoading(form,loading){form?.classList.toggle('auth-loading',loading);const b=form?.querySelector('button[type="submit"]');if(b){b.disabled=loading;b.dataset.originalText??=b.textContent;b.textContent=loading?'Please wait…':b.dataset.originalText}}
+document.querySelectorAll('[data-password-toggle]').forEach(btn=>btn.addEventListener('click',()=>{const input=document.getElementById(btn.dataset.passwordToggle);if(!input)return;input.type=input.type==='password'?'text':'password';btn.setAttribute('aria-label',input.type==='password'?'Show password':'Hide password')}));
 
-document.getElementById('login-form')?.addEventListener('submit',async e=>{
-  e.preventDefault();msg.textContent='Signing in…';
-  const f=new FormData(e.currentTarget);
+const loginForm=document.getElementById('login-form');
+loginForm?.addEventListener('submit',async e=>{
+  e.preventDefault();const form=e.currentTarget;setLoading(form,true);setMessage('Signing in…');
+  const f=new FormData(form);
   try{
-    const d=await supabaseAuth('token?grant_type=password',{email:f.get('email'),password:f.get('password')});
+    const d=await supabaseAuth('token?grant_type=password',{email:String(f.get('email')).trim(),password:f.get('password')});
     localStorage.setItem('dbh_session',JSON.stringify(d));
+    setMessage('Signed in. Opening your account…');
     location.href=redirect();
   }catch(primary){
     try{
-      const d=await fallback('/auth/login',{email:f.get('email'),password:f.get('password')});
-      localStorage.setItem('dbh_session',JSON.stringify(d));
-      location.href=redirect();
-    }catch(error){msg.textContent=primary.message||'Unable to sign in.';}
+      const d=await fallback('/auth/login',{email:String(f.get('email')).trim(),password:f.get('password')});
+      localStorage.setItem('dbh_session',JSON.stringify(d));location.href=redirect();
+    }catch(error){setMessage(primary.message||'Unable to sign in. Please check your email and password.');setLoading(form,false);}
   }
 });
 
-document.getElementById('register-form')?.addEventListener('submit',async e=>{
-  e.preventDefault();msg.textContent='Creating account…';
-  const f=new FormData(e.currentTarget);
-  const email=f.get('email'),password=f.get('password'),fullName=f.get('fullName');
+const registerForm=document.getElementById('register-form');
+const passwordInput=document.getElementById('register-password');
+const confirmInput=document.getElementById('register-confirm-password');
+const meter=document.getElementById('password-meter');
+const hint=document.getElementById('password-hint');
+passwordInput?.addEventListener('input',()=>{
+  const v=passwordInput.value;let score=0;
+  if(v.length>=8)score++;if(/[A-Z]/.test(v))score++;if(/[0-9]/.test(v))score++;if(/[^A-Za-z0-9]/.test(v))score++;
+  if(meter)meter.style.width=(score*25)+'%';
+  if(hint)hint.textContent=score>=4?'Strong password.':score>=2?'Good start — add numbers or symbols.':'Use 8+ characters, with numbers and symbols if possible.';
+});
+registerForm?.addEventListener('submit',async e=>{
+  e.preventDefault();const form=e.currentTarget;const f=new FormData(form);const password=String(f.get('password'));const confirm=String(f.get('confirmPassword'));
+  if(password!==confirm){setMessage('Passwords do not match.');confirmInput?.focus();return}
+  if(password.length<8){setMessage('Password must be at least 8 characters.');return}
+  setLoading(form,true);setMessage('Creating your account…');
+  const email=String(f.get('email')).trim(),fullName=String(f.get('fullName')).trim();
   try{
     const d=await supabaseAuth('signup',{email,password,data:{full_name:fullName,role:'customer'}});
-    if(d.access_token){localStorage.setItem('dbh_session',JSON.stringify(d));try{await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/profiles',{method:'POST',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+d.access_token,Prefer:'resolution=merge-duplicates'},body:JSON.stringify({id:d.user.id,full_name:fullName,email,role:'customer'})});}catch{}}
-    msg.textContent=d.access_token?'Account created. Redirecting…':'Account created. Check your email to confirm your account.';
-    if(d.access_token) location.href=redirect();
+    if(d.access_token){
+      localStorage.setItem('dbh_session',JSON.stringify(d));
+      try{await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/profiles',{method:'POST',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+d.access_token,Prefer:'resolution=merge-duplicates'},body:JSON.stringify({id:d.user.id,full_name:fullName,email,role:'customer'})})}catch{}
+      setMessage('Account created. Redirecting…');location.href=redirect();
+    }else{
+      setMessage('Account created. Please check your email to confirm your account.','success');setLoading(form,false);
+    }
   }catch(primary){
     try{
       const d=await fallback('/auth/register',{fullName,email,password,role:'customer'});
-      localStorage.setItem('dbh_session',JSON.stringify(d));
-      location.href=redirect();
-    }catch(error){msg.textContent=primary.message||'Unable to create the account.';}
+      localStorage.setItem('dbh_session',JSON.stringify(d));location.href=redirect();
+    }catch(error){setMessage(primary.message||'Unable to create the account.');setLoading(form,false);}
   }
 });
