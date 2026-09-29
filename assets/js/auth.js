@@ -118,7 +118,8 @@ async function startGoogleSignIn(){
     // The authorization code will be received by google-test-callback.html.
     const state=crypto.randomUUID();
     sessionStorage.setItem('dbh_google_oauth_state',state);
-    const redirectUri=new URL('/google-test-callback.html',location.origin).href;
+    // Current production test host is Render. Keep the redirect on the exact origin being tested.
+    const redirectUri='https://dbanjushomes.onrender.com/google-test-callback.html';
     const params=new URLSearchParams({
       client_id:clientId,
       redirect_uri:redirectUri,
