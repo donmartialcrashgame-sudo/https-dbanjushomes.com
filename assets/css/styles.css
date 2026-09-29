@@ -183,3 +183,18 @@ html.dbh-authenticated .dbh-header-tools{margin-left:0!important}
 @media(max-width:600px){.auth-social{grid-template-columns:repeat(5,1fr)}.auth-social-btn{height:42px}.legal-page{padding:20px 12px}.legal-shell{padding:25px 20px;border-radius:18px}.legal-shell h1{font-size:30px}}
 
 .auth-social-disabled{cursor:not-allowed!important;opacity:.48!important;filter:grayscale(.15);box-shadow:none!important;transform:none!important;background:#f3f6fa!important;color:#64748b!important}.auth-social-disabled:hover{transform:none!important;border-color:#d9e3ee!important}.auth-social-btn svg{width:19px;height:19px;display:block;flex:0 0 auto}
+
+/* DBH page-specific how-to guides */
+.dbh-howto{width:min(1180px,calc(100% - 40px));margin:44px auto 70px;padding:38px;border:1px solid #dce7f3;border-radius:24px;background:rgba(255,255,255,.94);box-shadow:0 20px 60px rgba(9,45,99,.08);color:var(--ink)}
+.dbh-howto .eyebrow{color:var(--blue)}
+.dbh-howto h2{margin:8px 0 12px;font-size:32px;letter-spacing:-.035em;color:var(--navy)}
+.dbh-howto h3{margin:30px 0 9px;font-size:18px;color:var(--navy)}
+.dbh-howto>p,.dbh-howto li{font-size:13px;line-height:1.8;color:#5b7088}
+.dbh-howto ul{padding-left:20px}
+.howto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin:24px 0}
+.howto-grid article{padding:19px;border:1px solid #e0e9f2;border-radius:16px;background:linear-gradient(145deg,#fff,#f5f9fe);min-height:145px}
+.howto-grid article b{display:block;color:#0b5ed7;font-size:12px;margin-bottom:8px}
+.howto-grid article p{margin:0;font-size:12px;line-height:1.7;color:#60758d}
+.callback-howto{margin-top:24px}
+@media(max-width:800px){.dbh-howto{width:calc(100% - 24px);padding:25px 18px;margin:28px auto 45px}.dbh-howto h2{font-size:26px}.howto-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.howto-grid{grid-template-columns:1fr}.howto-grid article{min-height:0}}
