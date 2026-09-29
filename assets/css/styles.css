@@ -198,3 +198,7 @@ html.dbh-authenticated .dbh-header-tools{margin-left:0!important}
 .callback-howto{margin-top:24px}
 @media(max-width:800px){.dbh-howto{width:calc(100% - 24px);padding:25px 18px;margin:28px auto 45px}.dbh-howto h2{font-size:26px}.howto-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.howto-grid{grid-template-columns:1fr}.howto-grid article{min-height:0}}
+
+.auth-google-host{height:44px;min-width:44px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:12px}
+.auth-google-host>div{max-width:44px}
+.auth-google-host iframe{max-width:44px}
