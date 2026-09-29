@@ -68,3 +68,43 @@ registerForm?.addEventListener('submit',async e=>{
     }catch(error){setMessage(primary.message||'Unable to create the account.');setLoading(form,false);}
   }
 });
+
+async function startOAuth(provider){
+  const providers={google:'google',facebook:'facebook',twitter:'twitter',github:'github',gitlab:'gitlab'};
+  const selected=providers[provider];
+  if(!selected)return setMessage('This sign-in provider is not available.');
+  setMessage('Connecting securely…');
+  const redirectTo=new URL('/dashboard.html',location.origin).href;
+  location.href=DBH_CONFIG.supabaseUrl+'/auth/v1/authorize?provider='+encodeURIComponent(selected)+'&redirect_to='+encodeURIComponent(redirectTo);
+}
+document.querySelectorAll('[data-oauth-provider]').forEach(btn=>btn.addEventListener('click',()=>startOAuth(btn.dataset.oauthProvider)));
+
+const forgotForm=document.getElementById('forgot-password-form');
+forgotForm?.addEventListener('submit',async e=>{
+  e.preventDefault();const form=e.currentTarget;setLoading(form,true);
+  const email=String(new FormData(form).get('email')).trim();
+  try{
+    const r=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/recover',{method:'POST',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey},body:JSON.stringify({email,redirect_to:new URL('/reset-password.html',location.origin).href})});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(d.error_description||d.msg||d.message||'Unable to send the reset email.');
+    setMessage('If an account exists for that email, a password reset link has been sent. Check your inbox.','success');form.reset();
+  }catch(error){setMessage(error.message||'Unable to send the reset email.');}
+  setLoading(form,false);
+});
+
+const resetForm=document.getElementById('reset-password-form');
+resetForm?.addEventListener('submit',async e=>{
+  e.preventDefault();const form=e.currentTarget,f=new FormData(form),password=String(f.get('password')),confirm=String(f.get('confirmPassword'));
+  if(password.length<8)return setMessage('Password must be at least 8 characters.');
+  if(password!==confirm)return setMessage('Passwords do not match.');
+  const session=JSON.parse(localStorage.getItem('dbh_session')||'null');
+  if(!session?.access_token)return setMessage('This reset link is invalid or expired. Request a new one.');
+  setLoading(form,true);setMessage('Updating your password…');
+  try{
+    const r=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/user',{method:'PUT',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+session.access_token},body:JSON.stringify({password})});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(d.error_description||d.msg||d.message||'Unable to update your password.');
+    localStorage.removeItem('dbh_session');setMessage('Password updated. Redirecting to sign in…','success');setTimeout(()=>location.href='/login.html',1200);
+  }catch(error){setMessage(error.message||'Unable to update your password.');}
+  setLoading(form,false);
+});
