@@ -46,6 +46,7 @@ async function boot(){
   render(all);
   document.getElementById('property-filters')?.addEventListener('submit',e=>{e.preventDefault();apply()});
   document.getElementById('sort-select')?.addEventListener('change',apply);
+  if(requestedType||requestedLocation)apply();
  }catch(e){
   console.error('DBH properties page:',e);
   box.innerHTML='<div class="panel"><strong>Properties could not be loaded.</strong><br><small>Please refresh the page. The DBH database response could not be completed.</small></div>';
