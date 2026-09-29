@@ -10,3 +10,5 @@ Sitemap: https://dbanjushomes.com/sitemap.xml
 Disallow: /verify-account.html
 Disallow: /reset-password.html
 Disallow: /auth-callback.html
+Disallow: /onboarding.html
+Disallow: /callback.html
