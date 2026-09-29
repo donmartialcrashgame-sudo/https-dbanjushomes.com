@@ -106,6 +106,79 @@ registerForm?.addEventListener('submit',async e=>{
   }
 });
 
+let googleReadyPromise=null;
+function loadGoogleIdentityServices(){
+  if(window.google?.accounts?.id)return Promise.resolve();
+  if(googleReadyPromise)return googleReadyPromise;
+  googleReadyPromise=new Promise((resolve,reject)=>{
+    const script=document.createElement('script');
+    script.src='https://accounts.google.com/gsi/client';
+    script.async=true;
+    script.defer=true;
+    script.onload=()=>resolve();
+    script.onerror=()=>reject(new Error('Google Identity Services could not be loaded.'));
+    document.head.appendChild(script);
+  });
+  return googleReadyPromise;
+}
+async function handleGoogleCredential(response){
+  const form=document.getElementById('login-form')||document.getElementById('register-form');
+  try{
+    if(!response?.credential)throw new Error('Google did not return a sign-in credential.');
+    setLoading(form,true);
+    setMessage('Verifying your Google account…');
+    const d=await supabaseAuth('token?grant_type=id_token',{provider:'google',id_token:response.credential});
+    localStorage.setItem('dbh_session',JSON.stringify(d));
+    setMessage('Google sign-in successful. Opening your account…','success');
+    location.href=await postAuthRedirect('/dashboard.html');
+  }catch(error){
+    console.error('DBH Google sign-in error:',error);
+    setMessage(error.message||'Unable to sign in with Google.');
+    setLoading(form,false);
+  }
+}
+async function startGoogleSignIn(){
+  const form=document.getElementById('login-form')||document.getElementById('register-form');
+  try{
+    setMessage('Opening Google securely…');
+    await loadGoogleIdentityServices();
+    const clientId=DBH_CONFIG.googleClientId;
+    if(!clientId)throw new Error('Google sign-in is not configured.');
+    google.accounts.id.initialize({client_id:clientId,callback:handleGoogleCredential,auto_select:false,cancel_on_tap_outside:true});
+    google.accounts.id.prompt(notification=>{
+      if(notification?.isNotDisplayed?.()||notification?.isSkippedMoment?.()){
+        setMessage('Google could not open. Please click the Google icon again.');
+        setLoading(form,false);
+      }
+    });
+  }catch(error){
+    console.error('DBH Google initialization error:',error);
+    setMessage(error.message||'Unable to start Google sign-in.');
+    setLoading(form,false);
+  }
+}
+async function setupGoogleSignIn(){
+  const buttons=document.querySelectorAll('[data-google-signin]');
+  if(!buttons.length)return;
+  try{
+    await loadGoogleIdentityServices();
+    const clientId=DBH_CONFIG.googleClientId;
+    if(!clientId)throw new Error('Google sign-in is not configured.');
+    google.accounts.id.initialize({client_id:clientId,callback:handleGoogleCredential,auto_select:false,cancel_on_tap_outside:true});
+    buttons.forEach(button=>{
+      const host=document.createElement('div');
+      host.className='auth-google-host';
+      host.setAttribute('aria-label','Continue with Google');
+      button.replaceWith(host);
+      google.accounts.id.renderButton(host,{type:'icon',theme:'outline',size:'large',shape:'circle',logo_alignment:'center'});
+    });
+  }catch(error){
+    console.error('DBH Google setup error:',error);
+    buttons.forEach(button=>button.addEventListener('click',startGoogleSignIn,{once:true}));
+  }
+}
+setupGoogleSignIn();
+
 async function startOAuth(provider){
   const providers={facebook:'facebook',twitter:'twitter',github:'github',gitlab:'gitlab'};
   const selected=providers[provider];
