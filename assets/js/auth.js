@@ -106,8 +106,68 @@ registerForm?.addEventListener('submit',async e=>{
   }
 });
 
+async function signInWithGoogleCredential(credential){
+  if(!credential)throw new Error('Google did not return a sign-in credential.');
+  const r=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/token?grant_type=id_token',{
+    method:'POST',
+    headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey},
+    body:JSON.stringify({provider:'google',id_token:credential})
+  });
+  const data=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(data.error_description||data.msg||data.message||'Google sign-in could not be completed.');
+  localStorage.setItem('dbh_session',JSON.stringify(data));
+  const u=data.user||{};
+  const fullName=u.user_metadata?.full_name||u.user_metadata?.name||u.email?.split('@')[0]||'DBH User';
+  try{
+    await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/profiles',{
+      method:'POST',
+      headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+data.access_token,Prefer:'resolution=merge-duplicates'},
+      body:JSON.stringify({id:u.id,full_name:fullName,email:u.email||'',role:'customer'})
+    });
+  }catch{}
+  const next=await postAuthRedirect('/dashboard.html');
+  location.href='/callback.html?redirect='+encodeURIComponent(next);
+}
+window.dbhGoogleCredential=async response=>{
+  const form=document.getElementById('login-form')||document.getElementById('register-form');
+  try{
+    setLoading(form,true);
+    setMessage('Signing in with Google…');
+    await signInWithGoogleCredential(response?.credential);
+  }catch(error){
+    setMessage(error.message||'Unable to sign in with Google.');
+    setLoading(form,false);
+  }
+};
+function startGoogleSignIn(){
+  if(!window.google?.accounts?.id){
+    setMessage('Google sign-in is still loading. Please try again in a moment.');
+    return;
+  }
+  if(!DBH_CONFIG.googleClientId){
+    setMessage('Google sign-in is not configured yet.');
+    return;
+  }
+  const form=document.getElementById('login-form')||document.getElementById('register-form');
+  setLoading(form,true);
+  setMessage('Opening Google sign-in…');
+  google.accounts.id.initialize({
+    client_id:DBH_CONFIG.googleClientId,
+    callback:window.dbhGoogleCredential,
+    ux_mode:'popup',
+    auto_select:false,
+    cancel_on_tap_outside:true
+  });
+  google.accounts.id.prompt(notification=>{
+    if(notification?.isNotDisplayed?.()||notification?.isSkippedMoment?.()){
+      setLoading(form,false);
+      setMessage('Google sign-in could not open. Check that this site is authorized in Google Cloud.');
+    }
+  });
+}
+document.querySelectorAll('[data-google-signin]').forEach(btn=>btn.addEventListener('click',startGoogleSignIn));
 async function startOAuth(provider){
-  const providers={google:'google',facebook:'facebook',twitter:'twitter',github:'github',gitlab:'gitlab'};
+  const providers={facebook:'facebook',twitter:'twitter',github:'github',gitlab:'gitlab'};
   const selected=providers[provider];
   if(!selected)return setMessage('This sign-in provider is not available.');
   setMessage('Connecting securely…');
