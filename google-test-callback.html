@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>Google Sign-in Test | DBH</title>
+<link rel="icon" href="/dbh-logo.jpg">
+<link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="auth-page">
+<main class="auth-shell">
+<section class="auth-visual">
+<a class="auth-brand" href="/"><img src="/dbh-logo.jpg" alt="DBH"><span><strong>DBH</strong><small>D Banjus Homes Nig Ltd</small></span></a>
+<span class="eyebrow">GOOGLE CONNECTION TEST</span>
+<h1>Google redirect received.</h1>
+<p>This is only a connection test. No DBH account has been created or signed in yet.</p>
+</section>
+<section class="auth-card">
+<div class="auth-card-head"><span class="eyebrow">TEST RESULT</span><h1 id="result-title">Checking…</h1><p id="result-message" class="auth-subtitle">Checking the response returned by Google.</p></div>
+<div id="result-box" style="margin-top:22px;padding:18px;border:1px solid #dbe5f0;border-radius:16px;background:#f8fbff;word-break:break-word"></div>
+<div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap">
+<a class="btn btn-primary" href="/login.html">Back to sign in</a>
+<a class="btn" href="/">Home</a>
+</div>
+<p class="auth-legal" style="margin-top:20px">Next step: the DBH Edge Function will receive the authorization code, verify/exchange it securely, and then create the DBH session.</p>
+</section>
+</main>
+<script>
+(function(){
+  const q=new URLSearchParams(location.search);
+  const expected=sessionStorage.getItem('dbh_google_oauth_state');
+  const state=q.get('state');
+  const code=q.get('code');
+  const error=q.get('error');
+  const title=document.getElementById('result-title');
+  const message=document.getElementById('result-message');
+  const box=document.getElementById('result-box');
+
+  sessionStorage.removeItem('dbh_google_oauth_state');
+
+  if(error){
+    title.textContent='Google returned an error';
+    message.textContent='Google reached the DBH callback, but the authorization was not completed.';
+    box.textContent='Error: '+error+(q.get('error_description')?' — '+q.get('error_description'):'');
+    return;
+  }
+
+  if(!state || !expected || state!==expected){
+    title.textContent='State check failed';
+    message.textContent='Google returned to DBH, but the security state did not match.';
+    box.textContent='Do not continue with account sign-in. Start the test again from the login page.';
+    return;
+  }
+
+  if(!code){
+    title.textContent='No authorization code';
+    message.textContent='Google redirected back, but no authorization code was received.';
+    box.textContent='The redirect happened, but the Google response was incomplete.';
+    return;
+  }
+
+  title.textContent='Google redirect works';
+  message.textContent='Google successfully redirected back to DBH and returned an authorization code.';
+  box.textContent='Authorization code received successfully. The code is intentionally not displayed.';
+  history.replaceState({},document.title,location.pathname);
+})();
+</script>
+</body>
+</html>
