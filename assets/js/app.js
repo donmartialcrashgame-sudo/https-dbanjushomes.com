@@ -39,7 +39,61 @@ function getSettings(){try{return JSON.parse(localStorage.getItem(DBH.settingsKe
 function saveSettings(s){localStorage.setItem(DBH.settingsKey,JSON.stringify(s));applyTheme()}
 function applyTheme(){const s=getSettings(),r=document.documentElement;r.style.setProperty('--blue',s.primary||DBH.theme.blue);r.style.setProperty('--navy',s.sidebar||DBH.theme.sidebar);r.style.setProperty('--bg',s.background||'#f6f9fd');r.classList.toggle('dbh-dark',s.mode==='dark')}
 function toggleTheme(){const s=getSettings();saveSettings({...s,mode:s.mode==='dark'?'light':'dark'})}
-async function initAuthState(){const a=document.getElementById('auth-actions'),p=document.getElementById('profile-button');const session=getLocalSession();const user=await getSupabaseUser();const raw=user||session;const found=raw?.user||raw;document.documentElement.classList.toggle('dbh-authenticated',!!found);if(a&&p){const dash=document.querySelector('[data-header-nav="dashboard"]');if(found){a.classList.add('hidden');p.classList.remove('hidden');if(dash){dash.href='/dashboard.html';dash.dataset.tooltip='Dashboard';dash.setAttribute('aria-label','Dashboard')}const name=firstValue(found.user_metadata||found,['full_name','fullName','name','email'],'Account');const avatar=document.querySelector('.profile-avatar');const label=document.querySelector('.profile-name');if(avatar)avatar.textContent=String(name).trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'DB';if(label)label.textContent=String(name).split('@')[0].slice(0,22)||'Account';p.onclick=()=>location.href='/dashboard.html'}else{a.classList.remove('hidden');p.classList.add('hidden');if(dash){dash.href='/login.html?redirect=/dashboard.html';dash.dataset.tooltip='Dashboard';}}}if(document.getElementById('dbh-sidebar'))await renderSidebar(found)}
+async function initAuthState(){
+  const a=document.getElementById('auth-actions');
+  const p=document.getElementById('profile-button');
+  let user=null;
+
+  try{
+    const r=await fetch('/api/auth/session',{credentials:'same-origin',headers:{Accept:'application/json'}});
+    if(r.ok){
+      const d=await r.json().catch(()=>null);
+      if(d?.authenticated&&d?.user){
+        user=d.user;
+        localStorage.setItem(DBH.sessionKey,JSON.stringify({authenticated:true,provider:user.provider||'google',user}));
+      }
+    }
+  }catch{}
+
+  if(!user){
+    const session=getLocalSession();
+    user=session?.user||null;
+  }
+
+  if(!user)user=await getSupabaseUser();
+
+  const found=user||null;
+  document.documentElement.classList.toggle('dbh-authenticated',!!found);
+
+  if(a&&p){
+    const dash=document.querySelector('[data-header-nav="dashboard"]');
+    if(found){
+      a.classList.add('hidden');
+      p.classList.remove('hidden');
+      if(dash){
+        dash.href='/dashboard.html';
+        dash.dataset.tooltip='Dashboard';
+        dash.setAttribute('aria-label','Dashboard');
+      }
+      const name=firstValue(found.user_metadata||found,['full_name','fullName','name','email'],'Account');
+      const avatar=document.querySelector('.profile-avatar');
+      const label=document.querySelector('.profile-name');
+      if(avatar)avatar.textContent=String(name).trim().split(/\\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'DB';
+      if(label)label.textContent=String(name).split('@')[0].slice(0,22)||'Account';
+      p.onclick=()=>location.href='/dashboard.html';
+    }else{
+      a.classList.remove('hidden');
+      p.classList.add('hidden');
+      if(dash){
+        dash.href='/login.html?redirect=/dashboard.html';
+        dash.dataset.tooltip='Dashboard';
+      }
+    }
+  }
+
+  if(document.getElementById('dbh-sidebar'))await renderSidebar(found);
+}
+
 function initMenu(){const b=document.getElementById('menu-button');if(!b)return;b.onclick=()=>{let n=document.getElementById('dbh-mobile-nav');if(!n){n=document.createElement('nav');n.id='dbh-mobile-nav';n.className='mobile-nav';n.innerHTML='<a href="/">Home</a><a href="/properties.html">Properties</a><a href="/land.html">Land</a><a href="/commercial.html">Commercial</a><a href="/agents.html">Agents</a><a href="/about.html">About</a>';document.body.appendChild(n)}n.classList.toggle('open')}}
 function getLocalSession(){try{return JSON.parse(localStorage.getItem(DBH.sessionKey)||'null')}catch{return null}}
 function getAccessToken(){const s=getLocalSession();return s?.access_token||s?.accessToken||s?.session?.access_token||null}
@@ -167,7 +221,7 @@ function headerNavLink(icon,label,href,key){return '<a class="dbh-header-nav-lin
 function markHeaderNavActive(){const path=location.pathname.replace(/\/$/,'')||'/';const params=new URLSearchParams(location.search);document.querySelectorAll('[data-header-nav]').forEach(a=>{const key=a.dataset.headerNav;let active=key==='home'&&path==='/'||key==='properties'&&path==='/properties.html'&&!params.get('type')||key==='land'&&path==='/properties.html'&&params.get('type')==='land'||key==='commercial'&&path==='/properties.html'&&params.get('type')==='commercial'||key==='list'&&path==='/list-property.html'||key==='dashboard'&&path==='/dashboard.html';a.classList.toggle('active',!!active)})}
 function initUniversalHeader(){const header=document.querySelector('.site-header');if(!header)return;header.innerHTML='<div class="dbh-header-inner"><a class="dbh-header-brand" href="/" aria-label="DBH — D Banjus Homes Nig Ltd"><img src="/dbh-logo.jpg" alt="DBH"><span><strong>DBH</strong><small>D Banjus Homes Nig Ltd</small></span></a><nav class="dbh-top-nav" aria-label="Main navigation">'+headerNavLink('home','Home','/','home')+headerNavLink('properties','Properties','/properties.html','properties')+'<div class="dbh-nav-dropdown"><a href="/properties.html">All Properties</a><a href="/properties.html?type=land">Land for Sale</a><a href="/properties.html?type=commercial">Commercial Property</a></div>'+headerNavLink('land','Land for Sale','/properties.html?type=land','land')+headerNavLink('commercial','Commercial Property','/properties.html?type=commercial','commercial')+headerNavLink('list','List Property','/list-property.html','list')+headerNavLink('dashboard','Dashboard','/login.html?redirect=/dashboard.html','dashboard')+'</nav><div class="dbh-header-tools"><button id="header-search-button" class="header-icon-button" type="button" aria-label="Search" data-tooltip="Search" aria-expanded="false">'+headerIcon('search')+'</button><div id="dbh-header-actions" class="dbh-header-actions"><div id="auth-actions" class="auth-actions"><a class="btn btn-outline" href="/login.html">Login</a><a class="btn btn-primary" href="/register.html">Sign Up</a></div><button id="profile-button" class="profile-chip hidden" type="button" aria-label="Profile" data-tooltip="Profile"><span class="profile-avatar">DB</span><span class="profile-name">Account</span></button></div><button id="mobile-menu-button" class="mobile-menu-button" type="button" aria-label="Open navigation" aria-expanded="false" data-tooltip="Menu"><span class="hamburger-lines"><i></i><i></i><i></i></span></button></div></div><div id="dbh-search-panel" class="dbh-search-panel" hidden><div class="dbh-search-panel-inner">'+headerIcon('search')+'<input id="quick-search" placeholder="Search property, land, house or location" autocomplete="off"><button id="dbh-search-close" type="button" aria-label="Close search">×</button></div></div>';const actions=document.getElementById('dbh-header-actions');ensureNotificationAssets();ensureNotificationButton(actions);const nb=document.getElementById('notification-button');if(nb){nb.dataset.tooltip='Notifications';nb.setAttribute('aria-label','Notifications')}markHeaderNavActive();setupCurrency();const q=document.getElementById('quick-search'),sb=document.getElementById('header-search-button'),panel=document.getElementById('dbh-search-panel'),close=document.getElementById('dbh-search-close');const toggle=()=>{const open=panel.hasAttribute('hidden');if(open){panel.removeAttribute('hidden');sb?.setAttribute('aria-expanded','true');setTimeout(()=>q?.focus(),30)}else{panel.setAttribute('hidden','');sb?.setAttribute('aria-expanded','false')}};sb?.addEventListener('click',toggle);close?.addEventListener('click',toggle);q?.addEventListener('keydown',e=>{if(e.key==='Enter'){const value=q.value.trim();if(value)location.href='/properties.html?location='+encodeURIComponent(value)}if(e.key==='Escape')toggle()})}
 function initUniversalShell(){if(document.body.classList.contains('auth-page')||document.body.classList.contains('admin-page')||document.querySelector('.admin-sidebar'))return;ensureNotificationAssets();initUniversalHeader();let sidebar=document.getElementById('dbh-sidebar');if(!sidebar){sidebar=document.createElement('aside');sidebar.id='dbh-sidebar';sidebar.className='dbh-sidebar';document.body.prepend(sidebar)}let backdrop=document.getElementById('sidebar-backdrop');if(!backdrop){backdrop=document.createElement('div');backdrop.id='sidebar-backdrop';backdrop.className='sidebar-backdrop';document.body.appendChild(backdrop)}const initial=getLocalSession();renderSidebar(initial?.user||initial)}
-function bindSidebarPreferences(logged){document.querySelectorAll('#dbh-sidebar [data-theme-toggle]').forEach(b=>b.addEventListener('click',toggleTheme));const sizeBtns=document.querySelectorAll('#dbh-sidebar [data-text-size]');sizeBtns.forEach(b=>b.addEventListener('click',()=>{const cur=document.documentElement.dataset.dbhTextSize||'normal';document.documentElement.dataset.dbhTextSize=cur==='normal'?'large':cur==='large'?'xlarge':'normal'}));const cs=document.getElementById('dbh-sidebar-currency');if(cs){cs.value=DBH.currency||'NGN';cs.onchange=()=>{DBH.currency=cs.value;localStorage.setItem('dbh_currency',DBH.currency);renderCurrencyPrices()}}document.getElementById('dbh-signout')?.addEventListener('click',()=>{localStorage.removeItem(DBH.sessionKey);location.href='/'});}
+function bindSidebarPreferences(logged){document.querySelectorAll('#dbh-sidebar [data-theme-toggle]').forEach(b=>b.addEventListener('click',toggleTheme));const sizeBtns=document.querySelectorAll('#dbh-sidebar [data-text-size]');sizeBtns.forEach(b=>b.addEventListener('click',()=>{const cur=document.documentElement.dataset.dbhTextSize||'normal';document.documentElement.dataset.dbhTextSize=cur==='normal'?'large':cur==='large'?'xlarge':'normal'}));const cs=document.getElementById('dbh-sidebar-currency');if(cs){cs.value=DBH.currency||'NGN';cs.onchange=()=>{DBH.currency=cs.value;localStorage.setItem('dbh_currency',DBH.currency);renderCurrencyPrices()}}document.getElementById('dbh-signout')?.addEventListener('click',async()=>{try{await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'})}catch{}localStorage.removeItem(DBH.sessionKey);location.href='/'});}
 function initSidebarController(){const s=document.getElementById('dbh-sidebar'),mobileBtn=document.getElementById('mobile-menu-button'),closeBtn=document.getElementById('sidebar-close'),back=document.getElementById('sidebar-backdrop');if(!s)return;const open=()=>{document.documentElement.classList.add('sidebar-open');mobileBtn?.setAttribute('aria-expanded','true')};const close=()=>{document.documentElement.classList.remove('sidebar-open');mobileBtn?.setAttribute('aria-expanded','false')};mobileBtn?.addEventListener('click',open);closeBtn?.addEventListener('click',close);back?.addEventListener('click',close);s.querySelectorAll('a').forEach(x=>x.addEventListener('click',close));document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});}
 
 function initHeroSlider(){
