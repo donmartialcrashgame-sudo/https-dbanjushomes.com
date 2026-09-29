@@ -1,1 +1,37 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Create account | DBH Homes</title><link rel="icon" href="/dbh-logo.jpg"><link rel="stylesheet" href="/assets/css/styles.css"><link rel="stylesheet" href="/assets/css/consent.css"></head><body class="auth-page"><main class="auth-shell"><a class="brand auth-brand" href="/"><img src="/dbh-logo.jpg" alt="DBH"></a><section class="auth-card"><span class="eyebrow">JOIN DBH</span><h1>Create your account</h1><form id="register-form"><label>Full name<input name="fullName" autocomplete="name" required></label><label>Email<input name="email" type="email" autocomplete="email" required></label><label>Password<input name="password" type="password" minlength="8" autocomplete="new-password" required></label><label>Account type<select name="role"><option value="buyer">Property seeker</option><option value="owner">Property owner</option><option value="agent">Agent</option></select></label><button class="btn btn-primary" type="submit">Create account</button><p id="auth-message" class="form-message"></p></form><p>Already registered? <a href="/login.html">Sign in</a></p></section></main><script src="/assets/js/config.js"></script><script src="/assets/js/app.js"></script><script type="module" src="/assets/js/auth.js"></script><script src="/assets/js/shell.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Create account | DBH — D Banjus Homes Nig Ltd</title><meta name="description" content="Create your DBH property account.">
+<link rel="icon" href="/dbh-logo.jpg"><link rel="stylesheet" href="/assets/css/styles.css"><link rel="stylesheet" href="/assets/css/consent.css">
+</head>
+<body class="auth-page">
+<main class="auth-shell">
+<section class="auth-visual">
+<a class="auth-brand" href="/"><img src="/dbh-logo.jpg" alt="DBH"><span><strong>DBH</strong><small>D Banjus Homes Nig Ltd</small></span></a>
+<span class="eyebrow">JOIN DBH</span>
+<h1>Your property journey starts here.</h1>
+<p>Create one secure account to explore properties for sale, save favourites, request information and manage your property activity.</p>
+<div class="auth-points">
+<div class="auth-point"><span class="auth-point-icon"><svg viewBox="0 0 24 24"><path d="M12 3 20 6v5.5c0 4.8-3.3 7.8-8 9.5-4.7-1.7-8-4.7-8-9.5V6l8-3Z"/><path d="m8.5 11.8 2.2 2.2 4.8-5"/></svg></span>One account for your DBH activity</div>
+<div class="auth-point"><span class="auth-point-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="m5 7 7 5 7-5"/></svg></span>Email updates and property alerts</div>
+<div class="auth-point"><span class="auth-point-icon"><svg viewBox="0 0 24 24"><path d="M4 12h16M12 4v16"/></svg></span>Save properties and send requests</div>
+</div>
+</section>
+<section class="auth-card">
+<div class="auth-card-head"><span class="eyebrow">CREATE ACCOUNT</span><h1>Sign up</h1><p class="auth-subtitle">Create your DBH account in a few seconds.</p></div>
+<form id="register-form" class="auth-form">
+<label class="auth-field"><span>Full name</span><input name="fullName" autocomplete="name" placeholder="Your full name" required></label>
+<label class="auth-field"><span>Email address</span><input name="email" type="email" autocomplete="email" placeholder="you@example.com" required></label>
+<label class="auth-field"><span>Password</span><div class="auth-input-wrap"><input id="register-password" name="password" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required><button class="auth-toggle-password" type="button" data-password-toggle="register-password" aria-label="Show password"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div><div class="password-meter"><span id="password-meter"></span></div><small id="password-hint" class="password-hint">Use 8+ characters.</small></label>
+<label class="auth-field"><span>Confirm password</span><div class="auth-input-wrap"><input id="register-confirm-password" name="confirmPassword" type="password" autocomplete="new-password" placeholder="Repeat your password" required><button class="auth-toggle-password" type="button" data-password-toggle="register-confirm-password" aria-label="Show password"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div></label>
+<label class="auth-check"><input name="terms" type="checkbox" required> I agree to the DBH terms and privacy notice.</label>
+<button class="btn btn-primary auth-submit" type="submit">Create account</button>
+<p id="auth-message" class="form-message" aria-live="polite"></p>
+<p class="auth-terms">Your account is created as a property seeker. Account permissions are controlled by DBH and the backend.</p>
+</form>
+<div class="auth-divider">ALREADY REGISTERED?</div>
+<p class="auth-bottom">Already have an account? <a href="/login.html">Sign in</a></p>
+</section>
+</main>
+<script src="/assets/js/config.js"></script><script src="/assets/js/app.js"></script><script type="module" src="/assets/js/auth.js"></script><script src="/assets/js/shell.js"></script>
+</body></html>
