@@ -1,44 +1,33 @@
 <!doctype html>
-<html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Create account | DBH — D Banjus Homes Nig Ltd</title><meta name="description" content="Create your DBH property account.">
-<link rel="icon" href="/dbh-logo.jpg"><link rel="stylesheet" href="/assets/css/styles.css"><link rel="stylesheet" href="/assets/css/consent.css">
-</head>
-<body class="auth-page">
-<main class="auth-shell">
-<section class="auth-visual">
-<a class="auth-brand" href="/"><img src="/dbh-logo.jpg" alt="DBH"><span><strong>DBH</strong><small>D Banjus Homes Nig Ltd</small></span></a>
-<span class="eyebrow">JOIN DBH</span>
-<h1>Your property journey starts here.</h1>
-<p>Create one secure account to explore properties for sale, save favourites, request information and manage your property activity.</p>
-<div class="auth-points">
-<div class="auth-point"><span class="auth-point-icon"><svg viewBox="0 0 24 24"><path d="M12 3 20 6v5.5c0 4.8-3.3 7.8-8 9.5-4.7-1.7-8-4.7-8-9.5V6l8-3Z"/><path d="m8.5 11.8 2.2 2.2 4.8-5"/></svg></span>One account for your DBH activity</div>
-<div class="auth-point"><span class="auth-point-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="m5 7 7 5 7-5"/></svg></span>Email updates and property alerts</div>
-<div class="auth-point"><span class="auth-point-icon"><svg viewBox="0 0 24 24"><path d="M4 12h16M12 4v16"/></svg></span>Save properties and send requests</div>
-</div>
-</section>
-<section class="auth-card">
-<div class="auth-card-head"><span class="eyebrow">CREATE ACCOUNT</span><h1>Sign up</h1><p class="auth-subtitle">Create your DBH account in a few seconds.</p></div>
-<form id="register-form" class="auth-form">
-<label class="auth-field"><span>Full name</span><input name="fullName" autocomplete="name" placeholder="Your full name" required></label>
-<label class="auth-field"><span>Email address</span><input name="email" type="email" autocomplete="email" placeholder="you@example.com" required></label>
-<label class="auth-field"><span>Password</span><div class="auth-input-wrap"><input id="register-password" name="password" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required><button class="auth-toggle-password" type="button" data-password-toggle="register-password" aria-label="Show password"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div><div class="password-meter"><span id="password-meter"></span></div><small id="password-hint" class="password-hint">Use 8+ characters.</small></label>
-<label class="auth-field"><span>Confirm password</span><div class="auth-input-wrap"><input id="register-confirm-password" name="confirmPassword" type="password" autocomplete="new-password" placeholder="Repeat your password" required><button class="auth-toggle-password" type="button" data-password-toggle="register-confirm-password" aria-label="Show password"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div></label>
-<label class="auth-check"><input name="terms" type="checkbox" required> I agree to the <a href="/agreement.html">User Agreement</a> and <a href="/privacy-policy.html">Privacy Policy</a>.</label>
-<button class="btn btn-primary auth-submit" type="submit">Create account</button><div class="auth-divider">OR CONTINUE WITH</div><div class="auth-social" aria-label="Social sign in options">
-<button type="button" class="auth-social-btn" data-google-signin title="Continue with Google" aria-label="Continue with Google"><svg viewBox="0 0 24 24"><path fill="#4285F4" d="M21.35 12.27c0-.72-.06-1.42-.18-2.09H12v3.96h5.24a4.48 4.48 0 0 1-1.94 2.94v2.44h3.14c1.84-1.7 2.91-4.2 2.91-7.25Z"/><path fill="#34A853" d="M12 21.5c2.63 0 4.84-.87 6.45-2.35l-3.14-2.44c-.87.58-1.98.93-3.31.93-2.54 0-4.69-1.72-5.46-4.03H3.29v2.51A9.74 9.74 0 0 0 12 21.5Z"/><path fill="#FBBC05" d="M6.54 13.61A5.86 5.86 0 0 1 6.23 12c0-.56.1-1.1-.31-1.61V7.88H3.29A9.74 9.74 0 0 0 2.25 12c0 1.57.38 3.05 1.04 4.37l3.25-2.76Z"/><path fill="#EA4335" d="M12 6.36c1.43 0 2.72.49 3.73 1.45l2.8-2.8C16.84 3.39 14.63 2.5 12 2.5a9.74 9.74 0 0 0-8.71 5.38l3.25 2.51C7.31 8.08 9.46 6.36 12 6.36Z"/></svg></button>
-<button type="button" class="auth-social-btn auth-social-disabled" disabled title="Facebook sign in is currently unavailable"><svg viewBox="0 0 24 24"><path fill="#1877F2" d="M13.5 21v-8h2.7l.4-3h-3.1V8.1c0-.87.24-1.46 1.5-1.46h1.6V3.96c-.28-.04-1.23-.12-2.35-.12-2.33 0-3.93 1.42-3.93 4.03V10H7.7v3h2.62v8h3.18Z"/></svg></button>
-<button type="button" class="auth-social-btn auth-social-disabled" disabled title="X sign in is currently unavailable"><svg viewBox="0 0 24 24"><path fill="#111827" d="M18.9 2H22l-6.77 7.74L23.2 22h-6.24l-4.89-6.39L6.48 22H3.36l7.24-8.28L2.8 2h6.4l4.42 5.84L18.9 2Zm-1.1 17.9h1.73L8.28 4.02H6.42L17.8 19.9Z"/></svg></button>
-<button type="button" class="auth-social-btn auth-social-disabled" disabled title="GitHub sign in is currently unavailable"><svg viewBox="0 0 24 24"><path fill="#181717" fill-rule="evenodd" d="M12 2.5a9.7 9.7 0 0 0-3.07 18.9c.49.09.67-.21.67-.47v-1.85c-2.73.59-3.3-1.16-3.3-1.16-.44-1.13-1.08-1.43-1.08-1.43-.89-.61.07-.6.07-.6.98.07 1.5 1 1.5 1 .87 1.5 2.28 1.07 2.84.82.09-.63.34-1.07.62-1.32-2.18-.25-4.47-1.09-4.47-4.86 0-1.07.38-1.95 1-2.64-.1-.25-.43-1.25.1-2.6 0 0 .82-.26 2.67 1.01A9.2 9.2 0 0 1 12 7c.83 0 1.66.11 2.44.33 1.85-1.27 2.67-1.01 2.67-1.01.53 1.35.2 2.35.1 2.6.62.69.66 1.86.66 1.86v2.76c0 .26.18.56.68.47A9.7 9.7 0 0 0 12 2.5Z" clip-rule="evenodd"/></svg></button>
-<button type="button" class="auth-social-btn auth-social-disabled" disabled title="GitLab sign in is currently unavailable"><svg viewBox="0 0 24 24"><path fill="#FC6D26" d="m12 21.2-3.1-9.5H3.2L12 21.2Z"/><path fill="#E24329" d="M3.2 11.7 1.9 15.6c-.12.36 0 .76.3.99L12 21.2l-8.8-9.5Z"/><path fill="#FCA326" d="m3.2 11.7 5.7 0-2.44-7.5c-.13-.4-.7-.4-.83 0L3.2 11.7Z"/><path fill="#FC6D26" d="m12 21.2 3.1-9.5h5.7L12 21.2Z"/><path fill="#E24329" d="m20.8 11.7 1.3 3.9c.12.36 0 .76-.3.99L12 21.2l8.8-9.5Z"/><path fill="#FCA326" d="m20.8 11.7-5.7 0 2.44-7.5c.13-.4-.7-.4-.83 0l-2.43 7.5Z"/></svg></button>
-</div>
-<p id="auth-message" class="form-message" aria-live="polite"></p>
-<p class="auth-terms">Your account is created as a property seeker. Account permissions are controlled by DBH and the backend.</p>
-</form>
-<div class="auth-divider">ALREADY REGISTERED?</div>
-<p class="auth-bottom">Already have an account? <a href="/login.html">Sign in</a></p><p class="auth-legal">Your use of DBH is subject to the User Agreement and Privacy Policy.</p>
-</section>
-
-<p class="auth-legal" style="margin-top:18px"><a href="/how-to-create-db-account.html">How to use this page <svg viewBox="0 0 24 24" aria-hidden="true" style="width:15px;height:15px;vertical-align:-3px;fill:none;stroke:currentColor;stroke-width:2"><path d="M5 12h13M13 7l5 5-5 5"/></svg></a></p></main>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b63ce"><title>Create account | DBH — D Banjus Homes Nig Ltd</title><meta name="description" content="Create your DBH property account."><link rel="icon" href="/dbh-logo.jpg"><link rel="stylesheet" href="/assets/css/styles.css"><link rel="stylesheet" href="/assets/css/consent.css"></head>
+<body class="auth-page auth-modern">
+<main class="auth-modern-shell">
+  <section class="auth-modern-hero">
+    <a class="auth-modern-brand" href="/"><img src="/dbh-logo.jpg" alt="DBH"><span><b>DBH</b><small>D Banjus Homes Nig Ltd</small></span></a>
+    <div class="auth-hero-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5.5c0 4.8-3.3 7.8-8 9.5-4.7-1.7-8-4.7-8-9.5V6l8-3Z"/path d="m8.5 12 2.2 2.2 4.8-5"></svg>Simple, secure signup</div>
+    <h1>Start your DBH journey.</h1><p>Create your account and tell us what you are looking for. We will personalize the next steps around your property needs.</p>
+    <div class="auth-hero-mini">
+      <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20H4z"/path d="M9 20v-5h6v5"></svg>Buy a home</span>
+      <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 19 16-14"/path d="M6 5h4v4M18 19h-4v-4"></svg>Buy land</span>
+      <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V9l8-5 8 5v11"/path d="M8 20v-6h8v6"></svg>Commercial</span>
+    </div>
+  </section>
+  <section class="auth-modern-card">
+    <div class="auth-modern-card-head"><span class="eyebrow">CREATE ACCOUNT</span><h2>Create your DBH account</h2><p>Use email/password or continue with Google. We will ask a few short questions after signup.</p></div>
+    <form id="register-form" class="auth-modern-form">
+      <label class="auth-modern-field"><span>Full name</span><div class="auth-control"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/path d="M4 21c.7-4 3.4-6 8-6s7.3 2 8 6"></svg><input name="fullName" autocomplete="name" placeholder="Your full name" required></div></label>
+      <label class="auth-modern-field"><span>Email address</span><div class="auth-control"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/path d="m3 7 9 6 9-6"></svg><input name="email" type="email" autocomplete="email" placeholder="you@example.com" required></div></label>
+      <label class="auth-modern-field"><span>Password</span><div class="auth-control"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 10V8a6 6 0 0 1 12 0v2"/rect x="4" y="10" width="16" height="11" rx="2"/path d="M12 14v3"></svg><input id="register-password" name="password" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required><button class="auth-modern-eye" type="button" data-password-toggle="register-password" aria-label="Show password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/circle cx="12" cy="12" r="2.5"></svg></button></div><div class="password-meter"><span id="password-meter"></span></div><small id="password-hint" class="password-hint">Use 8+ characters.</small></label>
+      <label class="auth-modern-field"><span>Confirm password</span><div class="auth-control"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 10V8a6 6 0 0 1 12 0v2"/rect x="4" y="10" width="16" height="11" rx="2"/path d="M12 14v3"></svg><input id="register-confirm-password" name="confirmPassword" type="password" autocomplete="new-password" placeholder="Repeat your password" required><button class="auth-modern-eye" type="button" data-password-toggle="register-confirm-password" aria-label="Show password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/circle cx="12" cy="12" r="2.5"></svg></button></div></label>
+      <label class="auth-modern-check auth-modern-terms"><input name="terms" type="checkbox" required><span>I agree to the <a href="/agreement.html">User Agreement</a> and <a href="/privacy-policy.html">Privacy Policy</a>.</span></label>
+      <button class="auth-modern-submit" type="submit">Create account <span>→</span></button>
+      <div class="auth-modern-or"><span>or continue with</span></div>
+      <div class="auth-google-slot" data-google-signin aria-label="Continue with Google"></div>
+      <p id="auth-message" class="form-message" aria-live="polite"></p>
+    </form>
+    <p class="auth-modern-switch">Already have an account? <a href="/login.html">Sign in</a></p>
+    <p class="auth-modern-legal">Your DBH account starts as a property seeker. Access permissions are controlled by the backend.</p>
+  </section>
+</main>
 <script src="/assets/js/config.js"></script><script src="/assets/js/app.js"></script><script type="module" src="/assets/js/auth.js"></script><script src="/assets/js/shell.js"></script>
 </body></html>
