@@ -36,6 +36,11 @@ async function boot(){
  try{
   all=await fetchProperties();
   if(!Array.isArray(all))throw Error('Invalid response');
+  const params=new URLSearchParams(location.search);
+  const requestedType=params.get('type');
+  const requestedLocation=params.get('location');
+  const form=document.getElementById('property-filters');
+  if(form){if(requestedType)form.elements.type.value=requestedType;if(requestedLocation)form.elements.location.value=requestedLocation;}
   const type=document.querySelector('select[name="type"]');
   [...new Set(all.map(p=>p.property_type).filter(Boolean))].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v.charAt(0).toUpperCase()+v.slice(1);type?.appendChild(o)});
   render(all);
