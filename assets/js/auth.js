@@ -121,20 +121,46 @@ async function loadGoogleIdentityServices(){
   return window.__dbhGooglePromise;
 }
 
+async function handleGoogleCredential(response){
+  const form=document.getElementById('login-form')||document.getElementById('register-form');
+  try{
+    if(!response?.credential)throw new Error('Google did not return a sign-in credential.');
+    setLoading(form,true);
+    setMessage('Securing your Google account…');
+    const endpoint=DBH_CONFIG.googleLoginUri;
+    if(!endpoint)throw new Error('Google sign-in is not configured.');
+    const r=await fetch(endpoint,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({credential:response.credential})
+    });
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok||!data?.access_token)throw new Error(data?.error||data?.message||'Google sign-in could not be completed.');
+    localStorage.setItem('dbh_session',JSON.stringify(data));
+    sessionStorage.setItem('dbh_google_completed','1');
+    setMessage('Google sign-in successful. Opening your account…','success');
+    location.href='/callback.html?google=1';
+  }catch(error){
+    console.error('DBH Google sign-in error:',error);
+    setMessage(error.message||'Unable to sign in with Google.');
+    setLoading(form,false);
+  }
+}
+
 async function setupGoogleSignIn(){
   const hosts=document.querySelectorAll('[data-google-signin]');
   if(!hosts.length)return;
   try{
     await loadGoogleIdentityServices();
     const clientId=DBH_CONFIG.googleClientId;
-    const loginUri=DBH_CONFIG.googleLoginUri;
-    if(!clientId||!loginUri)throw new Error('Google sign-in is not configured.');
+    if(!clientId)throw new Error('Google sign-in is not configured.');
     google.accounts.id.initialize({
       client_id:clientId,
-      ux_mode:'redirect',
-      login_uri:loginUri,
+      callback:handleGoogleCredential,
       auto_select:false,
-      context:location.pathname.includes('register')?'signup':'signin'
+      cancel_on_tap_outside:true,
+      context:location.pathname.includes('register')?'signup':'signin',
+      use_fedcm_for_prompt:true
     });
     hosts.forEach(host=>{
       host.classList.add('auth-google-slot-ready');
