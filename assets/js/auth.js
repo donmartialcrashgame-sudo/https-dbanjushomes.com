@@ -1,4 +1,4 @@
-import {DBH_CONFIG} from './config.js';
+const DBH_CONFIG=window.DBH_CONFIG||{};
 
 const msg=document.getElementById('auth-message');
 
