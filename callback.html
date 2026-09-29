@@ -1,61 +1,55 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="robots" content="noindex,nofollow,noarchive">
-  <meta name="theme-color" content="#0b63ce">
-  <title>Signing in… | DBH</title>
-  <style>
-    :root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#0f172a;background:#f7fbff}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(135deg,#fff 0%,#eef7ff 55%,#dceeff 100%)}
-    .card{width:min(460px,100%);background:#fff;border:1px solid #dbeafe;border-radius:24px;padding:40px 28px;text-align:center;box-shadow:0 24px 70px rgba(15,23,42,.12)}
-    .logo{width:76px;height:76px;object-fit:contain;border-radius:18px;margin:0 auto 22px;display:block}
-    .spinner{width:42px;height:42px;border:4px solid #dbeafe;border-top-color:#0b63ce;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px}
-    h1{font-size:24px;margin:0 0 10px}
-    p{margin:0;color:#64748b;line-height:1.65}
-    .error{display:none;margin-top:18px;color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:12px}
-    a{display:inline-block;margin-top:18px;color:#0b63ce;text-decoration:none;font-weight:700}
-    @keyframes spin{to{transform:rotate(360deg)}}
-  </style>
-</head>
-<body>
-  <main class="card" aria-live="polite">
-    <img class="logo" src="/dbh-logo.jpg" alt="DBH">
-    <div class="spinner" id="spinner"></div>
-    <h1 id="title">Completing sign-in</h1>
-    <p id="message">Please wait while DBH prepares your secure account session.</p>
-    <div class="error" id="error"></div>
-    <a id="back" href="/login.html" hidden>Return to sign in</a>
-  </main>
-
-  <script>
-    (function(){
-      const title=document.getElementById('title');
-      const message=document.getElementById('message');
-      const error=document.getElementById('error');
-      const spinner=document.getElementById('spinner');
-      const back=document.getElementById('back');
-
-      let session=null;
-      try{session=JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{}
-
-      const target=new URLSearchParams(location.search).get('redirect')||'/dashboard.html';
-
-      if(session && session.access_token){
-        message.textContent='Your DBH account is ready. Redirecting you now…';
-        setTimeout(()=>location.replace(target),450);
-        return;
-      }
-
-      spinner.style.display='none';
-      title.textContent='Sign-in session not found';
-      message.textContent='The authentication session could not be completed. Please start again from the DBH sign-in page.';
-      error.textContent='No active DBH authentication session was found.';
-      error.style.display='block';
-      back.hidden=false;
-    })();
-  </script>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="theme-color" content="#0b63ce"><title>Welcome to DBH | D Banjus Homes Nig Ltd</title><link rel="icon" href="/dbh-logo.jpg"><link rel="stylesheet" href="/assets/css/styles.css"></head>
+<body class="dbh-callback-page">
+<main class="dbh-callback-card">
+<img src="/dbh-logo.jpg" alt="DBH" class="dbh-callback-logo">
+<div class="dbh-callback-spinner" id="callback-spinner"></div>
+<div class="auth-hero-badge">SECURE ACCOUNT</div>
+<h1 id="callback-title">Welcome to DBH</h1>
+<p id="callback-message">Checking your account and preparing your next step…</p>
+<div id="callback-error" class="dbh-callback-error" hidden></div>
+<a id="callback-back" class="btn btn-primary" href="/login.html" hidden>Return to sign in</a>
+</main>
+<script src="/assets/js/config.js"></script>
+<script>
+(async function(){
+  const title=document.getElementById('callback-title'), msg=document.getElementById('callback-message');
+  const error=document.getElementById('callback-error'), spinner=document.getElementById('callback-spinner'), back=document.getElementById('callback-back');
+  const sessionKey='dbh_session';
+  let session=null;
+  try{session=JSON.parse(localStorage.getItem(sessionKey)||'null')}catch{}
+  if(!session?.access_token){
+    spinner.style.display='none'; title.textContent='Session not found'; msg.textContent='Your Google sign-in could not be completed. Please start again.';
+    error.hidden=false; error.textContent='No active DBH session was found.'; back.hidden=false; return;
+  }
+  try{
+    const headers={apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+session.access_token,Accept:'application/json'};
+    const ur=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/user',{headers});
+    const user=await ur.json().catch(()=>null);
+    if(!ur.ok||!user?.id)throw new Error('Your DBH session could not be verified.');
+    const meta=user.user_metadata||{};
+    await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/profiles?on_conflict=id',{
+      method:'POST',
+      headers:{...headers,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},
+      body:JSON.stringify({id:user.id,full_name:meta.full_name||meta.name||'',email:user.email||'',role:'customer'})
+    });
+    const or=await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/user_onboarding?select=user_id&user_id=eq.'+encodeURIComponent(user.id),{headers});
+    const rows=await or.json().catch(()=>[]);
+    if(!or.ok)throw new Error('We could not check your onboarding status.');
+    if(!Array.isArray(rows)||!rows.length){
+      title.textContent='One last step';
+      msg.textContent='Tell us a little about what you want from DBH so we can personalize your experience.';
+      setTimeout(()=>location.replace('/onboarding.html'),350);
+      return;
+    }
+    title.textContent='You are all set';
+    msg.textContent='Opening your DBH account…';
+    setTimeout(()=>location.replace('/dashboard.html'),450);
+  }catch(e){
+    spinner.style.display='none'; title.textContent='We could not finish setup'; msg.textContent=e.message||'Please try signing in again.';
+    error.hidden=false; error.textContent='Your Google account was reached, but DBH could not finish creating your account session.';
+    back.hidden=false;
+  }
+})();
+</script>
+</body></html>
