@@ -1,6 +1,21 @@
 import {DBH_CONFIG} from './config.js';
 
 const msg=document.getElementById('auth-message');
+
+function captureSupabaseSessionFromHash(){
+  const hash=new URLSearchParams(location.hash.replace(/^#/,''));
+  const access_token=hash.get('access_token');
+  const refresh_token=hash.get('refresh_token');
+  if(!access_token)return null;
+  const session={access_token,refresh_token,expires_in:Number(hash.get('expires_in')||0),token_type:hash.get('token_type')||'bearer',type:hash.get('type')||''};
+  localStorage.setItem('dbh_session',JSON.stringify(session));
+  history.replaceState({},document.title,location.pathname+location.search);
+  return session;
+}
+const hashSession=captureSupabaseSessionFromHash();
+if(hashSession && location.pathname.endsWith('/auth-callback.html')){
+  location.replace('/dashboard.html');
+}
 const redirect=()=>new URLSearchParams(location.search).get('redirect')||'/dashboard.html';
 
 async function supabaseAuth(path,body){
@@ -74,7 +89,7 @@ async function startOAuth(provider){
   const selected=providers[provider];
   if(!selected)return setMessage('This sign-in provider is not available.');
   setMessage('Connecting securely…');
-  const redirectTo=new URL('/dashboard.html',location.origin).href;
+  const redirectTo=new URL('/auth-callback.html',location.origin).href;
   location.href=DBH_CONFIG.supabaseUrl+'/auth/v1/authorize?provider='+encodeURIComponent(selected)+'&redirect_to='+encodeURIComponent(redirectTo);
 }
 document.querySelectorAll('[data-oauth-provider]').forEach(btn=>btn.addEventListener('click',()=>startOAuth(btn.dataset.oauthProvider)));
