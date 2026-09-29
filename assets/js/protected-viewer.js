@@ -93,6 +93,14 @@ async function openViewer(opts){
    if(isPdf)await renderPdf(signed,doc.document_type||'DBH document');else await renderImage(signed,doc.document_type||'DBH document');
  }catch(e){gate('Document access blocked',e.message||'DBH could not open this protected document.')}
 }
+const shieldPages=()=>{const o=document.getElementById('dbh-protected-overlay'),p=document.getElementById('dbh-protected-pages');if(!o||!o.classList.contains('open')||!p)return;if(document.hidden){p.style.visibility='hidden'}else{p.style.visibility='visible'}};
+document.addEventListener('visibilitychange',shieldPages);
+document.addEventListener('keydown',e=>{
+ if(!document.getElementById('dbh-protected-overlay')?.classList.contains('open'))return;
+ const k=String(e.key||'').toLowerCase();
+ const shot=k==='printscreen'||((e.metaKey||e.ctrlKey)&&e.shiftKey&&['3','4','5'].includes(k));
+ if(shot){e.preventDefault();const p=document.getElementById('dbh-protected-pages');if(p){p.style.visibility='hidden';setTimeout(()=>{if(!document.hidden)p.style.visibility='visible'},900)}}
+});
 document.addEventListener('contextmenu',e=>{if(e.target.closest('.dbh-protected-card'))e.preventDefault()});
 document.addEventListener('dragstart',e=>{if(e.target.closest('.dbh-protected-card'))e.preventDefault()});
 document.addEventListener('copy',e=>{if(e.target.closest('.dbh-protected-card'))e.preventDefault()});
