@@ -24,13 +24,19 @@
 <label class="auth-field"><span>Email address</span><input name="email" type="email" autocomplete="email" placeholder="you@example.com" required></label>
 <label class="auth-field"><span>Password</span><div class="auth-input-wrap"><input id="register-password" name="password" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required><button class="auth-toggle-password" type="button" data-password-toggle="register-password" aria-label="Show password"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div><div class="password-meter"><span id="password-meter"></span></div><small id="password-hint" class="password-hint">Use 8+ characters.</small></label>
 <label class="auth-field"><span>Confirm password</span><div class="auth-input-wrap"><input id="register-confirm-password" name="confirmPassword" type="password" autocomplete="new-password" placeholder="Repeat your password" required><button class="auth-toggle-password" type="button" data-password-toggle="register-confirm-password" aria-label="Show password"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div></label>
-<label class="auth-check"><input name="terms" type="checkbox" required> I agree to the DBH terms and privacy notice.</label>
-<button class="btn btn-primary auth-submit" type="submit">Create account</button>
+<label class="auth-check"><input name="terms" type="checkbox" required> I agree to the <a href="/agreement.html">User Agreement</a> and <a href="/privacy-policy.html">Privacy Policy</a>.</label>
+<button class="btn btn-primary auth-submit" type="submit">Create account</button><div class="auth-divider">OR CONTINUE WITH</div><div class="auth-social" aria-label="Social sign in options">
+<button type="button" class="auth-social-btn" data-oauth-provider="google" title="Continue with Google"><b>G</b><span>Google</span></button>
+<button type="button" class="auth-social-btn" data-oauth-provider="facebook" title="Continue with Facebook"><b>f</b><span>Facebook</span></button>
+<button type="button" class="auth-social-btn" data-oauth-provider="twitter" title="Continue with X"><b>𝕏</b><span>X</span></button>
+<button type="button" class="auth-social-btn" data-oauth-provider="github" title="Continue with GitHub"><b>●</b><span>GitHub</span></button>
+<button type="button" class="auth-social-btn" data-oauth-provider="gitlab" title="Continue with GitLab"><b>◆</b><span>GitLab</span></button>
+</div>
 <p id="auth-message" class="form-message" aria-live="polite"></p>
 <p class="auth-terms">Your account is created as a property seeker. Account permissions are controlled by DBH and the backend.</p>
 </form>
 <div class="auth-divider">ALREADY REGISTERED?</div>
-<p class="auth-bottom">Already have an account? <a href="/login.html">Sign in</a></p>
+<p class="auth-bottom">Already have an account? <a href="/login.html">Sign in</a></p><p class="auth-legal">Your use of DBH is subject to the User Agreement and Privacy Policy.</p>
 </section>
 </main>
 <script src="/assets/js/config.js"></script><script src="/assets/js/app.js"></script><script type="module" src="/assets/js/auth.js"></script><script src="/assets/js/shell.js"></script>
