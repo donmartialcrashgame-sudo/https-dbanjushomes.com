@@ -3,7 +3,39 @@ function safe(fn){try{return fn()}catch(e){console.error('DBH:',e);}}
 function hideLoader(){const l=document.getElementById('app-loader');if(l){l.classList.add('fade');setTimeout(()=>{l.style.display='none'},650)}}
 window.addEventListener('error',hideLoader);
 window.addEventListener('unhandledrejection',hideLoader);
-document.addEventListener('DOMContentLoaded',()=>{hideLoader();safe(bootShell);safe(loadData);safe(setupSearch);safe(setupNotifications);safe(initHeroSlider);});
+document.addEventListener('DOMContentLoaded',()=>{hideLoader();safe(bootShell);safe(loadData);safe(setupSearch);safe(setupNotifications);safe(initHeroSlider);safe(dbhGlobalInteractionFix);});
+function dbhGlobalInteractionFix(){
+  document.addEventListener('click',async(e)=>{
+    const menu=e.target.closest('#mobile-menu-button,#desktop-menu-button');
+    if(menu){
+      e.preventDefault();e.stopPropagation();
+      document.documentElement.classList.add('sidebar-open');
+      document.getElementById('mobile-menu-button')?.setAttribute('aria-expanded','true');
+      document.getElementById('desktop-menu-button')?.setAttribute('aria-expanded','true');
+      return;
+    }
+    const close=e.target.closest('#sidebar-close,#sidebar-backdrop');
+    if(close){
+      e.preventDefault();e.stopPropagation();
+      document.documentElement.classList.remove('sidebar-open');
+      document.getElementById('mobile-menu-button')?.setAttribute('aria-expanded','false');
+      document.getElementById('desktop-menu-button')?.setAttribute('aria-expanded','false');
+      return;
+    }
+    const bell=e.target.closest('#notification-button');
+    if(bell){
+      e.preventDefault();e.stopPropagation();
+      if(typeof setupNotifications==='function'){
+        const drawer=document.getElementById('notification-drawer');
+        if(!drawer){setupNotifications()}
+        document.documentElement.classList.add('notification-open');
+        const body=document.getElementById('notification-drawer-body');
+        const token=getAccessToken();
+        if(body&&!token) body.innerHTML='<div class="notification-empty"><h3>Sign in to view notifications</h3><p>Your DBH notifications are private to your account.</p><div class="notification-auth-actions"><a class="btn btn-primary" href="/login.html?redirect='+encodeURIComponent(location.href)+'">Login</a><a class="btn btn-outline" href="/register.html?redirect='+encodeURIComponent(location.href)+'">Sign Up</a></div></div>';
+      }
+    }
+  },true);
+}
 function bootShell(){applyTheme();initUniversalShell();initAuthState();setupCurrency();document.querySelectorAll('[data-theme-toggle]').forEach(b=>b.addEventListener('click',toggleTheme));}
 function getSettings(){try{return JSON.parse(localStorage.getItem(DBH.settingsKey))||{}}catch{return{}}}
 function saveSettings(s){localStorage.setItem(DBH.settingsKey,JSON.stringify(s));applyTheme()}
