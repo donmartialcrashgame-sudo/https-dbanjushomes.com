@@ -1,1 +1,10 @@
-export const DBH_CONFIG=window.DBH_CONFIG={supabaseUrl:'https://cpgajlsyuieeengdnamy.supabase.co',supabaseAnonKey:'sb_publishable_fbcJT-QGKyZg0tDkpbDkOQ_CcQf2ugW',googleClientId:'406190338800-aok5c0rj9294tkr073cb2q0mtp7rjurn.apps.googleusercontent.com',googleLoginUri:'/api/auth/google',apiBaseUrl:'',watermarkName:'D Banjus Homes Nig Ltd',watermarkLogoUrl:'',firebase:{apiKey:'',authDomain:'',projectId:'',storageBucket:'',messagingSenderId:'',appId:'',vapidKey:''}};
+window.DBH_CONFIG={
+  supabaseUrl:'',
+  supabaseAnonKey:'',
+  googleClientId:'406190338800-aok5c0rj9294tkr073cb2q0mtp7rjurn.apps.googleusercontent.com',
+  googleLoginUri:'/api/auth/google',
+  apiBaseUrl:'',
+  watermarkName:'D Banjus Homes Nig Ltd',
+  watermarkLogoUrl:'',
+  firebase:{apiKey:'',authDomain:'',projectId:'',storageBucket:'',messagingSenderId:'',appId:'',vapidKey:''}
+};
