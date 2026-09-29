@@ -139,33 +139,39 @@ window.dbhGoogleCredential=async response=>{
     setLoading(form,false);
   }
 };
-function startGoogleSignIn(){
+function renderGoogleSignIn(){
+  const container=document.getElementById('google-signin-button');
+  if(!container)return;
   if(!window.google?.accounts?.id){
-    setMessage('Google sign-in is still loading. Please try again in a moment.');
+    setTimeout(renderGoogleSignIn,150);
     return;
   }
   if(!DBH_CONFIG.googleClientId){
     setMessage('Google sign-in is not configured yet.');
     return;
   }
-  const form=document.getElementById('login-form')||document.getElementById('register-form');
-  setLoading(form,true);
-  setMessage('Opening Google sign-in…');
-  google.accounts.id.initialize({
-    client_id:DBH_CONFIG.googleClientId,
-    callback:window.dbhGoogleCredential,
-    ux_mode:'popup',
-    auto_select:false,
-    cancel_on_tap_outside:true
-  });
-  google.accounts.id.prompt(notification=>{
-    if(notification?.isNotDisplayed?.()||notification?.isSkippedMoment?.()){
-      setLoading(form,false);
-      setMessage('Google sign-in could not open. Check that this site is authorized in Google Cloud.');
-    }
-  });
+  try{
+    google.accounts.id.initialize({
+      client_id:DBH_CONFIG.googleClientId,
+      callback:window.dbhGoogleCredential,
+      auto_select:false,
+      cancel_on_tap_outside:true
+    });
+    container.innerHTML='';
+    google.accounts.id.renderButton(container,{
+      type:'icon',
+      theme:'outline',
+      size:'large',
+      shape:'square',
+      text:location.pathname.includes('register')?'signup_with':'signin_with'
+    });
+    container.dataset.googleReady='true';
+  }catch(error){
+    console.error('DBH Google Sign-In initialization failed:',error);
+    setMessage('Google sign-in could not be initialized. Please refresh the page.');
+  }
 }
-document.querySelectorAll('[data-google-signin]').forEach(btn=>btn.addEventListener('click',startGoogleSignIn));
+renderGoogleSignIn();
 async function startOAuth(provider){
   const providers={facebook:'facebook',twitter:'twitter',github:'github',gitlab:'gitlab'};
   const selected=providers[provider];
