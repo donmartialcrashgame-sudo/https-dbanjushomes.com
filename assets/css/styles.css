@@ -162,3 +162,10 @@ html.dbh-authenticated .dbh-top-nav{display:none!important}html.dbh-authenticate
 @media(max-width:1080px){.dbh-header-brand{margin-right:auto!important}.dbh-top-nav{display:none!important}.dbh-header-tools{margin-left:auto!important}}
 html.dbh-authenticated .dbh-header-brand{margin-right:auto!important}
 html.dbh-authenticated .dbh-header-tools{margin-left:0!important}
+
+
+/* DBH FINAL FIX — header logo must stay at the true left edge */
+.site-header{padding:0!important;display:block!important}
+.dbh-header-inner{width:100%!important;max-width:none!important;margin:0!important;padding:10px 24px!important}
+.dbh-header-brand{margin-left:0!important}
+@media(max-width:650px){.dbh-header-inner{padding:8px 12px!important}}
