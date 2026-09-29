@@ -106,39 +106,54 @@ registerForm?.addEventListener('submit',async e=>{
   }
 });
 
-async function startGoogleSignIn(){
-  const form=document.getElementById('login-form')||document.getElementById('register-form');
-  try{
-    setLoading(form,true);
-    setMessage('Opening Google securely…');
-    const clientId=DBH_CONFIG.googleClientId;
-    if(!clientId)throw new Error('Google sign-in is not configured.');
-
-    // Test Google directly first. No Supabase Auth call is made here.
-    // The authorization code will be received by google-test-callback.html.
-    const state=crypto.randomUUID();
-    sessionStorage.setItem('dbh_google_oauth_state',state);
-    // Current production test host is Render. Keep the redirect on the exact origin being tested.
-    const redirectUri='https://dbanjushomes.onrender.com/google-test-callback.html';
-    const params=new URLSearchParams({
-      client_id:clientId,
-      redirect_uri:redirectUri,
-      response_type:'code',
-      scope:'openid email profile',
-      state,
-      prompt:'select_account'
-    });
-    location.href='https://accounts.google.com/o/oauth2/v2/auth?'+params.toString();
-  }catch(error){
-    console.error('DBH Google redirect error:',error);
-    setMessage(error.message||'Unable to start Google sign-in.');
-    setLoading(form,false);
-  }
+async function loadGoogleIdentityServices(){
+  if(window.google?.accounts?.id)return;
+  if(window.__dbhGooglePromise)return window.__dbhGooglePromise;
+  window.__dbhGooglePromise=new Promise((resolve,reject)=>{
+    const script=document.createElement('script');
+    script.src='https://accounts.google.com/gsi/client';
+    script.async=true;
+    script.defer=true;
+    script.onload=()=>resolve();
+    script.onerror=()=>reject(new Error('Google Sign-In could not be loaded.'));
+    document.head.appendChild(script);
+  });
+  return window.__dbhGooglePromise;
 }
 
-document.querySelectorAll('[data-google-signin]').forEach(button=>{
-  button.addEventListener('click',startGoogleSignIn);
-});
+async function setupGoogleSignIn(){
+  const hosts=document.querySelectorAll('[data-google-signin]');
+  if(!hosts.length)return;
+  try{
+    await loadGoogleIdentityServices();
+    const clientId=DBH_CONFIG.googleClientId;
+    const loginUri=DBH_CONFIG.googleLoginUri;
+    if(!clientId||!loginUri)throw new Error('Google sign-in is not configured.');
+    google.accounts.id.initialize({
+      client_id:clientId,
+      ux_mode:'redirect',
+      login_uri:loginUri,
+      auto_select:false,
+      context:location.pathname.includes('register')?'signup':'signin'
+    });
+    hosts.forEach(host=>{
+      host.classList.add('auth-google-slot-ready');
+      google.accounts.id.renderButton(host,{
+        type:'standard',
+        theme:'outline',
+        size:'large',
+        shape:'rectangular',
+        text:location.pathname.includes('register')?'signup_with':'signin_with',
+        logo_alignment:'center',
+        width:360
+      });
+    });
+  }catch(error){
+    console.error('DBH Google setup error:',error);
+    hosts.forEach(host=>{host.textContent='Google sign-in is unavailable';host.classList.add('auth-google-error')});
+  }
+}
+setupGoogleSignIn();
 
 async function startOAuth(provider){
   const providers={facebook:'facebook',twitter:'twitter',github:'github',gitlab:'gitlab'};
