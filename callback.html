@@ -1,55 +1,54 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="theme-color" content="#0b63ce"><title>Welcome to DBH | D Banjus Homes Nig Ltd</title><link rel="icon" href="/dbh-logo.jpg"><link rel="stylesheet" href="/assets/css/styles.css"></head>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Signing you in | DBH</title>
+<link rel="icon" href="/dbh-logo.jpg">
+<link rel="stylesheet" href="/assets/css/styles.css">
+</head>
 <body class="dbh-callback-page">
 <main class="dbh-callback-card">
-<img src="/dbh-logo.jpg" alt="DBH" class="dbh-callback-logo">
-<div class="dbh-callback-spinner" id="callback-spinner"></div>
-<div class="auth-hero-badge">SECURE ACCOUNT</div>
-<h1 id="callback-title">Welcome to DBH</h1>
-<p id="callback-message">Checking your account and preparing your next step…</p>
-<div id="callback-error" class="dbh-callback-error" hidden></div>
-<a id="callback-back" class="btn btn-primary" href="/login.html" hidden>Return to sign in</a>
+  <img src="/dbh-logo.jpg" alt="DBH" class="dbh-callback-logo">
+  <div class="dbh-callback-spinner" id="callback-spinner"></div>
+  <div class="auth-hero-badge">SECURE ACCOUNT</div>
+  <h1 id="callback-title">Welcome to DBH</h1>
+  <p id="callback-message">Checking your DBH session…</p>
+  <div id="callback-error" class="dbh-callback-error" hidden></div>
+  <a id="callback-back" class="btn btn-primary" href="/login.html" hidden>Return to sign in</a>
 </main>
-<script src="/assets/js/config.js"></script>
 <script>
 (async function(){
-  const title=document.getElementById('callback-title'), msg=document.getElementById('callback-message');
-  const error=document.getElementById('callback-error'), spinner=document.getElementById('callback-spinner'), back=document.getElementById('callback-back');
-  const sessionKey='dbh_session';
-  let session=null;
-  try{session=JSON.parse(localStorage.getItem(sessionKey)||'null')}catch{}
-  if(!session?.access_token){
-    spinner.style.display='none'; title.textContent='Session not found'; msg.textContent='Your Google sign-in could not be completed. Please start again.';
-    error.hidden=false; error.textContent='No active DBH session was found.'; back.hidden=false; return;
-  }
+  const title=document.getElementById('callback-title');
+  const msg=document.getElementById('callback-message');
+  const error=document.getElementById('callback-error');
+  const spinner=document.getElementById('callback-spinner');
+  const back=document.getElementById('callback-back');
+
   try{
-    const headers={apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+session.access_token,Accept:'application/json'};
-    const ur=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/user',{headers});
-    const user=await ur.json().catch(()=>null);
-    if(!ur.ok||!user?.id)throw new Error('Your DBH session could not be verified.');
-    const meta=user.user_metadata||{};
-    await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/profiles?on_conflict=id',{
-      method:'POST',
-      headers:{...headers,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},
-      body:JSON.stringify({id:user.id,full_name:meta.full_name||meta.name||'',email:user.email||'',role:'customer'})
-    });
-    const or=await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/user_onboarding?select=user_id&user_id=eq.'+encodeURIComponent(user.id),{headers});
-    const rows=await or.json().catch(()=>[]);
-    if(!or.ok)throw new Error('We could not check your onboarding status.');
-    if(!Array.isArray(rows)||!rows.length){
-      title.textContent='One last step';
-      msg.textContent='Tell us a little about what you want from DBH so we can personalize your experience.';
-      setTimeout(()=>location.replace('/onboarding.html'),350);
-      return;
-    }
+    const r=await fetch('/api/auth/session',{credentials:'same-origin',headers:{Accept:'application/json'}});
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok||!data?.authenticated||!data?.user)throw new Error(data?.message||'Your DBH session could not be verified.');
+
+    localStorage.setItem('dbh_session',JSON.stringify({
+      authenticated:true,
+      provider:data.user.provider||'google',
+      user:data.user
+    }));
+
     title.textContent='You are all set';
     msg.textContent='Opening your DBH account…';
-    setTimeout(()=>location.replace('/dashboard.html'),450);
+    setTimeout(()=>location.replace('/dashboard.html'),350);
   }catch(e){
-    spinner.style.display='none'; title.textContent='We could not finish setup'; msg.textContent=e.message||'Please try signing in again.';
-    error.hidden=false; error.textContent='Your Google account was reached, but DBH could not finish creating your account session.';
+    spinner.style.display='none';
+    title.textContent='We could not finish setup';
+    msg.textContent=e.message||'Please try signing in again.';
+    error.hidden=false;
+    error.textContent='Google sign-in reached DBH, but the DBH session could not be prepared.';
     back.hidden=false;
   }
 })();
 </script>
-</body></html>
+</body>
+</html>
