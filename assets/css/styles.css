@@ -169,3 +169,15 @@ html.dbh-authenticated .dbh-header-tools{margin-left:0!important}
 .dbh-header-inner{width:100%!important;max-width:none!important;margin:0!important;padding:10px 24px!important}
 .dbh-header-brand{margin-left:0!important}
 @media(max-width:650px){.dbh-header-inner{padding:8px 12px!important}}
+
+/* DBH social providers and legal pages */
+.auth-social{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.auth-social-btn{height:44px;border:1px solid #d9e3ee;border-radius:12px;background:#fff;color:#243b57;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-size:10px;font-weight:900;transition:.18s}
+.auth-social-btn:hover{transform:translateY(-2px);background:#f5f9ff;border-color:#b9d2ee;box-shadow:0 8px 22px rgba(9,45,99,.08)}
+.auth-social-btn b{font-size:18px;line-height:1}.auth-social-btn span{display:none}
+.auth-legal{text-align:center;margin:12px 0 0;font-size:10px;line-height:1.6;color:#8495a9}.auth-legal a{color:#0b5ed7;font-weight:850}
+.legal-page{min-height:100vh;background:linear-gradient(135deg,#f7fbff,#e9f3ff);padding:50px 20px}
+.legal-shell{width:min(900px,100%);margin:auto;background:#fff;border:1px solid #dce7f3;border-radius:24px;padding:40px;box-shadow:0 24px 70px rgba(9,45,99,.1)}
+.legal-brand{display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;color:#10233f;font-weight:900}.legal-brand img{width:46px;height:46px;border-radius:13px;object-fit:cover}.legal-brand small{display:block;color:#7a8ca2;font-size:9px;margin-top:3px}
+.legal-shell h1{font-size:38px;letter-spacing:-.04em;margin:0 0 8px;color:#062e67}.legal-updated{color:#7b8da3;font-size:11px;margin-bottom:30px}.legal-shell h2{font-size:19px;color:#10233f;margin:28px 0 9px}.legal-shell p,.legal-shell li{font-size:13px;line-height:1.8;color:#566d88}.legal-shell ul{padding-left:20px}.legal-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:34px}.legal-actions a{padding:11px 15px;border-radius:11px;background:#edf5ff;color:#0b5ed7;font-size:11px;font-weight:850}
+@media(max-width:600px){.auth-social{grid-template-columns:repeat(5,1fr)}.auth-social-btn{height:42px}.legal-page{padding:20px 12px}.legal-shell{padding:25px 20px;border-radius:18px}.legal-shell h1{font-size:30px}}
