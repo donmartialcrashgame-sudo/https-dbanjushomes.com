@@ -101,7 +101,7 @@ registerForm?.addEventListener('submit',async e=>{
   }catch(primary){
     try{
       const d=await fallback('/auth/register',{fullName,email,password,role:'customer'});
-      localStorage.setItem('dbh_session',JSON.stringify(d));location.href=redirect();
+      localStorage.setItem('dbh_session',JSON.stringify(d));location.href='/verify-account.html?redirect='+encodeURIComponent(redirect());
     }catch(error){setMessage(primary.message||'Unable to create the account.');setLoading(form,false);}
   }
 });
