@@ -67,7 +67,7 @@ loginForm?.addEventListener('submit',async e=>{
   }catch(primary){
     try{
       const d=await fallback('/auth/login',{email:String(f.get('email')).trim(),password:f.get('password')});
-      localStorage.setItem('dbh_session',JSON.stringify(d));location.href='/verify-account.html?redirect='+encodeURIComponent(redirect());
+      localStorage.setItem('dbh_session',JSON.stringify(d));location.href=await postAuthRedirect('/dashboard.html');
     }catch(error){setMessage(primary.message||'Unable to sign in. Please check your email and password.');setLoading(form,false);}
   }
 });
