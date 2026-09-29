@@ -106,20 +106,6 @@ registerForm?.addEventListener('submit',async e=>{
   }
 });
 
-async function startGoogleSignIn(){
-  const form=document.getElementById('login-form')||document.getElementById('register-form');
-  try{
-    setLoading(form,true);
-    setMessage('Connecting to Google securely…');
-    const redirectTo=new URL('/auth-callback.html',location.origin).href;
-    const url=DBH_CONFIG.supabaseUrl+'/auth/v1/authorize?provider=google&redirect_to='+encodeURIComponent(redirectTo);
-    window.location.assign(url);
-  }catch(error){
-    setMessage(error.message||'Unable to start Google sign-in.');
-    setLoading(form,false);
-  }
-}
-document.querySelectorAll('[data-google-signin]').forEach(btn=>btn.addEventListener('click',startGoogleSignIn));
 async function startOAuth(provider){
   const providers={facebook:'facebook',twitter:'twitter',github:'github',gitlab:'gitlab'};
   const selected=providers[provider];
