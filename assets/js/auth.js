@@ -16,7 +16,29 @@ const hashSession=captureSupabaseSessionFromHash();
 if(hashSession && location.pathname.endsWith('/auth-callback.html')){
   location.replace('/dashboard.html');
 }
+if(location.pathname.endsWith('/reset-password.html')){
+  const s=hashSession||(()=>{try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}})();
+  if(!s?.access_token||s.type!=='recovery') location.replace('/forgot-password.html');
+}
 const redirect=()=>new URLSearchParams(location.search).get('redirect')||'/dashboard.html';
+async function postAuthRedirect(defaultPath){
+  const next=redirect();
+  if(next!=='/dashboard.html') return next;
+  try{
+    const s=JSON.parse(localStorage.getItem('dbh_session')||'null');
+    const u=s?.user||null;
+    const uid=u?.id;
+    if(!uid)return next;
+    const r=await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/profiles?select=role&id=eq.'+encodeURIComponent(uid),{headers:{apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+s.access_token,Accept:'application/json'}});
+    const p=await r.json().catch(()=>[]);
+    if(p?.[0]?.role==='customer'){
+      const vr=await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/identity_verification_requests?select=status&user_id=eq.'+encodeURIComponent(uid)+'&limit=1',{headers:{apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+s.access_token,Accept:'application/json'}});
+      const rows=await vr.json().catch(()=>[]);
+      if(!rows?.[0]||rows[0].status!=='verified') return '/verify-account.html?redirect='+encodeURIComponent(next);
+    }
+  }catch{}
+  return defaultPath||next;
+}
 
 async function supabaseAuth(path,body){
   const r=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/'+path,{method:'POST',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey},body:JSON.stringify(body)});
@@ -41,11 +63,11 @@ loginForm?.addEventListener('submit',async e=>{
     const d=await supabaseAuth('token?grant_type=password',{email:String(f.get('email')).trim(),password:f.get('password')});
     localStorage.setItem('dbh_session',JSON.stringify(d));
     setMessage('Signed in. Opening your account…');
-    location.href=redirect();
+    location.href=await postAuthRedirect('/dashboard.html');
   }catch(primary){
     try{
       const d=await fallback('/auth/login',{email:String(f.get('email')).trim(),password:f.get('password')});
-      localStorage.setItem('dbh_session',JSON.stringify(d));location.href=redirect();
+      localStorage.setItem('dbh_session',JSON.stringify(d));location.href='/verify-account.html?redirect='+encodeURIComponent(redirect());
     }catch(error){setMessage(primary.message||'Unable to sign in. Please check your email and password.');setLoading(form,false);}
   }
 });
@@ -72,7 +94,7 @@ registerForm?.addEventListener('submit',async e=>{
     if(d.access_token){
       localStorage.setItem('dbh_session',JSON.stringify(d));
       try{await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/profiles',{method:'POST',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+d.access_token,Prefer:'resolution=merge-duplicates'},body:JSON.stringify({id:d.user.id,full_name:fullName,email,role:'customer'})})}catch{}
-      setMessage('Account created. Redirecting…');location.href=redirect();
+      setMessage('Account created. Let us verify your account…');location.href='/verify-account.html?redirect='+encodeURIComponent(redirect());
     }else{
       setMessage('Account created. Please check your email to confirm your account.','success');setLoading(form,false);
     }
