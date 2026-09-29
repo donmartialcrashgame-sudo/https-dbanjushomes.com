@@ -1,1 +1,15 @@
-{"name":"dbanjus-homes","version":"0.1.0","private":true,"scripts":{"start":"npx serve . -l 10000"}}
+{
+  "name": "dbanjus-homes",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "google-auth-library": "^11.1.0"
+  }
+}
