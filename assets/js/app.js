@@ -128,10 +128,136 @@ function getAccessToken(){const s=getLocalSession();return s?.sessionToken||s?.a
 async function getSupabaseUser(){const c=window.DBH_CONFIG||{},token=getAccessToken();if(!c.supabaseUrl||!c.supabaseAnonKey||!token)return null;try{const r=await fetch(c.supabaseUrl+'/auth/v1/user',{headers:{apikey:c.supabaseAnonKey,Authorization:'Bearer '+token}});if(!r.ok)return null;return await r.json()}catch{return null}}
 async function supabaseFetchUser(path){const c=window.DBH_CONFIG||{},token=getAccessToken();if(!c.supabaseUrl||!c.supabaseAnonKey||!token)return null;try{const r=await fetch(c.supabaseUrl+'/rest/v1/'+path,{headers:{Accept:'application/json',apikey:c.supabaseAnonKey,Authorization:'Bearer '+token}});if(!r.ok)throw Error('Supabase HTTP '+r.status);return await r.json()}catch(e){console.error('DBH notifications:',e);return null}}
 function notificationIcon(type){const icons={general:'<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9M12 7v5l3 2"/></svg>',property:'<svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>',security:'<svg viewBox="0 0 24 24"><path d="M12 3 20 6v5.5c0 4.8-3.3 7.8-8 9.5-4.7-1.7-8-4.7-8-9.5V6l8-3Z"/><path d="m8.5 11.8 2.2 2.2 4.8-5"/></svg>'};return icons[type]||icons.general}
-function setupNotifications(){const b=document.getElementById('notification-button');if(!b)return;let drawer=document.getElementById('notification-drawer');if(!drawer){drawer=document.createElement('aside');drawer.id='notification-drawer';drawer.className='notification-drawer';drawer.innerHTML='<div class="notification-drawer-head"><div><span class="eyebrow">DBH ACCOUNT</span><h2>Notifications</h2></div><button type="button" id="notification-drawer-close" aria-label="Close notifications"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div id="notification-drawer-body" class="notification-drawer-body"><div class="notification-loading">Loading notifications…</div></div>';document.body.appendChild(drawer);const overlay=document.createElement('div');overlay.id='notification-backdrop';overlay.className='notification-backdrop';document.body.appendChild(overlay);const close=()=>{document.documentElement.classList.remove('notification-open')};document.getElementById('notification-drawer-close').addEventListener('click',close);overlay.addEventListener('click',close)}
-const open=async()=>{document.documentElement.classList.add('notification-open');const body=document.getElementById('notification-drawer-body');const session=getLocalSession();const token=getAccessToken();const dbhSignedIn=!!(session?.authenticated&&session?.user&&session?.sessionToken);if(!token&&!dbhSignedIn){body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('security')+'</div><h3>Sign in to view notifications</h3><p>Your DBH notifications are private to your account.</p><div class="notification-auth-actions"><a class="btn btn-primary" href="/login.html?redirect='+encodeURIComponent(location.href)+'">Login</a><a class="btn btn-outline" href="/register.html?redirect='+encodeURIComponent(location.href)+'">Sign Up</a></div></div>';return}
-if(dbhSignedIn){body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('general')+'</div><h3>Nothing for now</h3><p>Please check back later. You do not need to sign in again.</p></div>';return}body.innerHTML='<div class="notification-loading">Loading notifications…</div>';const rows=await supabaseFetchUser('notifications?select=id,title,message,type,link,is_read,created_at&order=created_at.desc&limit=30');if(!Array.isArray(rows)||!rows.length){body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('general')+'</div><h3>You’re all caught up</h3><p>New DBH account, property and marketplace updates will appear here.</p></div>';return}body.innerHTML=rows.map(n=>'<a class="notification-item '+(n.is_read?'read':'unread')+'" href="'+(n.link?escapeHtml(n.link):'#')+'"><span class="notification-item-icon">'+notificationIcon(n.type)+'</span><span><strong>'+escapeHtml(n.title)+'</strong><small>'+escapeHtml(n.message)+'</small><time>'+new Date(n.created_at).toLocaleString('en-NG',{dateStyle:'medium',timeStyle:'short'})+'</time></span></a>').join('');const unread=rows.filter(n=>!n.is_read).length;const count=document.getElementById('notification-count');if(count){count.textContent=unread>99?'99+':String(unread);count.style.display=unread?'grid':'none';}};
-b.addEventListener('click',open);document.addEventListener('keydown',e=>{if(e.key==='Escape')document.documentElement.classList.remove('notification-open')});}
+function setupNotifications(){
+  const b=document.getElementById('notification-button');
+  if(!b)return;
+
+  let drawer=document.getElementById('notification-drawer');
+
+  if(!drawer){
+    drawer=document.createElement('aside');
+    drawer.id='notification-drawer';
+    drawer.className='notification-drawer';
+    drawer.setAttribute('aria-label','DBH notifications');
+    drawer.innerHTML='<div class="notification-drawer-head"><div><span class="eyebrow">DBH ACCOUNT</span><h2>Notifications</h2><p class="notification-subtitle">Your latest DBH updates</p></div><button type="button" id="notification-drawer-close" class="notification-cancel" aria-label="Close notifications">Cancel<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div id="notification-drawer-body" class="notification-drawer-body"><div class="notification-loading"><span class="notification-loader"></span><strong>Loading notifications…</strong></div></div><div class="notification-drawer-footer"><button type="button" id="notification-footer-close" class="btn btn-outline">Close notifications</button></div>';
+    document.body.appendChild(drawer);
+
+    const overlay=document.createElement('div');
+    overlay.id='notification-backdrop';
+    overlay.className='notification-backdrop';
+    document.body.appendChild(overlay);
+
+    const close=()=>{
+      document.documentElement.classList.remove('notification-open');
+      drawer.setAttribute('aria-hidden','true');
+    };
+
+    document.getElementById('notification-drawer-close')?.addEventListener('click',close);
+    document.getElementById('notification-footer-close')?.addEventListener('click',close);
+    overlay.addEventListener('click',close);
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Escape')close();
+    });
+  }
+
+  const body=document.getElementById('notification-drawer-body');
+  const api=(window.DBH_CONFIG?.notificationsUri||((window.DBH_CONFIG?.supabaseUrl||'').replace(/\/$/,'')+'/functions/v1/dbh-notifications'));
+
+  function localSession(){
+    try{return JSON.parse(localStorage.getItem(DBH.sessionKey)||'null')}
+    catch{return null}
+  }
+
+  function tokenForNotifications(){
+    const s=localSession();
+    return s?.sessionToken||s?.access_token||s?.accessToken||s?.session?.access_token||'';
+  }
+
+  function closeDetail(){
+    loadNotifications();
+  }
+
+  async function loadDetail(id){
+    body.innerHTML='<div class="notification-loading"><span class="notification-loader"></span><strong>Opening notification…</strong></div>';
+    const token=tokenForNotifications();
+    if(!token){
+      body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('security')+'</div><h3>Please sign in</h3><p>Your DBH notifications are private to your account.</p></div>';
+      return;
+    }
+
+    try{
+      const r=await fetch(api+'?id='+encodeURIComponent(id),{
+        method:'GET',
+        headers:{Accept:'application/json',Authorization:'Bearer '+token}
+      });
+      const data=await r.json().catch(()=>({}));
+      const n=Array.isArray(data.notifications)?data.notifications[0]:null;
+      if(!r.ok||!n)throw new Error(data?.message||'Notification could not be loaded.');
+
+      await fetch(api,{
+        method:'POST',
+        headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+        body:JSON.stringify({id:n.id})
+      }).catch(()=>{});
+
+      body.innerHTML='<div class="notification-detail"><button type="button" class="notification-back" id="notification-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Back to notifications</button><div class="notification-detail-icon">'+notificationIcon(n.type)+'</div><span class="notification-detail-type">'+escapeHtml(n.type||'general')+'</span><h3>'+escapeHtml(n.title||'Notification')+'</h3><time>'+new Date(n.created_at).toLocaleString('en-NG',{dateStyle:'full',timeStyle:'short'})+'</time><p>'+escapeHtml(n.message||'')+'</p>'+(n.link?'<a class="btn btn-primary notification-detail-link" href="'+escapeHtml(n.link)+'">Open related page <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"></path></svg></a>':'')+'</div>';
+      document.getElementById('notification-back')?.addEventListener('click',closeDetail);
+    }catch(e){
+      body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('security')+'</div><h3>Could not open notification</h3><p>'+escapeHtml(e.message||'Please try again later.')+'</p><button type="button" class="btn btn-outline" id="notification-retry">Try again</button></div>';
+      document.getElementById('notification-retry')?.addEventListener('click',()=>loadDetail(id));
+    }
+  }
+
+  async function loadNotifications(){
+    body.innerHTML='<div class="notification-loading"><span class="notification-loader"></span><strong>Loading notifications…</strong></div>';
+    const token=tokenForNotifications();
+
+    if(!token){
+      body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('security')+'</div><h3>Sign in to view notifications</h3><p>Your DBH notifications are private to your account.</p><div class="notification-auth-actions"><a class="btn btn-primary" href="/login.html?redirect='+encodeURIComponent(location.href)+'">Login</a><a class="btn btn-outline" href="/register.html?redirect='+encodeURIComponent(location.href)+'">Sign Up</a></div></div>';
+      return;
+    }
+
+    try{
+      const r=await fetch(api,{method:'GET',headers:{Accept:'application/json',Authorization:'Bearer '+token}});
+      const data=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error(data?.message||'Notification service could not be reached.');
+      const rows=Array.isArray(data.notifications)?data.notifications:[];
+
+      if(!rows.length){
+        body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('general')+'</div><h3>Nothing for now</h3><p>Please check back later. New DBH account, property and marketplace updates will appear here.</p></div>';
+        const count=document.getElementById('notification-count');
+        if(count){count.textContent='0';count.style.display='none';}
+        return;
+      }
+
+      const unread=rows.filter(n=>!n.is_read).length;
+      const count=document.getElementById('notification-count');
+      if(count){count.textContent=unread>99?'99+':String(unread);count.style.display=unread?'grid':'none';}
+
+      body.innerHTML=rows.map(n=>{
+        const preview=String(n.message||'').length>125?String(n.message).slice(0,125).trim()+'…':String(n.message||'');
+        return '<button type="button" class="notification-item '+(n.is_read?'read':'unread')+'" data-notification-id="'+escapeHtml(n.id)+'"><span class="notification-item-icon">'+notificationIcon(n.type)+'</span><span><strong>'+escapeHtml(n.title||'Notification')+'</strong><small>'+escapeHtml(preview)+'</small><time>'+new Date(n.created_at).toLocaleString('en-NG',{dateStyle:'medium',timeStyle:'short'})+'</time></span><svg class="notification-item-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"></path></svg></button>';
+      }).join('');
+
+      body.querySelectorAll('[data-notification-id]').forEach(item=>{
+        item.addEventListener('click',()=>loadDetail(item.dataset.notificationId));
+      });
+    }catch(e){
+      body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('security')+'</div><h3>Notifications are unavailable</h3><p>'+escapeHtml(e.message||'Please check your connection and try again later.')+'</p><button type="button" class="btn btn-outline" id="notification-retry-list">Try again</button></div>';
+      document.getElementById('notification-retry-list')?.addEventListener('click',loadNotifications);
+    }
+  }
+
+  const open=()=>{
+    document.documentElement.classList.add('notification-open');
+    drawer.setAttribute('aria-hidden','false');
+    loadNotifications();
+  };
+
+  b.replaceWith(b.cloneNode(true));
+  const button=document.getElementById('notification-button');
+  button?.addEventListener('click',open);
+}
 function dbhCookieValue(name){return document.cookie.split(';').map(x=>x.trim()).find(x=>x.indexOf(name+'=')===0)?.slice(name.length+1)||null}
 function setDbhCookie(name,value,days){try{document.cookie=name+'='+encodeURIComponent(value)+'; Max-Age='+(days*86400)+'; Path=/; SameSite=Lax; Secure'}catch{}}
 function consentIcon(type){const m={cookie:'<svg viewBox="0 0 24 24"><path d="M20 13a8 8 0 1 1-9-9 6 6 0 0 0 9 9Z"/><circle cx="8" cy="14" r="1"/><circle cx="11" cy="17" r="1"/><circle cx="14" cy="13" r="1"/><circle cx="9" cy="9" r="1"/></svg>',bell:'<svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>',pin:'<svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>'};return m[type]||m.cookie}
