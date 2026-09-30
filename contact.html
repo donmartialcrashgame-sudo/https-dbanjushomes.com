@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b5ed7">
+<meta id="meta-description" name="description" content="Send a property enquiry to D Banjus Homes Nig Ltd.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Enquire about a property | DBH Homes">
+<meta property="og:description" content="Contact D Banjus Homes Nig Ltd about a property listing.">
+<meta property="og:image" content="https://dbanjushomes.com/dbh-logo.jpg">
+<link rel="canonical" id="canonical-url" href="https://dbanjushomes.com/contact.html">
+<link rel="icon" href="/dbh-logo.jpg">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DBH Homes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<link rel="stylesheet" href="/assets/css/notifications.css">
+<style>
+.dbh-contact-page{max-width:1180px;margin:0 auto;padding:42px 28px 90px}
+.dbh-contact-wrap{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(360px,.78fr);gap:22px;align-items:start}
+.dbh-contact-card{background:#fff;border:1px solid #dfe8f2;border-radius:26px;box-shadow:0 22px 60px rgba(9,45,99,.08);overflow:hidden}
+.dbh-contact-main{padding:32px}
+.dbh-contact-hero{position:relative;min-height:260px;border-radius:22px;overflow:hidden;background:linear-gradient(135deg,#0b5ed7,#073a80)}
+.dbh-contact-hero img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:.23}
+.dbh-contact-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,30,70,.78),rgba(11,94,215,.3))}
+.dbh-contact-hero-copy{position:relative;z-index:2;padding:34px;color:#fff;max-width:650px}
+.dbh-contact-hero-copy .eyebrow{color:#d8e8ff}
+.dbh-contact-hero-copy h1{font-size:clamp(34px,4.7vw,58px);line-height:1.02;letter-spacing:-.045em;margin:8px 0 14px}
+.dbh-contact-hero-copy p{margin:0;max-width:610px;color:#e5efff;line-height:1.75;font-size:14px}
+.dbh-property-preview{display:flex;gap:16px;padding:20px;border:1px solid #dfe8f2;border-radius:18px;background:#f7faff;margin-bottom:24px}
+.dbh-property-preview img{width:132px;height:100px;object-fit:cover;border-radius:14px;background:#e6eef7}
+.dbh-property-preview-copy{min-width:0}
+.dbh-property-preview-copy h2{font-size:20px;line-height:1.15;margin:3px 0 7px;overflow-wrap:anywhere}
+.dbh-property-meta{display:flex;flex-wrap:wrap;gap:8px;font-size:11px;color:#69809a}
+.dbh-pill{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border-radius:999px;background:#eef5ff;color:#0b5ed7;font-weight:800}
+.dbh-pill.verified{background:#eaf8ef;color:#16834b}
+.dbh-pill svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.dbh-no-property{padding:22px;border:1px dashed #c9d7e7;border-radius:18px;background:#fbfdff;color:#677c94;margin-bottom:24px;font-size:13px;line-height:1.7}
+.dbh-contact-form{display:grid;gap:16px}
+.dbh-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.dbh-field{display:grid;gap:7px}
+.dbh-field.full{grid-column:1/-1}
+.dbh-field label{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:#54708f}
+.dbh-field input,.dbh-field select,.dbh-field textarea{width:100%;box-sizing:border-box;border:1px solid #d7e1ec;border-radius:14px;background:#fff;color:#18324f;padding:13px 14px;font:inherit;outline:none;transition:border-color .18s,box-shadow .18s}
+.dbh-field input:focus,.dbh-field select:focus,.dbh-field textarea:focus{border-color:#72a7e8;box-shadow:0 0 0 4px rgba(11,94,215,.09)}
+.dbh-field textarea{min-height:145px;resize:vertical;line-height:1.6}
+.dbh-form-note{display:flex;align-items:flex-start;gap:9px;color:#72869d;font-size:11px;line-height:1.6;margin-top:-3px}
+.dbh-form-note svg{width:16px;height:16px;flex:none;fill:none;stroke:#0b5ed7;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dbh-contact-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.dbh-contact-actions .btn{min-height:46px;padding:0 18px}
+.dbh-status{display:none;border-radius:13px;padding:13px 14px;font-size:12px;line-height:1.55}
+.dbh-status.show{display:block}
+.dbh-status.ok{background:#ebf8ef;color:#176b40;border:1px solid #c8e8d3}
+.dbh-status.error{background:#fff2f3;color:#9d3038;border:1px solid #f1cdd1}
+.dbh-contact-side{padding:24px}
+.dbh-side-card{padding:22px;border:1px solid #dfe8f2;border-radius:20px;background:linear-gradient(145deg,#fbfdff,#f3f8ff)}
+.dbh-side-card h2{margin:0 0 8px;font-size:21px}
+.dbh-side-card>p{margin:0;color:#6e8198;font-size:12px;line-height:1.7}
+.dbh-contact-option{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid #e5ecf4}
+.dbh-contact-option:last-child{border-bottom:0;padding-bottom:0}
+.dbh-option-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;background:#eaf3ff;color:#0b5ed7}
+.dbh-option-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dbh-option-copy strong{display:block;font-size:13px;color:#18324f}
+.dbh-option-copy span{display:block;margin-top:4px;font-size:11px;color:#73859b;line-height:1.55}
+.dbh-trust{margin-top:16px;padding:15px;border-radius:16px;background:#fff;border:1px solid #dfe8f2}
+.dbh-trust strong{display:block;font-size:12px;color:#18324f}
+.dbh-trust p{margin:6px 0 0;color:#73859b;font-size:11px;line-height:1.65}
+.dbh-back{display:inline-flex;align-items:center;gap:8px;margin-bottom:18px;color:#60748c;font-weight:900;font-size:12px}
+.dbh-back svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.dbh-loading{padding:18px;border:1px solid #dfe8f2;border-radius:18px;background:#fbfdff;color:#70849b;font-size:12px;line-height:1.6;margin-bottom:24px}
+@media(max-width:950px){.dbh-contact-wrap{grid-template-columns:1fr}.dbh-contact-side{padding-top:0}}
+@media(max-width:620px){.dbh-contact-page{padding:24px 14px 60px}.dbh-contact-main{padding:20px}.dbh-contact-hero-copy{padding:24px}.dbh-form-grid{grid-template-columns:1fr}.dbh-property-preview{align-items:flex-start}.dbh-property-preview img{width:105px;height:90px}.dbh-contact-hero{min-height:290px}.dbh-contact-side{padding:0}}
+</style>
+</head>
+<body>
+<div id="app-loader" class="app-loader" aria-hidden="false">
+  <div class="loader-ring"></div><div class="loader-ring r2"></div>
+  <img src="/dbh-logo.jpg" alt="DBH — D Banjus Homes Nig Ltd">
+  <p>Dream it, we build it.</p>
+</div>
+
+<header class="site-header" aria-label="DBH site navigation"></header>
+
+<main class="with-right-sidebar">
+  <div class="dbh-contact-page">
+    <a class="dbh-back" href="/properties.html">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+      Back to properties
+    </a>
+
+    <div class="dbh-contact-wrap">
+      <section class="dbh-contact-card">
+        <div class="dbh-contact-hero">
+          <img src="https://www.superiteafrica.com/uploads/property/1754279608IMG_0460.JPG" alt="" aria-hidden="true">
+          <div class="dbh-contact-hero-copy">
+            <span class="eyebrow">PROPERTY ENQUIRY</span>
+            <h1>Tell DBH what you need to know.</h1>
+            <p>Send an enquiry about this property and include the details that will help D Banjus Homes Nig Ltd understand what you are looking for.</p>
+          </div>
+        </div>
+
+        <div class="dbh-contact-main">
+          <div id="property-loading" class="dbh-loading">Loading the selected property…</div>
+          <div id="property-preview" hidden></div>
+          <div id="property-empty" class="dbh-no-property" hidden>No property was selected. You can still send a general enquiry to DBH.</div>
+
+          <form id="dbh-enquiry-form" class="dbh-contact-form">
+            <div class="dbh-form-grid">
+              <div class="dbh-field">
+                <label for="enquiry-name">Full name</label>
+                <input id="enquiry-name" name="name" autocomplete="name" placeholder="Your full name" required>
+              </div>
+              <div class="dbh-field">
+                <label for="enquiry-email">Email address</label>
+                <input id="enquiry-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+              </div>
+              <div class="dbh-field">
+                <label for="enquiry-phone">Phone number</label>
+                <input id="enquiry-phone" name="phone" type="tel" autocomplete="tel" placeholder="+234 …">
+              </div>
+              <div class="dbh-field">
+                <label for="enquiry-interest">What are you interested in?</label>
+                <select id="enquiry-interest" name="interest">
+                  <option value="Viewing">I want to schedule a viewing</option>
+                  <option value="Price">I want to ask about the price</option>
+                  <option value="Availability">I want to confirm availability</option>
+                  <option value="Details">I want more property details</option>
+                  <option value="Offer">I want to discuss an offer</option>
+                  <option value="Other">Other enquiry</option>
+                </select>
+              </div>
+              <div class="dbh-field full">
+                <label for="enquiry-message">Message</label>
+                <textarea id="enquiry-message" name="message" required placeholder="Tell us what you would like to know about the property…"></textarea>
+              </div>
+            </div>
+
+            <div class="dbh-form-note">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 10v6M12 7.5h.01"></path></svg>
+              Your message will open your email app with the selected property and your enquiry details already prepared.
+            </div>
+
+            <div id="dbh-form-status" class="dbh-status" role="status" aria-live="polite"></div>
+
+            <div class="dbh-contact-actions">
+              <button class="btn btn-primary" type="submit">Send property enquiry</button>
+              <a class="btn btn-outline" id="view-property-link" href="/properties.html">Browse properties</a>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <aside class="dbh-contact-card dbh-contact-side">
+        <div class="dbh-side-card">
+          <span class="eyebrow">DBH CONTACT</span>
+          <h2>We’re here to help.</h2>
+          <p>Use the enquiry form for property-specific questions, viewing requests and availability checks.</p>
+
+          <div class="dbh-contact-option">
+            <div class="dbh-option-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"></path><path d="m4 7 8 6 8-6"></path></svg></div>
+            <div class="dbh-option-copy"><strong>Email</strong><span>info@dbanjushomes.com</span></div>
+          </div>
+
+          <div class="dbh-contact-option">
+            <div class="dbh-option-icon"><svg viewBox="0 0 24 24"><path d="M5 4h3l2 5-2 2c1.2 2.4 2.6 3.8 5 5l2-2 5 2v3c0 1-1 2-2 2C11.2 20 4 12.8 4 5c0-1 .8-1 1-1Z"></path></svg></div>
+            <div class="dbh-option-copy"><strong>Property questions</strong><span>Include the property name or code in your message so DBH can identify the listing quickly.</span></div>
+          </div>
+
+          <div class="dbh-contact-option">
+            <div class="dbh-option-icon"><svg viewBox="0 0 24 24"><path d="M12 3c3.9 0 7 3.1 7 7v2c0 2.1.8 4.1 2 5.5"></path><path d="M5 12v-2a7 7 0 1 1 14 0"></path><path d="M4 16h4v5H5a2 2 0 0 1-2-2v-1a2 2 0 0 1 1-2Z"></path><path d="M20 16h-4v5h3a2 2 0 0 0 2-2v-1a2 2 0 0 0-1-2Z"></path></svg></div>
+            <div class="dbh-option-copy"><strong>Before you proceed</strong><span>For important property decisions, review the listing verification status and available documentation on the property page.</span></div>
+          </div>
+
+          <div class="dbh-trust">
+            <strong>D Banjus Homes Nig Ltd</strong>
+            <p>Property marketplace enquiries are intended for information and viewing requests. A demo or pending verification status does not certify legal ownership or title.</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<script src="/assets/js/config.js?v=20260930-1"></script>
+<script src="/assets/js/app.js?v=20260930-8"></script>
+<script>
+(function(){
+  'use strict';
+  const cfg=window.DBH_CONFIG||{};
+  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+  const money=(v,c)=>{try{return new Intl.NumberFormat(c==='NGN'?'en-NG':'en-US',{style:'currency',currency:c||'NGN',maximumFractionDigits:c==='NGN'?0:2}).format(Number(v))}catch{return String(v||'')}};
+  const params=new URLSearchParams(location.search);
+  const requested=params.get('property')||'';
+  const els={
+    loading:document.getElementById('property-loading'),
+    preview:document.getElementById('property-preview'),
+    empty:document.getElementById('property-empty'),
+    form:document.getElementById('dbh-enquiry-form'),
+    status:document.getElementById('dbh-form-status'),
+    name:document.getElementById('enquiry-name'),
+    email:document.getElementById('enquiry-email'),
+    message:document.getElementById('enquiry-message'),
+    view:document.getElementById('view-property-link')
+  };
+  let property=null;
+
+  function getLocalUser(){
+    try{
+      const s=JSON.parse(localStorage.getItem('dbh_session')||'null');
+      return s?.user||s||null;
+    }catch{return null}
+  }
+
+  function setStatus(kind,msg){
+    els.status.className='dbh-status show '+kind;
+    els.status.textContent=msg;
+  }
+
+  function showPreview(p){
+    const location=[p.area,p.city,p.state].filter(Boolean).join(', ')||'Location available';
+    const badge=p.is_verified===true
+      ? '<span class="dbh-pill verified"><svg viewBox="0 0 24 24"><path d="M12 3 20 6v5.5c0 4.8-3.3 7.8-8 9.5-4.7-1.7-8-4.7-8-9.5V6l8-3Z"></path><path d="m8.5 11.8 2.2 2.2 4.8-5"></path></svg>Verified Property</span>'
+      : '<span class="dbh-pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v5M12 16h.01"></path></svg>Verification pending</span>';
+    const image=esc(p.og_image_url||'/dbh-logo.jpg');
+    const href='/property.html?id='+encodeURIComponent(p.property_code||p.id);
+    els.preview.hidden=false;
+    els.preview.innerHTML='<div class="dbh-property-preview"><img src="'+image+'" alt="'+esc(p.title||'DBH property')+'" onerror="this.onerror=null;this.src=&quot;/dbh-logo.jpg&quot;"><div class="dbh-property-preview-copy"><div class="dbh-property-meta">'+badge+'<span class="dbh-pill">'+esc(p.property_code||'DBH listing')+'</span></div><h2>'+esc(p.title||'Property')+'</h2><div class="dbh-property-meta"><span>'+esc(location)+'</span><span>•</span><span>'+money(p.price,p.currency||'NGN')+'</span></div></div></div>';
+    els.view.href=href;
+    els.view.textContent='View property';
+    document.title='Enquire about '+(p.title||'property')+' | DBH Homes';
+    document.getElementById('meta-description')?.setAttribute('content','Send an enquiry about '+(p.title||'a DBH property')+' to D Banjus Homes Nig Ltd.');
+    document.getElementById('canonical-url')?.setAttribute('href',location.origin+'/contact.html?property='+encodeURIComponent(p.slug||p.property_code||p.id));
+  }
+
+  async function loadProperty(){
+    if(!requested){
+      els.loading.remove();
+      els.empty.hidden=false;
+      return;
+    }
+    if(!cfg.supabaseUrl||!cfg.supabaseAnonKey){
+      els.loading.textContent='The DBH property service is not configured.';
+      return;
+    }
+    try{
+      const base=cfg.supabaseUrl.replace(/\/$/,'');
+      const filter=String(requested);
+      const bySlug=base+'/rest/v1/properties?select=*&slug=eq.'+encodeURIComponent(filter)+'&is_published=eq.true&limit=1';
+      let r=await fetch(bySlug,{headers:{Accept:'application/json',apikey:cfg.supabaseAnonKey}});
+      let rows=await r.json().catch(()=>[]);
+      if(!r.ok||!Array.isArray(rows)||!rows.length){
+        const byCode=base+'/rest/v1/properties?select=*&property_code=eq.'+encodeURIComponent(filter)+'&is_published=eq.true&limit=1';
+        r=await fetch(byCode,{headers:{Accept:'application/json',apikey:cfg.supabaseAnonKey}});
+        rows=await r.json().catch(()=>[]);
+      }
+      if(!r.ok||!Array.isArray(rows)||!rows.length)throw Error('Property not found');
+      property=rows[0];
+      showPreview(property);
+      els.loading.remove();
+      const user=getLocalUser();
+      if(user?.name||user?.full_name||user?.email){
+        els.name.value=user.name||user.full_name||'';
+        els.email.value=user.email||'';
+      }
+      const subject='DBH property enquiry — '+(property.property_code||property.title||'Property');
+      els.message.value='Hello D Banjus Homes Nig Ltd,\n\nI am interested in '+(property.title||'this property')+' ('+(property.property_code||'DBH listing')+').\n\nMy enquiry: ';
+      els.form.dataset.subject=subject;
+    }catch(e){
+      console.error('DBH contact property:',e);
+      els.loading.remove();
+      els.empty.hidden=false;
+      els.empty.textContent='We could not load that property. You can still send a general enquiry to DBH.';
+    }
+  }
+
+  els.form.addEventListener('submit',e=>{
+    e.preventDefault();
+    const fd=new FormData(els.form);
+    const name=String(fd.get('name')||'').trim();
+    const email=String(fd.get('email')||'').trim();
+    const phone=String(fd.get('phone')||'').trim();
+    const interest=String(fd.get('interest')||'').trim();
+    const message=String(fd.get('message')||'').trim();
+    if(!name||!email||!message){
+      setStatus('error','Please enter your name, email address and message.');
+      return;
+    }
+    const propertyLine=property?('\nProperty: '+(property.title||'Property')+'\nProperty code: '+(property.property_code||'DBH listing')+'\nVerification status: '+(property.is_verified===true?'Verified':'Pending verification')):'\nProperty: General enquiry';
+    const body=[
+      'Hello D Banjus Homes Nig Ltd,',
+      '',
+      'I would like to make a property enquiry.',
+      propertyLine,
+      '\nInterest: '+interest,
+      'Name: '+name,
+      'Email: '+email,
+      'Phone: '+(phone||'Not provided'),
+      '',
+      'Message:',
+      message,
+      '',
+      'Sent from dbanjushomes.com'
+    ].join('\n');
+    const subject=els.form.dataset.subject||'DBH property enquiry';
+    const mailto='mailto:info@dbanjushomes.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+    setStatus('ok','Your email app will open with this enquiry prepared. Review it and press Send there.');
+    window.location.href=mailto;
+  });
+
+  loadProperty();
+})();
+</script>
+</body>
+</html>
