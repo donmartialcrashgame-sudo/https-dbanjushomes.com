@@ -262,3 +262,66 @@ html.dbh-authenticated .dbh-header-tools{margin-left:0!important}
   }
   .sidebar-open .dbh-sidebar{transform:translateX(0)!important;}
 }
+
+/* DBH final navigation behavior: sidebar is a closed drawer; menu button is always visible. */
+.dbh-sidebar{
+  position:fixed!important;
+  top:0!important;
+  right:0!important;
+  bottom:0!important;
+  width:min(380px,88vw)!important;
+  display:flex!important;
+  transform:translateX(105%)!important;
+  visibility:visible!important;
+  opacity:1!important;
+  z-index:10020!important;
+  transition:transform .38s cubic-bezier(.2,.8,.2,1)!important;
+}
+html.sidebar-open .dbh-sidebar{
+  transform:translateX(0)!important;
+}
+.sidebar-backdrop{
+  display:block!important;
+  position:fixed!important;
+  inset:0!important;
+  z-index:10010!important;
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+html.sidebar-open .sidebar-backdrop{
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+.mobile-menu-button{
+  display:grid!important;
+  place-items:center!important;
+  width:44px!important;
+  height:44px!important;
+  flex:0 0 44px!important;
+  border:1px solid #dbe5f0!important;
+  border-radius:13px!important;
+  background:#fff!important;
+  color:#0b5ed7!important;
+  cursor:pointer!important;
+  margin-left:0!important;
+  order:3!important;
+}
+.mobile-menu-button .hamburger-lines{
+  display:grid!important;
+  gap:5px!important;
+}
+.mobile-menu-button .hamburger-lines i{
+  display:block!important;
+  width:22px!important;
+  height:2.5px!important;
+  background:currentColor!important;
+  border-radius:4px!important;
+}
+.dbh-header-actions{order:2!important;display:flex!important;align-items:center!important;gap:8px!important}
+.dbh-header-tools{display:flex!important;align-items:center!important;gap:8px!important;margin-left:auto!important}
+@media(max-width:650px){
+  .mobile-menu-button{width:40px!important;height:40px!important;flex-basis:40px!important}
+  .dbh-header-actions{gap:5px!important}
+}
