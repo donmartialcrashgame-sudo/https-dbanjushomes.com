@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Your saved properties on D Banjus Homes Nig Ltd.">
+<meta name="theme-color" content="#0b5ed7">
+<link rel="icon" href="/dbh-logo.jpg">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<link rel="stylesheet" href="/assets/css/notifications.css">
+<link rel="stylesheet" href="/assets/css/consent.css">
+<style>
+.save-page{max-width:1240px;margin:0 auto;padding:44px 28px 90px}
+.save-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:28px}
+.save-eyebrow{display:block;color:#0b5ed7;font-size:11px;font-weight:950;letter-spacing:.13em;text-transform:uppercase}
+.save-title{font-size:clamp(32px,5vw,56px);line-height:1.02;letter-spacing:-.045em;margin:8px 0 10px;color:#112c48}
+.save-subtitle{max-width:720px;color:#71839a;line-height:1.75;font-size:14px;margin:0}
+.save-count{display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:1px solid #dfe7f0;border-radius:999px;background:#fff;color:#365675;font-size:11px;font-weight:900;white-space:nowrap}
+.save-count i{width:8px;height:8px;border-radius:50%;background:#0b5ed7}
+.save-toolbar{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:12px 14px;border:1px solid #e0e8f2;border-radius:15px;background:#fff;margin-bottom:18px;box-shadow:0 8px 24px rgba(9,45,99,.05)}
+.save-toolbar-text{font-size:11px;color:#7c8fa7}
+.save-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.save-card{position:relative;background:#fff;border:1px solid #dfe7f0;border-radius:19px;overflow:hidden;box-shadow:0 12px 32px rgba(9,45,99,.07);transition:transform .22s,box-shadow .22s,border-color .22s}
+.save-card:hover{transform:translateY(-3px);box-shadow:0 18px 45px rgba(9,45,99,.12);border-color:#c8d9eb}
+.save-card-image{display:block;position:relative;aspect-ratio:16/10;background:#eaf1f8;overflow:hidden}
+.save-card-image img{width:100%;height:100%;object-fit:cover;display:block}
+.save-card-watermark{position:absolute;left:10px;bottom:10px;padding:5px 7px;border-radius:7px;background:rgba(6,30,59,.73);color:#fff;font-size:8px;font-weight:900;letter-spacing:.04em}
+.save-card-saved{position:absolute;right:10px;top:10px;display:inline-flex;align-items:center;gap:5px;padding:7px 9px;border-radius:999px;background:#fff1f2;color:#dc2626;border:1px solid #fecdd3;font-size:9px;font-weight:950;box-shadow:0 8px 18px rgba(0,0,0,.12)}
+.save-card-saved svg{width:13px;height:13px;fill:rgba(239,68,68,.13);stroke:currentColor;stroke-width:1.8}
+.save-card-body{padding:16px}
+.save-card-type{display:block;color:#0b5ed7;font-size:9px;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
+.save-card-title{display:block;color:#17334f;font-size:17px;line-height:1.2;margin:7px 0 7px}
+.save-card-location{display:flex;align-items:center;gap:5px;color:#7c8fa7;font-size:10px;min-height:18px}
+.save-card-location svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8}
+.save-card-price{font-size:18px;font-weight:950;color:#0b5ed7;margin-top:13px}
+.save-card-ref{font-size:9px;color:#99a7b7;margin-top:4px}
+.save-card-actions{display:flex;gap:8px;margin-top:14px}
+.save-card-actions .btn{flex:1;padding:9px 11px!important;min-width:0!important;font-size:10px!important;text-align:center}
+.save-remove{border:1px solid #fecdd3!important;color:#dc2626!important;background:#fff!important}
+.save-remove:hover{background:#fff1f2!important}
+.save-empty{padding:72px 24px;text-align:center;border:1px dashed #cad9e8;border-radius:22px;background:linear-gradient(145deg,#fff,#f8fbff)}
+.save-empty-icon{width:58px;height:58px;margin:0 auto 14px;border-radius:17px;display:grid;place-items:center;background:#fff1f2;color:#dc2626}
+.save-empty-icon svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.8}
+.save-empty h2{margin:0;color:#19334e;font-size:22px}
+.save-empty p{max-width:560px;margin:8px auto 18px;color:#7c8fa7;line-height:1.7;font-size:12px}
+.save-loading{display:grid;place-items:center;min-height:260px;border:1px solid #e0e8f2;border-radius:20px;background:#fff;color:#7c8fa7;font-size:12px}
+.save-spinner{width:28px;height:28px;border:3px solid #dbe6f1;border-top-color:#0b5ed7;border-radius:50%;animation:saveSpin .8s linear infinite;margin-bottom:12px}
+@keyframes saveSpin{to{transform:rotate(360deg)}}
+@media(max-width:980px){.save-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.save-page{padding:28px 14px 65px}.save-hero{display:block}.save-count{margin-top:16px}.save-grid{grid-template-columns:1fr}.save-toolbar{align-items:flex-start;flex-direction:column}.save-card-actions .btn{padding:10px 9px!important}}
+</style>
+</head>
+<body>
+<header class="site-header" aria-label="DBH site navigation"></header>
+<main class="save-page">
+  <section class="save-hero">
+    <div>
+      <span class="save-eyebrow">YOUR DBH ACCOUNT</span>
+      <h1 class="save-title">Saved properties</h1>
+      <p class="save-subtitle">Keep properties you are interested in one place. Your saved list is stored for your DBH account in this browser.</p>
+    </div>
+    <span class="save-count"><i></i><b id="save-count">0</b> saved</span>
+  </section>
+  <div class="save-toolbar"><span class="save-toolbar-text" id="save-account-note">Loading your saved properties…</span><a class="btn btn-outline" href="/properties.html">Browse properties</a></div>
+  <section id="saved-property-results">
+    <div class="save-loading"><div><div class="save-spinner"></div>Loading saved properties…</div></div>
+  </section>
+</main>
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/app.js?v=20260930-6"></script>
+<script>
+(function(){
+  const c=window.DBH_CONFIG||{};
+  const root=document.getElementById('saved-property-results');
+  const count=document.getElementById('save-count');
+  const note=document.getElementById('save-account-note');
+  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+  const iconHeart='<svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10.2-8.8 10.2S3.2 13.8 3.2 8.8A4.8 4.8 0 0 1 12 6.1a4.8 4.8 0 0 1 8.8 2.7Z"/></svg>';
+  const iconPin='<svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>';
+  const session=typeof getLocalSession==='function'?getLocalSession():null;
+  const user=session?.user||session;
+  if(!user?.email){
+    count.textContent='0';
+    note.textContent='Sign in to keep properties saved to your DBH account.';
+    root.innerHTML='<div class="save-empty"><div class="save-empty-icon">'+iconHeart+'</div><h2>Your saved list is waiting</h2><p>Sign in to save properties and access them here whenever you return to DBH.</p><a class="btn btn-primary" href="/login.html?redirect='+encodeURIComponent(location.href)+'">Sign in</a></div>';
+    return;
+  }
+  note.textContent='Saved for '+String(user.email).trim().toLowerCase();
+  function localRows(){return typeof window.DBHSaved?.list==='function'?window.DBHSaved.list():[]}
+  async function fetchFresh(rows){
+    const valid=rows.filter(x=>/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(x.id)));
+    if(!valid.length)return rows;
+    const ids=valid.map(x=>String(x.id));
+    const idFilter='id=in.('+ids.join(',')+')';
+    try{
+      const r=await fetch(c.supabaseUrl+'/rest/v1/properties?select=*&'+idFilter+'&is_published=eq.true',{headers:{apikey:c.supabaseAnonKey,Accept:'application/json'}});
+      const properties=r.ok?await r.json():[];
+      if(!Array.isArray(properties))return rows;
+      let images=[];
+      try{
+        const ir=await fetch(c.supabaseUrl+'/rest/v1/property_images?select=property_id,image_url,sort_order&property_id=in.('+ids.join(',')+')&order=sort_order.asc',{headers:{apikey:c.supabaseAnonKey,Accept:'application/json'}});
+        images=ir.ok?await ir.json():[];
+      }catch{}
+      const byId={};const byImage={};
+      if(Array.isArray(images))images.forEach(x=>{(byImage[x.property_id] ||= []).push(x.image_url)});
+      properties.forEach(p=>{byId[p.id]={...p,cover_image:(byImage[p.id]?.[0]||p.og_image_url||'/dbh-logo.jpg')}});
+      const merged=rows.map(saved=>byId[saved.id]?({...saved,...byId[saved.id],saved_at:saved.saved_at}):saved).filter(x=>byId[x.id]||x.title);
+      return merged;
+    }catch{return rows}
+  }
+  const money=(v,currency='NGN')=>window.DBH?.formatPrice?window.DBH.formatPrice(v,currency):(v==null||v===''?'Price on request':currency==='NGN'?'₦'+Number(v).toLocaleString('en-NG'):(currency+' '+Number(v).toLocaleString('en-NG')));
+  function render(rows){
+    count.textContent=String(rows.length);
+    if(!rows.length){
+      root.innerHTML='<div class="save-empty"><div class="save-empty-icon">'+iconHeart+'</div><h2>No saved properties yet</h2><p>When you click the heart-shaped Save button on a property, it turns red and the property is added here automatically.</p><a class="btn btn-primary" href="/properties.html">Find a property</a></div>';
+      return;
+    }
+    root.innerHTML='<div class="save-grid">'+rows.map((p,i)=>'<article class="save-card" data-id="'+esc(p.id)+'"><a class="save-card-image" href="/property.html?'+(p.slug?'slug='+encodeURIComponent(p.slug):'id='+encodeURIComponent(p.id))+'"><img src="'+esc(p.cover_image||p.og_image_url||'/dbh-logo.jpg')+'" alt="'+esc(p.title||'Saved property')+'" loading="lazy" onerror="this.onerror=null;this.src=\'/dbh-logo.jpg\'"><span class="save-card-watermark">D BANJUS HOMES NIG LTD</span><span class="save-card-saved">'+iconHeart+' Saved</span></a><div class="save-card-body"><span class="save-card-type">'+esc(p.property_type||p.category||'Property')+'</span><a href="/property.html?'+(p.slug?'slug='+encodeURIComponent(p.slug):'id='+encodeURIComponent(p.id))+'" class="save-card-title">'+esc(p.title||'Saved property')+'</a><div class="save-card-location">'+iconPin+esc(p.location||[p.area,p.city,p.state].filter(Boolean).join(', ')||'Nigeria')+'</div><div class="save-card-price">'+money(p.price,p.currency||'NGN')+'</div><div class="save-card-ref">Reference: '+esc(p.property_code||p.id||'—')+'</div><div class="save-card-actions"><a class="btn btn-primary" href="/property.html?'+(p.slug?'slug='+encodeURIComponent(p.slug):'id='+encodeURIComponent(p.id))+'">View property</a><button type="button" class="btn save-remove" data-remove="'+i+'">Remove</button></div></div></article>').join('')+'</div>';
+    root.querySelectorAll('[data-remove]').forEach(btn=>btn.addEventListener('click',()=>{
+      const index=Number(btn.dataset.remove), target=rows[index];
+      window.DBHSaved?.remove?.(target.id);
+      const next=localRows();
+      render(next);
+      note.textContent=next.length?'Saved for '+String(user.email).trim().toLowerCase():'No saved properties yet.';
+    }));
+  }
+  (async()=>{const rows=await fetchFresh(localRows());render(rows)})();
+  window.addEventListener('dbh-saved-changed',()=>render(localRows()));
+})();
+</script>
+</body>
+</html>
