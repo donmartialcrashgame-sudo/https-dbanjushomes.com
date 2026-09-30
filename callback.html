@@ -7,6 +7,7 @@
 <title>Signing you in | DBH</title>
 <link rel="icon" href="/dbh-logo.jpg">
 <link rel="stylesheet" href="/assets/css/styles.css">
+<script src="/assets/js/config.js"></script>
 </head>
 <body class="dbh-callback-page">
 <main class="dbh-callback-card">
@@ -35,10 +36,12 @@
     const data=await r.json().catch(()=>({}));
     if(!r.ok||!data?.authenticated||!data?.user)throw new Error(data?.message||'Your DBH session could not be verified.');
 
+    const current=(()=>{try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}})();
     localStorage.setItem('dbh_session',JSON.stringify({
       authenticated:true,
-      provider:data.user.provider||'google',
-      user:data.user
+      provider:data.user.provider||current?.provider||'google',
+      user:data.user,
+      sessionToken:current?.sessionToken||null
     }));
 
     title.textContent='You are all set';
