@@ -121,12 +121,67 @@ async function loadGoogleIdentityServices(){
   return window.__dbhGooglePromise;
 }
 
+async function syncGoogleIdentityToSupabase(idToken){
+  if(!DBH_CONFIG.supabaseUrl||!DBH_CONFIG.supabaseAnonKey)throw new Error('Supabase configuration is missing.');
+  const r=await fetch(DBH_CONFIG.supabaseUrl.replace(/\/$/,'')+'/auth/v1/token?grant_type=id_token',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      apikey:DBH_CONFIG.supabaseAnonKey,
+      Accept:'application/json'
+    },
+    body:JSON.stringify({
+      provider:'google',
+      id_token:idToken
+    })
+  });
+  const data=await r.json().catch(()=>({}));
+  if(!r.ok||!data?.user)throw new Error(data?.error_description||data?.msg||data?.message||'Supabase Google identity sync failed.');
+
+  // Keep DBH custom authentication as the source of truth. We only use the
+  // short-lived Supabase response to ensure the Google identity exists there.
+  try{
+    const supabaseUser=data.user;
+    const accessToken=data.access_token;
+    if(supabaseUser?.id&&accessToken){
+      await fetch(DBH_CONFIG.supabaseUrl.replace(/\/$/,'')+'/rest/v1/profiles',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          apikey:DBH_CONFIG.supabaseAnonKey,
+          Authorization:'Bearer '+accessToken,
+          Prefer:'resolution=merge-duplicates,return=minimal'
+        },
+        body:JSON.stringify({
+          id:supabaseUser.id,
+          full_name:supabaseUser.user_metadata?.full_name||supabaseUser.user_metadata?.name||'',
+          email:supabaseUser.email||'',
+          role:'customer'
+        })
+      });
+    }
+  }catch(profileError){
+    console.warn('DBH Supabase profile sync:',profileError);
+  }
+
+  return data;
+}
+
 async function handleGoogleCredential(response){
   const form=document.getElementById('login-form')||document.getElementById('register-form');
   try{
     if(!response?.credential)throw new Error('Google did not return a sign-in credential.');
     setLoading(form,true);
     setMessage('Securing your Google account…');
+    let supabaseSync=null;
+    try{
+      supabaseSync=await syncGoogleIdentityToSupabase(response.credential);
+    }catch(syncError){
+      // Google sign-in must remain usable even if Supabase's provider
+      // configuration is temporarily unavailable.
+      console.warn('DBH Supabase Google sync:',syncError);
+    }
+
     const endpoint=DBH_CONFIG.googleLoginUri;
     if(!endpoint)throw new Error('Google sign-in is not configured.');
     const r=await fetch(endpoint,{
