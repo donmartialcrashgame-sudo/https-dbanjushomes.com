@@ -41,7 +41,7 @@
       authenticated:true,
       provider:data.user.provider||current?.provider||'google',
       user:data.user,
-      sessionToken:current?.sessionToken||null
+      sessionToken:sessionToken
     }));
 
     title.textContent='You are all set';
