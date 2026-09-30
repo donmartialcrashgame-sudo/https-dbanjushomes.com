@@ -97,7 +97,12 @@ function readCookies(req) {
 
 function getSession(req) {
   const cookies = readCookies(req);
-  return verifySession(cookies[SESSION_COOKIE]);
+  const cookieSession = verifySession(cookies[SESSION_COOKIE]);
+  if (cookieSession) return cookieSession;
+
+  const authorization = String(req.headers.authorization || '');
+  const match = authorization.match(/^Bearer\\s+(.+)$/i);
+  return match ? verifySession(match[1].trim()) : null;
 }
 
 function publicUser(session) {
@@ -230,7 +235,8 @@ app.post('/api/auth/google', async (req, res) => {
     return res.json({
       success: true,
       authenticated: true,
-      user
+      user,
+      sessionToken: session
     });
   } catch (error) {
     console.error('DBH Google verification failed:', error?.message || error);
