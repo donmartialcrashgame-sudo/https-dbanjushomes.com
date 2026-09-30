@@ -19,7 +19,7 @@
 .dbh-dash-hero p{margin:0;color:#e4f1ff;line-height:1.6;max-width:700px}
 .dbh-dash-user{display:flex;align-items:center;gap:11px;flex:none;padding:10px 12px;border:1px solid rgba(255,255,255,.18);border-radius:16px;background:rgba(255,255,255,.1);backdrop-filter:blur(12px)}
 .dbh-dash-avatar{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:#fff;color:#0b63ce;font-weight:950;overflow:hidden}
-.dbh-dash-avatar img{width:100%;height:100%;object-fit:cover}
+.dbh-dash-avatar img{width:100%;height:100%;object-fit:cover;display:block}.dbh-dash-stat-icon svg,.dbh-quick-icon svg,.dbh-quick-arrow svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.dbh-quick-arrow{display:grid;place-items:center;width:22px;height:22px}
 .dbh-dash-user strong{display:block;font-size:13px}.dbh-dash-user small{display:block;font-size:11px;color:#d6e8fb;margin-top:3px}
 .dbh-dash-actions{position:relative;display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
 .dbh-dash-actions a{background:#fff!important;color:#0b63ce!important;border:0!important;box-shadow:none!important}
@@ -80,10 +80,10 @@
     <h3>Quick access</h3>
     <p>Jump directly to the parts of DBH you use most.</p>
     <div class="dbh-quick-links">
-      <a class="dbh-quick" href="/properties.html"><span><span class="dbh-quick-icon">⌂</span>Find properties</span><b>›</b></a>
-      <a class="dbh-quick" href="/properties.html?type=land"><span><span class="dbh-quick-icon">⌁</span>Land for sale</span><b>›</b></a>
-      <a class="dbh-quick" href="/properties.html?type=commercial"><span><span class="dbh-quick-icon">▦</span>Commercial property</span><b>›</b></a>
-      <a class="dbh-quick" href="/list-property.html"><span><span class="dbh-quick-icon">＋</span>List a property</span><b>›</b></a>
+      <a class="dbh-quick" href="/properties.html"><span><span class="dbh-quick-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10Z"></path></svg></span>Find properties</span><b class="dbh-quick-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></b></a>
+      <a class="dbh-quick" href="/properties.html?type=land"><span><span class="dbh-quick-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg></span>Land for sale</span><b class="dbh-quick-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></b></a>
+      <a class="dbh-quick" href="/properties.html?type=commercial"><span><span class="dbh-quick-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 20V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v15"></path><path d="M3 20h18M8 8h2M12 8h2M8 12h2M12 12h2M8 16h2M12 16h2"></path></svg></span>Commercial property</span><b class="dbh-quick-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></b></a>
+      <a class="dbh-quick" href="/list-property.html"><span><span class="dbh-quick-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13Z"></path><path d="M12 8v8M8 12h8"></path></svg></span>List a property</span><b class="dbh-quick-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></b></a>
     </div>
   </article>
 </section>
