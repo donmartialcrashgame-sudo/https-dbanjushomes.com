@@ -1,8 +1,10 @@
-const CACHE_NAME="dbh-shell-v1";
+const CACHE_NAME="dbh-shell-v2";
 const CORE=[
   "/",
   "/index.html",
   "/properties.html",
+  "/property.html",
+  "/contact.html",
   "/save.html",
   "/offline.html",
   "/manifest.webmanifest",
