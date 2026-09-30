@@ -1,6 +1,6 @@
 window.DBH_CONFIG={
-  supabaseUrl:'',
-  supabaseAnonKey:'',
+  supabaseUrl:'https://cpgajlsyuieeengdnamy.supabase.co',
+  supabaseAnonKey:'sb_publishable_fbcJT-QGKyZg0tDkpbDkOQ_CcQf2ugW',
   googleClientId:'406190338800-aok5c0rj9294tkr073cb2q0mtp7rjurn.apps.googleusercontent.com',
   googleLoginUri:'/api/auth/google',
   apiBaseUrl:'',
