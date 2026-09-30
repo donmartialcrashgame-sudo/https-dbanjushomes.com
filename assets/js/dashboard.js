@@ -8,9 +8,8 @@
   if(!sessionResponse?.ok){
     if(local?.access_token&&local?.user){
       const user=local.user;
-      const heading=document.getElementById('dashboard-user'); if(heading)heading.textContent=user.user_metadata?.full_name||user.email||'DBH User';
-      const email=document.getElementById('dashboard-email'); if(email)email.textContent=user.email||'';
-      document.getElementById('logout-button')?.addEventListener('click',()=>{localStorage.removeItem('dbh_session');location.replace('/login.html')});
+      renderUser(user);
+      renderLocalFallback();
       return;
     }
     localStorage.removeItem('dbh_session');
@@ -28,15 +27,32 @@
   const user=session.user;
   localStorage.setItem('dbh_session',JSON.stringify({authenticated:true,provider:user.provider||'google',user}));
 
-  const heading=document.getElementById('dashboard-user');
-  const email=document.getElementById('dashboard-email');
-  if(heading)heading.textContent=user.name||user.email||'DBH User';
-  if(email)email.textContent=user.email||'';
+  function renderUser(u){
+    const heading=document.getElementById('dashboard-user');
+    const label=document.getElementById('dashboard-user-label');
+    const email=document.getElementById('dashboard-email');
+    const avatar=document.getElementById('dashboard-avatar');
+    const name=u?.name||u?.user_metadata?.full_name||u?.user_metadata?.name||u?.email||'DBH User';
+    if(heading)heading.textContent=name.split(' ').slice(0,2).join(' ');
+    if(label)label.textContent=name.split(' ').slice(0,2).join(' ');
+    if(email)email.textContent=u?.email||'';
+    if(avatar){
+      const initials=String(name).trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'DB';
+      avatar.textContent=initials;
+    }
+  }
+  function renderLocalFallback(){
+    const recent=document.getElementById('recent-activity');
+    if(recent)recent.innerHTML='<div class="dbh-empty">Your account is signed in. Recent account activity will appear here when available.</div>';
+    const stats=document.getElementById('dashboard-stats');
+    if(stats)stats.innerHTML=[['Saved properties',0,'♡'],['Enquiries',0,'↗'],['Notifications',0,'•'],['Listings',0,'＋']].map(x=>'<article class="dbh-dash-stat"><div class="dbh-dash-stat-top"><small>'+x[0]+'</small><span class="dbh-dash-stat-icon">'+x[2]+'</span></div><strong>'+x[1]+'</strong></article>').join('');
+    document.querySelector('[data-header-nav="dashboard"]')?.classList.add('active');
+  }
 
   const dataResponse=await fetch(api+'/api/dashboard',{credentials:'include',headers}).catch(()=>null);
 
   if(!dataResponse?.ok){
-    document.getElementById('recent-activity')?.replaceChildren(document.createTextNode('Dashboard data is temporarily unavailable.'));
+    renderLocalFallback();
     return;
   }
 
@@ -58,7 +74,7 @@
   }
 
   document.getElementById('logout-button')?.addEventListener('click',async()=>{
-    try{await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'})}catch{}
+    try{await fetch(api+'/api/auth/logout',{method:'POST',credentials:'include',headers})}catch{}
     localStorage.removeItem('dbh_session');
     location.replace('/');
   });
