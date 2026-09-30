@@ -1,6 +1,5 @@
 const DBH={theme:{blue:'#0b5ed7',sidebar:'#062e67'},settingsKey:'dbh_ui_settings',sessionKey:'dbh_session'};
 function safe(fn){try{return fn()}catch(e){console.error('DBH:',e);}}
-function getLocalSession(){try{return JSON.parse(localStorage.getItem(DBH.sessionKey)||'null')}catch{return null}}
 const DBH_SAVED_KEY_PREFIX='dbh_saved_properties_v1:';
 function dbhSavedStorageKey(){
   const s=getLocalSession();
