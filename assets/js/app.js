@@ -88,7 +88,7 @@ async function initAuthState(){
       const avatar=document.querySelector('.profile-avatar');
       const label=document.querySelector('.profile-name');
       if(avatar){
-        const initials=String(name).trim().split(/\s+)/).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'DB';
+        const initials=String(name).trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'DB';
         const picture=found?.picture||found?.avatar_url||found?.user_metadata?.avatar_url||found?.user_metadata?.picture||'';
         avatar.textContent='';
         if(picture){
