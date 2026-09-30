@@ -12,7 +12,36 @@
 <link rel="icon" href="/dbh-logo.jpg">
 <link rel="stylesheet" href="/assets/css/styles.css">
 <link rel="stylesheet" href="/assets/css/notifications.css">
-<link rel="stylesheet" href="/assets/css/consent.css"></head>
+<link rel="stylesheet" href="/assets/css/consent.css">
+<style>
+  .dbh-home-category-section{padding-top:56px;padding-bottom:10px}
+  .dbh-home-category-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .dbh-home-category-card{position:relative;display:flex;align-items:center;gap:14px;min-height:116px;padding:19px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,#fff,#f7fbff);box-shadow:0 12px 35px rgba(9,45,99,.055);transition:transform .22s,border-color .22s,box-shadow .22s;overflow:hidden}
+  .dbh-home-category-card:after{content:"";position:absolute;width:125px;height:125px;border-radius:50%;right:-70px;top:-70px;background:#edf5ff}
+  .dbh-home-category-card:hover{transform:translateY(-4px);border-color:#bcd7f4;box-shadow:0 18px 44px rgba(9,45,99,.1)}
+  .dbh-home-category-icon{position:relative;z-index:1;width:46px;height:46px;flex:0 0 46px;border-radius:14px;display:grid;place-items:center;background:#eaf3ff;color:#0b63ce}
+  .dbh-home-category-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .dbh-home-category-copy{position:relative;z-index:1;min-width:0}
+  .dbh-home-category-copy strong{display:block;font-size:14px;color:#18324f}
+  .dbh-home-category-copy span{display:block;margin-top:5px;font-size:11px;color:var(--muted);line-height:1.45}
+  .dbh-home-category-arrow{margin-left:auto;position:relative;z-index:1;width:26px;height:26px;display:grid;place-items:center;color:#0b63ce}
+  .dbh-home-category-arrow svg,.dbh-home-stat-icon svg,.hero-pills svg,.stats-strip svg,.section-heading>a svg,.cta-section svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .dbh-home-category-arrow svg{width:18px;height:18px}
+  .dbh-home-stat-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;margin-bottom:10px;background:#edf5ff;color:#0b63ce}
+  .dbh-home-stat-icon svg{width:18px;height:18px}
+  .stats-strip>div{display:flex;align-items:flex-start;gap:11px}
+  .stats-strip>div>div:last-child{min-width:0}
+  .hero-pills span{display:inline-flex;align-items:center;gap:6px}
+  .hero-pills svg{width:14px;height:14px}
+  .search-card .tab{display:inline-flex;align-items:center;gap:6px}
+  .search-card .tab svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .search-card .tab.active{box-shadow:inset 0 0 0 1px rgba(11,94,215,.1)}
+  .dbh-home-account-note{display:flex;align-items:center;gap:9px;margin-top:14px;color:#68809a;font-size:11px}
+  .dbh-home-account-note svg{width:16px;height:16px;flex:none;fill:none;stroke:#0b63ce;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  @media(max-width:1000px){.dbh-home-category-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:700px){.dbh-home-category-section{padding-top:35px}.dbh-home-category-grid{grid-template-columns:1fr}.stats-strip{grid-template-columns:repeat(2,1fr)}.stats-strip>div{padding:18px}.hero-pills{gap:7px}}
+</style>
+</head>
 <body>
 <div id="app-loader" class="app-loader" aria-hidden="false">
   <div class="loader-ring"></div><div class="loader-ring r2"></div>
@@ -32,37 +61,87 @@
   </div>
   <div class="hero-blue-overlay"></div>
   <div class="hero-grid-lines"></div>
-  <div class="hero-orb orb-one"></div><div class="hero-orb orb-two"></div><div class="hero-slider-dots" aria-label="Hero image slides"><button class="active" type="button" data-hero-slide="0" aria-label="Show slide 1"></button><button type="button" data-hero-slide="1" aria-label="Show slide 2"></button><button type="button" data-hero-slide="2" aria-label="Show slide 3"></button><button type="button" data-hero-slide="3" aria-label="Show slide 4"></button></div>
+  <div class="hero-orb orb-one"></div><div class="hero-orb orb-two"></div>
+  <div class="hero-slider-dots" aria-label="Hero image slides">
+    <button class="active" type="button" data-hero-slide="0" aria-label="Show slide 1"></button>
+    <button type="button" data-hero-slide="1" aria-label="Show slide 2"></button>
+    <button type="button" data-hero-slide="2" aria-label="Show slide 3"></button>
+    <button type="button" data-hero-slide="3" aria-label="Show slide 4"></button>
+  </div>
+
   <div class="hero-inner">
     <div class="hero-copy">
       <span class="eyebrow">DBH HOMES • NIGERIA</span>
       <h1>Find the place that feels like <span>home.</span></h1>
       <p>Explore verified properties, land and commercial opportunities for sale through D Banjus Homes Nig Ltd.</p>
-      <div class="hero-pills"><span>Properties for Sale</span><span>Land for Sale</span><span>Commercial Property</span></div>
+      <div class="hero-pills">
+        <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8v9.2a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z"></path></svg>Properties for Sale</span>
+        <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>Land for Sale</span>
+        <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h8v18M14 9h4a2 2 0 0 1 2 2v10M7 7h3M7 11h3M7 15h3"></path></svg>Commercial Property</span>
+      </div>
     </div>
+
     <div class="search-card">
-      <div class="search-card-head"><div><span class="eyebrow">PROPERTY SEARCH</span><h2>Search what you’re looking for</h2></div><span class="live-dot">Live listings</span></div>
-      <div class="tabs"><button class="tab active" type="button">Properties</button><button class="tab" type="button">Land</button><button class="tab" type="button">Commercial</button></div>
+      <div class="search-card-head">
+        <div><span class="eyebrow">PROPERTY SEARCH</span><h2>Search what you’re looking for</h2></div>
+        <span class="live-dot">Live listings</span>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Property category">
+        <button class="tab active" type="button" data-search-type="" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M3 10.8 12 3l9 7.8v9.2a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z"></path></svg>Properties</button>
+        <button class="tab" type="button" data-search-type="land" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>Land</button>
+        <button class="tab" type="button" data-search-type="commercial" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M4 21V5a2 2 0 0 1 2-2h8v18M14 9h4a2 2 0 0 1 2 2v10M7 7h3M7 11h3M7 15h3"></path></svg>Commercial</button>
+      </div>
+
       <form id="property-search">
-        <label>Location<input name="location" placeholder="State, city or area"></label>
+        <label>Location<input name="location" placeholder="State, city or area" autocomplete="address-level2"></label>
         <label>Property type<select name="type"><option value="">Any type</option></select></label>
         <label>Min price<input name="minPrice" type="number" min="0" placeholder="₦0"></label>
         <label>Max price<input name="maxPrice" type="number" min="0" placeholder="No limit"></label>
-        <button class="btn btn-primary search-btn" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg> Search</button>
+        <button class="btn btn-primary search-btn" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>Search</button>
       </form>
+      <div class="dbh-home-account-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H8l-4 3v-5.2A7.5 7.5 0 1 1 20 11.5Z"></path></svg>Search first, then open a listing to enquire or save it to your DBH account.</div>
     </div>
   </div>
 </section>
 
-<section class="stats-strip">
-  <div><strong id="stat-properties">0</strong><span>Published properties</span></div>
-  <div><strong id="stat-locations">0</strong><span>Locations</span></div>
-  <div><strong id="stat-commercial">0</strong><span>Commercial opportunities</span></div>
-  <div><strong id="stat-land">0</strong><span>Land listings</span></div>
+<section class="stats-strip" aria-label="DBH marketplace statistics">
+  <div><div class="dbh-home-stat-icon"><svg viewBox="0 0 24 24"><path d="M3 10.8 12 3l9 7.8v9.2a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z"></path></svg></div><div><strong id="stat-properties">0</strong><span>Published properties</span></div></div>
+  <div><div class="dbh-home-stat-icon"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg></div><div><strong id="stat-locations">0</strong><span>Locations</span></div></div>
+  <div><div class="dbh-home-stat-icon"><svg viewBox="0 0 24 24"><path d="M4 21V5a2 2 0 0 1 2-2h8v18M14 9h4a2 2 0 0 1 2 2v10"></path><path d="M7 7h3M7 11h3M7 15h3M16 13h2M16 17h2"></path></svg></div><div><strong id="stat-commercial">0</strong><span>Commercial opportunities</span></div></div>
+  <div><div class="dbh-home-stat-icon"><svg viewBox="0 0 24 24"><path d="m3 19 6-7 4 4 3-5 5 8"></path><path d="M3 19h18"></path></svg></div><div><strong id="stat-land">0</strong><span>Land listings</span></div></div>
+</section>
+
+<section class="section dbh-home-category-section">
+  <div class="section-heading">
+    <div><span class="eyebrow">BROWSE BY NEED</span><h2>Start with a property category.</h2><p>Go directly to the part of the marketplace that matches what you need.</p></div>
+  </div>
+  <div class="dbh-home-category-grid">
+    <a class="dbh-home-category-card" href="/properties.html">
+      <span class="dbh-home-category-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8v9.2a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z"></path></svg></span>
+      <span class="dbh-home-category-copy"><strong>Homes & Properties</strong><span>Explore published homes and property opportunities.</span></span>
+      <span class="dbh-home-category-arrow"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></span>
+    </a>
+    <a class="dbh-home-category-card" href="/properties.html?type=land">
+      <span class="dbh-home-category-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg></span>
+      <span class="dbh-home-category-copy"><strong>Land for Sale</strong><span>Find land opportunities by location and property type.</span></span>
+      <span class="dbh-home-category-arrow"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></span>
+    </a>
+    <a class="dbh-home-category-card" href="/properties.html?type=commercial">
+      <span class="dbh-home-category-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h8v18M14 9h4a2 2 0 0 1 2 2v10"></path><path d="M7 7h3M7 11h3M7 15h3M16 13h2M16 17h2"></path></svg></span>
+      <span class="dbh-home-category-copy"><strong>Commercial Property</strong><span>Discover spaces and commercial opportunities for sale.</span></span>
+      <span class="dbh-home-category-arrow"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></span>
+    </a>
+    <a class="dbh-home-category-card" href="/list-property.html">
+      <span class="dbh-home-category-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M12 8v8M8 12h8"></path></svg></span>
+      <span class="dbh-home-category-copy"><strong>List a Property</strong><span>Send a property for DBH review and publication.</span></span>
+      <span class="dbh-home-category-arrow"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></span>
+    </a>
+  </div>
 </section>
 
 <section class="section">
-  <div class="section-heading"><div><span class="eyebrow">DISCOVER</span><h2>Featured properties</h2><p>Fresh opportunities selected from the DBH marketplace.</p></div><a href="/properties.html">View all <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 7l5 5-5 5"/></svg></a></div>
+  <div class="section-heading"><div><span class="eyebrow">DISCOVER</span><h2>Featured properties</h2><p>Fresh opportunities selected from the DBH marketplace.</p></div><a href="/properties.html">View all <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 7l5 5-5 5"></path></svg></a></div>
   <div id="featured-properties" class="property-grid"><div class="panel">Loading DBH properties…</div></div>
 </section>
 
@@ -80,9 +159,9 @@
       <h2>A property experience built around clarity, confidence and real opportunities.</h2>
       <p>DBH — D Banjus Homes Nig Ltd brings properties, land and commercial opportunities together in one modern marketplace designed to make your search easier.</p>
       <div class="why-points">
-        <div class="why-point"><span class="why-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 12 3 3 7-7"/><circle cx="12" cy="12" r="9"/></svg></span><div><h3>Clear property information</h3><p>See the key details, pricing and location information available for each listing.</p></div></div>
-        <div class="why-point"><span class="why-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><h3>Location-focused discovery</h3><p>Search by state, city and area so you can focus on the places that matter to you.</p></div></div>
-        <div class="why-point"><span class="why-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V4.5A1.5 1.5 0 0 1 5.5 3H14v18M14 8h4.5A1.5 1.5 0 0 1 20 9.5V21M7 7h3M7 11h3M7 15h3M16 12h2M16 16h2M2 21h20"/></svg></span><div><h3>One place for sale opportunities</h3><p>Browse homes, land and commercial property opportunities from the same DBH marketplace.</p></div></div>
+        <div class="why-point"><span class="why-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 12 3 3 7-7"></path><circle cx="12" cy="12" r="9"></circle></svg></span><div><h3>Clear property information</h3><p>See the key details, pricing and location information available for each listing.</p></div></div>
+        <div class="why-point"><span class="why-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg></span><div><h3>Location-focused discovery</h3><p>Search by state, city and area so you can focus on the places that matter to you.</p></div></div>
+        <div class="why-point"><span class="why-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V4.5A1.5 1.5 0 0 1 5.5 3H14v18M14 8h4.5A1.5 1.5 0 0 1 20 9.5V21"></path><path d="M7 7h3M7 11h3M7 15h3M16 12h2M16 16h2M2 21h20"></path></svg></span><div><h3>One place for sale opportunities</h3><p>Browse homes, land and commercial property opportunities from the same DBH marketplace.</p></div></div>
       </div>
     </div>
     <div class="why-visual">
@@ -113,16 +192,21 @@
 
 <section class="cta-section">
   <div><span class="eyebrow">PROPERTY OWNERS & AGENTS</span><h2>Have a property to sell?</h2><p>Send your property to DBH for review and publication.</p></div>
-  <a class="btn btn-primary" href="/list-property.html">List a property <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg></a>
+  <a class="btn btn-primary" href="/list-property.html">List a property <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"></path></svg></a>
 </section>
 </main>
 
-<footer class="site-footer"><div><strong>DBH</strong><p>D Banjus Homes Nig Ltd</p><small>Dream it, we build it.</small></div><div><h3>Explore</h3><a href="/properties.html">Properties</a><a href="/properties.html?type=land">Land</a><a href="/properties.html?type=commercial">Commercial</a></div><div><h3>Company</h3><a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/privacy.html">Privacy</a></div></footer>
+<footer class="site-footer">
+  <div><strong>DBH</strong><p>D Banjus Homes Nig Ltd</p><small>Dream it, we build it.</small></div>
+  <div><h3>Explore</h3><a href="/properties.html">Properties</a><a href="/properties.html?type=land">Land</a><a href="/properties.html?type=commercial">Commercial</a></div>
+  <div><h3>Company</h3><a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/privacy.html">Privacy</a></div>
+</footer>
 
 <script>
 setTimeout(function(){var l=document.getElementById('app-loader');if(l){l.classList.add('fade');setTimeout(function(){l.remove()},650)}},3200);
 </script>
 <script src="/assets/js/config.js"></script>
-<script src="/assets/js/home.js?v=20260928-1"></script>
-<script src="/assets/js/app.js"></script></body>
+<script src="/assets/js/home.js?v=20260930-2"></script>
+<script src="/assets/js/app.js"></script>
+</body>
 </html>
