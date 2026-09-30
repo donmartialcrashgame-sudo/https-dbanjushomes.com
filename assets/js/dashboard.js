@@ -6,7 +6,7 @@
   const sessionResponse=await fetch(api+'/api/auth/session',{credentials:'include',headers}).catch(()=>null);
 
   if(!sessionResponse?.ok){
-    if(local?.access_token&&local?.user){
+    if((local?.sessionToken||local?.access_token)&&local?.user){
       const user=local.user;
       renderUser(user);
       renderLocalFallback();
@@ -25,7 +25,7 @@
   }
 
   const user=session.user;
-  localStorage.setItem('dbh_session',JSON.stringify({authenticated:true,provider:user.provider||'google',user}));
+  localStorage.setItem('dbh_session',JSON.stringify({authenticated:true,provider:user.provider||local?.provider||'google',user,sessionToken:local?.sessionToken||session?.sessionToken||null}));
 
   function renderUser(u){
     const heading=document.getElementById('dashboard-user');
