@@ -118,7 +118,7 @@ function getSession(req) {
   if (cookieSession) return cookieSession;
 
   const authorization = String(req.headers.authorization || '');
-  const match = authorization.match(/^Bearer\\s+(.+)$/i);
+  const match = authorization.match(/^Bearer\s+(.+)$/i);
   return match ? verifySession(match[1].trim()) : null;
 }
 
@@ -278,7 +278,8 @@ app.get('/api/auth/session', (req, res) => {
   res.json({
     success: true,
     authenticated: true,
-    user: publicUser(session)
+    user: publicUser(session),
+    sessionToken: String(req.headers.authorization || '').replace(/^Bearer\s+/i, '') || readCookies(req)[SESSION_COOKIE] || null
   });
 });
 
