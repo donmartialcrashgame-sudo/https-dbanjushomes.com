@@ -78,7 +78,26 @@ async function initAuthState(){
       const name=firstValue(found.user_metadata||found,['full_name','fullName','name','email'],'Account');
       const avatar=document.querySelector('.profile-avatar');
       const label=document.querySelector('.profile-name');
-      if(avatar)avatar.textContent=String(name).trim().split(/\\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'DB';
+      if(avatar){
+        const initials=String(name).trim().split(/\\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'DB';
+        const picture=found?.picture||found?.avatar_url||found?.user_metadata?.avatar_url||found?.user_metadata?.picture||'';
+        avatar.textContent='';
+        if(picture){
+          const img=document.createElement('img');
+          img.src=picture;
+          img.alt=name+' profile photo';
+          img.referrerPolicy='no-referrer';
+          img.style.width='100%';
+          img.style.height='100%';
+          img.style.objectFit='cover';
+          img.style.borderRadius='inherit';
+          img.onload=()=>{avatar.textContent='';avatar.appendChild(img)};
+          img.onerror=()=>{avatar.textContent=initials};
+          avatar.appendChild(img);
+        }else{
+          avatar.textContent=initials;
+        }
+      }
       if(label)label.textContent=String(name).split('@')[0].slice(0,22)||'Account';
       p.onclick=()=>location.href='/dashboard.html';
     }else{
