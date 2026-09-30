@@ -237,3 +237,28 @@ html.dbh-authenticated .dbh-header-tools{margin-left:0!important}
   .hamburger-lines i{display:block!important;width:24px!important;height:3px!important;background:currentColor!important;border-radius:4px!important;}
 }
 @media(min-width:821px){.mobile-menu-button{display:none!important;}}
+
+/* Final DBH sidebar behavior: visible on desktop, drawer on mobile. */
+@media (min-width: 821px){
+  .dbh-sidebar{
+    display:flex!important;
+    position:fixed!important;
+    top:0!important;
+    right:0!important;
+    bottom:0!important;
+    width:var(--sidebar-w)!important;
+    transform:none!important;
+    visibility:visible!important;
+    opacity:1!important;
+  }
+  .sidebar-backdrop{display:none!important;}
+}
+@media (max-width: 820px){
+  .dbh-sidebar{
+    display:flex!important;
+    transform:translateX(105%)!important;
+    visibility:visible!important;
+    opacity:1!important;
+  }
+  .sidebar-open .dbh-sidebar{transform:translateX(0)!important;}
+}
