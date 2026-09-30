@@ -46,7 +46,7 @@ async function initAuthState(){
 
   try{
     const local=getLocalSession();
-    const authBase=(window.DBH_CONFIG?.apiBaseUrl||'').replace(/\\/$/,'');
+    const authBase=(window.DBH_CONFIG?.apiBaseUrl||'').replace(/\/$/,'');
     const sessionHeaders={Accept:'application/json'};
     if(local?.sessionToken)sessionHeaders.Authorization='Bearer '+local.sessionToken;
     const r=await fetch(authBase+'/api/auth/session',{credentials:'include',headers:sessionHeaders});
@@ -88,7 +88,7 @@ async function initAuthState(){
       const avatar=document.querySelector('.profile-avatar');
       const label=document.querySelector('.profile-name');
       if(avatar){
-        const initials=String(name).trim().split(/\\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'DB';
+        const initials=String(name).trim().split(/\s+)/).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'DB';
         const picture=found?.picture||found?.avatar_url||found?.user_metadata?.avatar_url||found?.user_metadata?.picture||'';
         avatar.textContent='';
         if(picture){
