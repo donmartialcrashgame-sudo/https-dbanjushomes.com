@@ -1,1 +1,176 @@
 .notification-drawer{position:fixed;top:0;right:0;bottom:0;width:min(430px,92vw);z-index:240;background:#fff;box-shadow:-28px 0 80px rgba(3,20,50,.2);transform:translateX(105%);transition:transform .38s cubic-bezier(.2,.8,.2,1);padding:22px;display:flex;flex-direction:column}.notification-open .notification-drawer{transform:translateX(0)}.notification-backdrop{position:fixed;inset:0;z-index:230;background:rgba(4,16,38,.48);backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:.3s}.notification-open .notification-backdrop{opacity:1;visibility:visible}.notification-drawer-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid #e6edf5}.notification-drawer-head h2{margin:4px 0 0;font-size:25px;letter-spacing:-.03em}.notification-drawer-head button{width:42px;height:42px;border:0;border-radius:12px;background:#f1f5fb;color:#263653;display:grid;place-items:center;cursor:pointer}.notification-drawer-head button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.notification-drawer-body{overflow:auto;padding:16px 2px 25px}.notification-loading,.notification-empty{text-align:center;padding:70px 22px;color:#71839a}.notification-empty-icon{width:54px;height:54px;border-radius:16px;background:#eaf3ff;color:#0b5ed7;display:grid;place-items:center;margin:0 auto 18px}.notification-empty-icon svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.notification-empty h3{margin:0 0 8px;color:#172640;font-size:18px}.notification-empty p{font-size:13px;line-height:1.65;margin:0 auto;max-width:310px}.notification-auth-actions{display:flex;justify-content:center;gap:9px;margin-top:20px}.notification-item{display:grid;grid-template-columns:42px 1fr;gap:12px;padding:15px 12px;border-radius:16px;margin-bottom:8px;border:1px solid #edf1f6;background:#fff;transition:.2s}.notification-item:hover{background:#f7faff;border-color:#d7e6fa}.notification-item.unread{background:#f2f7ff;border-color:#d8e8fc}.notification-item-icon{width:42px;height:42px;border-radius:13px;background:#e6f0ff;color:#0b5ed7;display:grid;place-items:center}.notification-item-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.notification-item strong{display:block;color:#172640;font-size:13px}.notification-item small{display:block;color:#657a94;font-size:12px;line-height:1.5;margin-top:4px}.notification-item time{display:block;color:#9aa7b8;font-size:10px;margin-top:8px}.notification-button svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}@media(max-width:560px){.notification-drawer{width:92vw;padding:17px}.notification-auth-actions{flex-direction:column}.notification-auth-actions .btn{width:100%}}
+/* DBH notification drawer final layering + full-view controls */
+.notification-drawer{
+  z-index:20080!important;
+  width:min(470px,94vw);
+  padding:22px 20px 0!important;
+}
+.notification-backdrop{
+  z-index:20070!important;
+}
+.notification-drawer-head{
+  gap:15px;
+}
+.notification-subtitle{
+  margin:4px 0 0;
+  color:#7b8da3;
+  font-size:11px;
+}
+.notification-cancel{
+  width:auto!important;
+  min-width:88px;
+  height:42px;
+  padding:0 12px!important;
+  display:inline-flex!important;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  font-size:11px;
+  font-weight:850;
+}
+.notification-cancel svg{
+  width:17px!important;
+  height:17px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:2!important;
+  stroke-linecap:round;
+}
+.notification-drawer-body{
+  flex:1;
+  min-height:0;
+}
+.notification-drawer-footer{
+  padding:14px 0 18px;
+  border-top:1px solid #e6edf5;
+  background:#fff;
+}
+.notification-drawer-footer .btn{
+  width:100%;
+}
+.notification-loading{
+  min-height:260px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+}
+.notification-loader{
+  width:28px;
+  height:28px;
+  border:3px solid #dbeafe;
+  border-top-color:#0b63ce;
+  border-radius:50%;
+  animation:dbhNotificationSpin .75s linear infinite;
+}
+@keyframes dbhNotificationSpin{to{transform:rotate(360deg)}}
+.notification-item{
+  width:100%;
+  text-align:left;
+  position:relative;
+  grid-template-columns:42px 1fr 18px;
+  align-items:start;
+  font:inherit;
+  color:inherit;
+  cursor:pointer;
+}
+.notification-item-arrow{
+  width:17px;
+  height:17px;
+  margin-top:13px;
+  fill:none;
+  stroke:#8ba0b8;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.notification-detail{
+  padding:8px 3px 22px;
+}
+.notification-back{
+  border:0;
+  background:#f1f6fc;
+  color:#48617d;
+  border-radius:11px;
+  padding:9px 11px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  cursor:pointer;
+  font-size:11px;
+  font-weight:850;
+}
+.notification-back svg{
+  width:16px;
+  height:16px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.notification-detail-icon{
+  width:58px;
+  height:58px;
+  border-radius:17px;
+  background:#eaf3ff;
+  color:#0b63ce;
+  display:grid;
+  place-items:center;
+  margin:24px 0 12px;
+}
+.notification-detail-icon svg{
+  width:27px;
+  height:27px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.notification-detail-type{
+  display:inline-block;
+  padding:5px 8px;
+  border-radius:999px;
+  background:#f2f6fb;
+  color:#75879d;
+  font-size:9px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.notification-detail h3{
+  margin:13px 0 5px;
+  color:#172640;
+  font-size:24px;
+  line-height:1.15;
+}
+.notification-detail time{
+  display:block;
+  color:#96a3b3;
+  font-size:10px;
+}
+.notification-detail>p{
+  margin:20px 0 0;
+  color:#526981;
+  font-size:14px;
+  line-height:1.8;
+  white-space:pre-wrap;
+}
+.notification-detail-link{
+  margin-top:22px;
+}
+.notification-detail-link svg{
+  width:16px;
+  height:16px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+@media(max-width:560px){
+  .notification-drawer{width:94vw;padding:17px 15px 0!important}
+  .notification-detail h3{font-size:21px}
+}
