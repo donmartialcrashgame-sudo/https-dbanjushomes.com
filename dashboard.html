@@ -1,1 +1,103 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dashboard | DBH Homes</title><link rel="icon" href="/dbh-logo.jpg"><link rel="stylesheet" href="/assets/css/styles.css"><link rel="stylesheet" href="/assets/css/consent.css"></head><body><header class="site-header" aria-label="DBH site navigation"></header><main class="dashboard page"><aside class="dashboard-nav"><a href="/dashboard.html">Dashboard</a><a href="/saved.html">Saved properties</a><a href="/enquiries.html">Enquiries</a><a href="/notifications.html">Notifications</a><a href="/profile.html">Profile</a></aside><section class="dashboard-content"><div class="page-heading"><span class="eyebrow">MY ACCOUNT</span><h1>Welcome to DBH Homes</h1><p id="dashboard-email"></p></div><div id="dashboard-stats" class="stats-grid"></div><div class="panel"><h2>Recent activity</h2><div id="recent-activity">Loading…</div></div></section></main><script src="/assets/js/config.js"></script><script src="/assets/js/app.js"></script><script type="module" src="/assets/js/dashboard.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b63ce">
+<title>Dashboard | DBH — D Banjus Homes Nig Ltd</title>
+<meta name="description" content="Your DBH property dashboard.">
+<link rel="icon" href="/dbh-logo.jpg">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<link rel="stylesheet" href="/assets/css/consent.css">
+<style>
+.dbh-dashboard{width:min(1180px,calc(100% - 48px));margin:0 auto;padding:34px 0 70px}
+.dbh-dash-hero{position:relative;overflow:hidden;border-radius:28px;padding:34px;color:#fff;background:linear-gradient(135deg,#062e67,#0b63ce 62%,#3592ff);box-shadow:0 24px 65px rgba(6,46,103,.2)}
+.dbh-dash-hero:before{content:"";position:absolute;width:420px;height:420px;right:-140px;top:-210px;border-radius:50%;background:rgba(255,255,255,.12)}
+.dbh-dash-top{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:25px}
+.dbh-dash-kicker{font-size:11px;font-weight:900;letter-spacing:.18em;color:#d8ecff}
+.dbh-dash-hero h1{font-size:clamp(30px,4.4vw,50px);line-height:1.03;margin:9px 0 10px;letter-spacing:-.04em}
+.dbh-dash-hero p{margin:0;color:#e4f1ff;line-height:1.6;max-width:700px}
+.dbh-dash-user{display:flex;align-items:center;gap:11px;flex:none;padding:10px 12px;border:1px solid rgba(255,255,255,.18);border-radius:16px;background:rgba(255,255,255,.1);backdrop-filter:blur(12px)}
+.dbh-dash-avatar{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:#fff;color:#0b63ce;font-weight:950;overflow:hidden}
+.dbh-dash-avatar img{width:100%;height:100%;object-fit:cover}
+.dbh-dash-user strong{display:block;font-size:13px}.dbh-dash-user small{display:block;font-size:11px;color:#d6e8fb;margin-top:3px}
+.dbh-dash-actions{position:relative;display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.dbh-dash-actions a{background:#fff!important;color:#0b63ce!important;border:0!important;box-shadow:none!important}
+.dbh-dash-actions a.secondary{background:rgba(255,255,255,.11)!important;color:#fff!important;border:1px solid rgba(255,255,255,.2)!important}
+.dbh-dash-section{margin-top:28px}.dbh-dash-section-head{display:flex;align-items:end;justify-content:space-between;gap:15px;margin-bottom:15px}.dbh-dash-section-head h2{margin:0;font-size:21px}.dbh-dash-section-head p{margin:5px 0 0;color:var(--muted);font-size:13px}
+.dbh-dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.dbh-dash-stat{background:#fff;border:1px solid var(--line);border-radius:19px;padding:19px;box-shadow:0 10px 30px rgba(9,45,99,.05)}.dbh-dash-stat-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.dbh-dash-stat small{color:var(--muted);font-weight:800}.dbh-dash-stat-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#edf5ff;color:var(--blue);font-weight:900}.dbh-dash-stat strong{display:block;font-size:31px;line-height:1;margin-top:16px}
+.dbh-dash-grid{display:grid;grid-template-columns:1.35fr .95fr;gap:16px}.dbh-dash-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 10px 30px rgba(9,45,99,.05)}.dbh-dash-card h3{margin:0 0 6px;font-size:18px}.dbh-dash-card>p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+.dbh-activity{margin-top:18px;display:grid;gap:10px}.dbh-activity-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:13px;background:#f7faff;border:1px solid #ebf1f8}.dbh-activity-dot{width:9px;height:9px;border-radius:50%;background:#0b63ce;box-shadow:0 0 0 5px #e4efff;flex:none}.dbh-activity-item strong{display:block;font-size:13px}.dbh-activity-item small{display:block;margin-top:3px;color:var(--muted);font-size:11px}
+.dbh-quick-links{display:grid;gap:10px;margin-top:18px}.dbh-quick{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px;border:1px solid var(--line);border-radius:14px;transition:.2s}.dbh-quick:hover{transform:translateY(-2px);border-color:#bcd6f3}.dbh-quick span:first-child{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:850}.dbh-quick>b{color:var(--blue);font-size:18px}.dbh-quick-icon{width:34px;height:34px;border-radius:10px;background:#edf5ff;color:var(--blue);display:grid;place-items:center}
+.dbh-dash-banner{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px;border-radius:18px;background:linear-gradient(135deg,#eef6ff,#fff);border:1px solid #d4e5f8}.dbh-dash-banner h3{margin:0 0 5px}.dbh-dash-banner p{margin:0;color:var(--muted);font-size:13px}
+.dbh-empty{color:var(--muted);font-size:13px;padding:16px 0}
+@media(max-width:900px){.dbh-dash-stats{grid-template-columns:repeat(2,1fr)}.dbh-dash-grid{grid-template-columns:1fr}.dbh-dash-top{flex-direction:column}.dbh-dash-user{width:100%}}
+@media(max-width:560px){.dbh-dashboard{width:min(100% - 24px,1180px);padding-top:18px}.dbh-dash-hero{padding:24px 20px;border-radius:21px}.dbh-dash-stats{gap:10px}.dbh-dash-stat{padding:15px}.dbh-dash-stat strong{font-size:26px}.dbh-dash-actions a{flex:1}.dbh-dash-banner{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header class="site-header" aria-label="DBH site navigation"></header>
+
+<main class="dbh-dashboard">
+<section class="dbh-dash-hero">
+  <div class="dbh-dash-top">
+    <div>
+      <div class="dbh-dash-kicker">MY DBH ACCOUNT</div>
+      <h1>Welcome back, <span id="dashboard-user">DBH User</span>.</h1>
+      <p>Your property workspace is ready. Explore listings, keep track of enquiries and manage your account from one place.</p>
+    </div>
+    <div class="dbh-dash-user">
+      <div class="dbh-dash-avatar" id="dashboard-avatar">DB</div>
+      <div><strong id="dashboard-user-label">DBH User</strong><small id="dashboard-email">Checking account…</small></div>
+    </div>
+  </div>
+  <div class="dbh-dash-actions">
+    <a class="btn btn-primary" href="/properties.html">Explore properties</a>
+    <a class="btn secondary" href="/list-property.html">List a property</a>
+  </div>
+</section>
+
+<section class="dbh-dash-section">
+  <div class="dbh-dash-section-head">
+    <div><h2>Your account at a glance</h2><p>Live counts from your DBH account.</p></div>
+  </div>
+  <div id="dashboard-stats" class="dbh-dash-stats">
+    <article class="dbh-dash-stat"><div class="dbh-dash-stat-top"><small>Saved properties</small><span class="dbh-dash-stat-icon">♡</span></div><strong>—</strong></article>
+    <article class="dbh-dash-stat"><div class="dbh-dash-stat-top"><small>Enquiries</small><span class="dbh-dash-stat-icon">↗</span></div><strong>—</strong></article>
+    <article class="dbh-dash-stat"><div class="dbh-dash-stat-top"><small>Notifications</small><span class="dbh-dash-stat-icon">•</span></div><strong>—</strong></article>
+    <article class="dbh-dash-stat"><div class="dbh-dash-stat-top"><small>Listings</small><span class="dbh-dash-stat-icon">＋</span></div><strong>—</strong></article>
+  </div>
+</section>
+
+<section class="dbh-dash-section dbh-dash-grid">
+  <article class="dbh-dash-card">
+    <h3>Recent activity</h3>
+    <p>Keep an eye on what is happening in your DBH account.</p>
+    <div id="recent-activity" class="dbh-activity"><div class="dbh-empty">Loading your recent activity…</div></div>
+  </article>
+
+  <article class="dbh-dash-card">
+    <h3>Quick access</h3>
+    <p>Jump directly to the parts of DBH you use most.</p>
+    <div class="dbh-quick-links">
+      <a class="dbh-quick" href="/properties.html"><span><span class="dbh-quick-icon">⌂</span>Find properties</span><b>›</b></a>
+      <a class="dbh-quick" href="/properties.html?type=land"><span><span class="dbh-quick-icon">⌁</span>Land for sale</span><b>›</b></a>
+      <a class="dbh-quick" href="/properties.html?type=commercial"><span><span class="dbh-quick-icon">▦</span>Commercial property</span><b>›</b></a>
+      <a class="dbh-quick" href="/list-property.html"><span><span class="dbh-quick-icon">＋</span>List a property</span><b>›</b></a>
+    </div>
+  </article>
+</section>
+
+<section class="dbh-dash-section">
+  <div class="dbh-dash-banner">
+    <div><h3>Looking for your next property?</h3><p>Browse the latest published homes, land and commercial opportunities on DBH.</p></div>
+    <a class="btn btn-primary" href="/properties.html">Browse listings</a>
+  </div>
+</section>
+</main>
+
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/app.js"></script>
+<script src="/assets/js/dashboard.js"></script>
+</body>
+</html>
