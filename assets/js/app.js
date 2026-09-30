@@ -212,7 +212,7 @@ function setupNotifications(){
       const rows=Array.isArray(data.notifications)?data.notifications:[];
 
       if(!rows.length){
-        body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('general')+'</div><h3>Nothing for now</h3><p>Please check back later. New DBH account, property and marketplace updates will appear here.</p></div>';
+        body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('general')+'</div><h3>Nothing for now — you're all caught up</h3><p>Please check back later. New DBH account, property and marketplace updates will appear here.</p></div>';
         const count=document.getElementById('notification-count');
         if(count){count.textContent='0';count.style.display='none';}
         return;
