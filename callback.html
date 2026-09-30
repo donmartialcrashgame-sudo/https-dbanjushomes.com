@@ -37,11 +37,12 @@
     if(!r.ok||!data?.authenticated||!data?.user)throw new Error(data?.message||'Your DBH session could not be verified.');
 
     const current=(()=>{try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}})();
+    const sessionToken=data.sessionToken||session?.sessionToken||current?.sessionToken||null;
     localStorage.setItem('dbh_session',JSON.stringify({
       authenticated:true,
       provider:data.user.provider||current?.provider||'google',
       user:data.user,
-      sessionToken:sessionToken
+      sessionToken
     }));
 
     title.textContent='You are all set';
