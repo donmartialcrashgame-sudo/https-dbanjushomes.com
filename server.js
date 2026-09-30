@@ -288,21 +288,25 @@ app.get('/api/dashboard', requireSession, (req, res) => {
   });
 });
 
-// This Web Service is API/auth only.
-// The public DBH pages are served by the separate Render Static Site.
-app.get('/', (_req, res) => {
-  res.json({
-    success: true,
-    service: 'dbh-auth',
-    message: 'DBH authentication service is online.'
-  });
-});
+// Serve the DBH website from this Web Service too.
+// This keeps https://dbanjushomes-auth-xsm3.onrender.com/dashboard.html
+// fully functional while the same repository is also deployed as a Static Site.
+app.use(express.static(path.join(__dirname), {
+  extensions: ['html'],
+  maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0
+}));
 
 app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    error: 'not_found',
-    message: 'DBH authentication API endpoint not found.'
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({
+      success: false,
+      error: 'not_found',
+      message: 'DBH API endpoint not found.'
+    });
+  }
+
+  res.status(404).sendFile(path.join(__dirname, '404.html'), (err) => {
+    if (err) res.status(404).send('Page not found');
   });
 });
 
