@@ -26,7 +26,7 @@ self.addEventListener("activate",event=>{
 });
 
 function isApi(url){
-  return /supabase.co/(rest|functions|auth)//i.test(url.href) || //api//i.test(url.pathname);
+  return /supabase\.co\/(rest|functions|auth)\//i.test(url.href) || /\/api\//i.test(url.pathname);
 }
 
 self.addEventListener("fetch",event=>{
