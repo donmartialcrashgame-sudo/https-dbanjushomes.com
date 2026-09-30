@@ -1,27 +1,4 @@
-<style id="dbh-pwa-style">
-.dbh-pwa-modal{position:fixed;inset:0;display:none;place-items:center;padding:18px;background:rgba(4,20,40,.58);z-index:50000;backdrop-filter:blur(5px)}
-.dbh-pwa-modal.open{display:grid}
-.dbh-pwa-card{width:min(430px,100%);background:#fff;border:1px solid #dce7f2;border-radius:26px;overflow:hidden;box-shadow:0 30px 100px rgba(0,0,0,.25);animation:dbhPwaIn .28s ease-out}
-@keyframes dbhPwaIn{from{transform:translateY(14px) scale(.98);opacity:0}to{transform:none;opacity:1}}
-.dbh-pwa-top{padding:26px 24px 20px;background:linear-gradient(145deg,#f7fbff,#eef5ff);text-align:center;border-bottom:1px solid #e2eaf3}
-.dbh-pwa-logo{width:82px;height:82px;border-radius:22px;object-fit:cover;border:1px solid #d7e5f4;box-shadow:0 10px 26px rgba(11,94,215,.12)}
-.dbh-pwa-eyebrow{display:block;margin-top:15px;color:#0b5ed7;font-size:10px;font-weight:950;letter-spacing:.13em;text-transform:uppercase}
-.dbh-pwa-title{margin:7px 0 7px;color:#14314d;font-size:25px;line-height:1.12;letter-spacing:-.025em}
-.dbh-pwa-subtitle{margin:0;color:#70839a;font-size:12px;line-height:1.7}
-.dbh-pwa-body{padding:20px 24px 23px}
-.dbh-pwa-features{display:grid;gap:9px;margin-bottom:18px}
-.dbh-pwa-feature{display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:12px;background:#f7faff;color:#365675;font-size:11px;font-weight:750}
-.dbh-pwa-feature svg{width:17px;height:17px;flex:none;fill:none;stroke:#0b5ed7;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.dbh-pwa-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.dbh-pwa-actions button,.dbh-pwa-actions a{height:44px;border-radius:12px;font:inherit;font-size:11px;font-weight:900}
-.dbh-pwa-install{border:0;background:#0b5ed7;color:#fff;cursor:pointer}
-.dbh-pwa-install:hover{background:#084eae}
-.dbh-pwa-later{border:1px solid #d8e3ee;background:#fff;color:#526b84;cursor:pointer}
-.dbh-pwa-hint{display:none;margin:14px 0 0;padding:10px 11px;border-radius:11px;background:#fff7e6;border:1px solid #f0d79f;color:#735a1b;font-size:10px;line-height:1.55}
-.dbh-pwa-hint.show{display:block}
-.dbh-pwa-brand{display:block;margin-top:13px;text-align:center;color:#9aa9b9;font-size:9px}
-@media(max-width:480px){.dbh-pwa-modal{padding:12px}.dbh-pwa-card{border-radius:22px}.dbh-pwa-top{padding:22px 18px 18px}.dbh-pwa-body{padding:18px}.dbh-pwa-title{font-size:23px}}
-</style>
+
 const DBH={theme:{blue:'#0b5ed7',sidebar:'#062e67'},settingsKey:'dbh_ui_settings',sessionKey:'dbh_session'};
 function safe(fn){try{return fn()}catch(e){console.error('DBH:',e);}}
 const DBH_SAVED_KEY_PREFIX='dbh_saved_properties_v1:';
@@ -70,6 +47,16 @@ function dbhToggleSavedProperty(property){
 window.DBHSaved={list:dbhGetSavedProperties,isSaved:dbhIsSavedProperty,save:dbhSaveProperty,remove:dbhRemoveSavedProperty,toggle:dbhToggleSavedProperty,key:dbhSavedStorageKey};
 
 function setupDBHPWA(){
+  try{
+    if(!document.querySelector('link[data-dbh-pwa-css]')){
+      const css=document.createElement('link');
+      css.rel='stylesheet';
+      css.href='/assets/css/pwa.css';
+      css.setAttribute('data-dbh-pwa-css','true');
+      document.head.appendChild(css);
+    }
+  }catch(e){console.warn('DBH PWA stylesheet:',e)}
+
   try{
     if(!document.querySelector('link[rel="manifest"]')){
       const manifest=document.createElement('link');manifest.rel='manifest';manifest.href='/manifest.webmanifest';document.head.appendChild(manifest);
