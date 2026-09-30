@@ -27,7 +27,11 @@
   const back=document.getElementById('callback-back');
 
   try{
-    const r=await fetch('/api/auth/session',{credentials:'same-origin',headers:{Accept:'application/json'}});
+    const session=(()=>{try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}})();
+    const api=(window.DBH_CONFIG?.apiBaseUrl||'').replace(/\/$/,'');
+    const headers={Accept:'application/json'};
+    if(session?.sessionToken)headers.Authorization='Bearer '+session.sessionToken;
+    const r=await fetch(api+'/api/auth/session',{credentials:'include',headers});
     const data=await r.json().catch(()=>({}));
     if(!r.ok||!data?.authenticated||!data?.user)throw new Error(data?.message||'Your DBH session could not be verified.');
 
