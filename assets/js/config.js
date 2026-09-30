@@ -5,6 +5,7 @@ window.DBH_CONFIG={
   apiBaseUrl:'https://dbanjushomes-auth-xsm3.onrender.com',
   googleLoginUri:'https://dbanjushomes-auth-xsm3.onrender.com/api/auth/google',
   notificationsUri:'https://cpgajlsyuieeengdnamy.supabase.co/functions/v1/dbh-notifications',
+  propertyDocumentsUri:'https://cpgajlsyuieeengdnamy.supabase.co/functions/v1/dbh-property-documents',
   watermarkName:'D Banjus Homes Nig Ltd',
   watermarkLogoUrl:'',
   firebase:{apiKey:'',authDomain:'',projectId:'',storageBucket:'',messagingSenderId:'',appId:'',vapidKey:''}
