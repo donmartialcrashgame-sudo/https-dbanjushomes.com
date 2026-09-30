@@ -219,14 +219,14 @@
   }
 
   function showPreview(p){
-    const location=[p.area,p.city,p.state].filter(Boolean).join(', ')||'Location available';
+    const locationText=[p.area,p.city,p.state].filter(Boolean).join(', ')||'Location available';
     const badge=p.is_verified===true
       ? '<span class="dbh-pill verified"><svg viewBox="0 0 24 24"><path d="M12 3 20 6v5.5c0 4.8-3.3 7.8-8 9.5-4.7-1.7-8-4.7-8-9.5V6l8-3Z"></path><path d="m8.5 11.8 2.2 2.2 4.8-5"></path></svg>Verified Property</span>'
       : '<span class="dbh-pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v5M12 16h.01"></path></svg>Verification pending</span>';
-    const image=esc(p.og_image_url||'/dbh-logo.jpg');
+    const image=esc(p.cover_image||p.og_image_url||'/dbh-logo.jpg');
     const href='/property.html?id='+encodeURIComponent(p.property_code||p.id);
     els.preview.hidden=false;
-    els.preview.innerHTML='<div class="dbh-property-preview"><img src="'+image+'" alt="'+esc(p.title||'DBH property')+'" onerror="this.onerror=null;this.src=&quot;/dbh-logo.jpg&quot;"><div class="dbh-property-preview-copy"><div class="dbh-property-meta">'+badge+'<span class="dbh-pill">'+esc(p.property_code||'DBH listing')+'</span></div><h2>'+esc(p.title||'Property')+'</h2><div class="dbh-property-meta"><span>'+esc(location)+'</span><span>•</span><span>'+money(p.price,p.currency||'NGN')+'</span></div></div></div>';
+    els.preview.innerHTML='<div class="dbh-property-preview"><img src="'+image+'" alt="'+esc(p.title||'DBH property')+'" onerror="this.onerror=null;this.src=&quot;/dbh-logo.jpg&quot;"><div class="dbh-property-preview-copy"><div class="dbh-property-meta">'+badge+'<span class="dbh-pill">'+esc(p.property_code||'DBH listing')+'</span></div><h2>'+esc(p.title||'Property')+'</h2><div class="dbh-property-meta"><span>'+esc(locationText)+'</span><span>•</span><span>'+money(p.price,p.currency||'NGN')+'</span></div></div></div>';
     els.view.href=href;
     els.view.textContent='View property';
     document.title='Enquire about '+(p.title||'property')+' | DBH Homes';
@@ -257,6 +257,12 @@
       }
       if(!r.ok||!Array.isArray(rows)||!rows.length)throw Error('Property not found');
       property=rows[0];
+      try{
+        const imageUrl=base+'/rest/v1/property_images?select=image_url,sort_order,is_cover&property_id=eq.'+encodeURIComponent(property.id)+'&order=is_cover.desc,sort_order.asc&limit=1';
+        const ir=await fetch(imageUrl,{headers:{Accept:'application/json',apikey:cfg.supabaseAnonKey}});
+        const images=await ir.json().catch(()=>[]);
+        if(ir.ok&&Array.isArray(images)&&images[0]?.image_url)property.cover_image=images[0].image_url;
+      }catch{}
       showPreview(property);
       els.loading.remove();
       const user=getLocalUser();
