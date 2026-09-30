@@ -23,7 +23,24 @@ const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
-app.use((req,res,next)=>{const origin=req.headers.origin;if(origin&&/^https:\/\/(dbanjushomes\.com|www\.dbanjushomes\.com)$/.test(origin)){res.setHeader('Access-Control-Allow-Origin',origin);res.setHeader('Vary','Origin');res.setHeader('Access-Control-Allow-Credentials','true');res.setHeader('Access-Control-Allow-Headers','Content-Type, Authorization');res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS');}if(req.method==='OPTIONS')return res.sendStatus(204);next();});
+const ALLOWED_ORIGINS=new Set([
+  'https://dbanjushomes.com',
+  'https://www.dbanjushomes.com',
+  'https://dbanjushomes-com.onrender.com',
+  'https://dbanjushomes-auth-xsm3.onrender.com'
+]);
+app.use((req,res,next)=>{
+  const origin=req.headers.origin;
+  if(origin&&ALLOWED_ORIGINS.has(origin)){
+    res.setHeader('Access-Control-Allow-Origin',origin);
+    res.setHeader('Vary','Origin');
+    res.setHeader('Access-Control-Allow-Credentials','true');
+    res.setHeader('Access-Control-Allow-Headers','Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS');
+  }
+  if(req.method==='OPTIONS')return res.sendStatus(204);
+  next();
+});
 app.use(express.json({ limit: '16kb' }));
 
 const rateBuckets = new Map();
