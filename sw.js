@@ -10,6 +10,7 @@ const CORE=[
   "/assets/css/styles.css",
   "/assets/css/notifications.css",
   "/assets/css/consent.css",
+  "/assets/css/pwa.css",
   "/assets/js/config.js",
   "/assets/js/properties.js?v=20260930-2",
   "/assets/js/app.js?v=20260930-7"
