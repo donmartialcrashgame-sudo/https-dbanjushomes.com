@@ -151,6 +151,20 @@ function setupCustomerCareWidget(){
 
   const localSession=()=>{try{return JSON.parse(localStorage.getItem(DBH.sessionKey)||'null')}catch{return null}};
   const token=()=>{const s=localSession();return s?.sessionToken||s?.access_token||s?.accessToken||s?.session?.access_token||''};
+  async function resolveToken(){
+    const existing=token();
+    if(existing)return existing;
+    try{
+      const authBase=(window.DBH_CONFIG?.apiBaseUrl||'').replace(/\/$/,'');
+      if(!authBase)return '';
+      const r=await fetch(authBase+'/api/auth/session',{credentials:'include',headers:{Accept:'application/json'},cache:'no-store'});
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok||!d?.authenticated||!d?.user)return '';
+      const recovered=d?.sessionToken||'';
+      localStorage.setItem(DBH.sessionKey,JSON.stringify({authenticated:true,provider:d.user.provider||'google',user:d.user,sessionToken:recovered||null}));
+      return recovered;
+    }catch{return ''}
+  }
   const sessionUser=()=>{const s=localSession();return s?.user||s||null};
   const scrollBottom=()=>{body.scrollTop=body.scrollHeight};
 
@@ -178,7 +192,7 @@ function setupCustomerCareWidget(){
 
   const renderedMessages=new Set();  const renderedMessages=new Set();
   async function loadConversation(){
-    const t=token();
+    const t=await resolveToken();
     if(!t)return;
     try{
       const r=await fetch(api,{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'});
@@ -209,7 +223,7 @@ function setupCustomerCareWidget(){
     e.preventDefault();
     const message=String(input.value||'').trim();
     if(!message)return;
-    const t=token();
+    const t=await resolveToken();
     if(!t){
       note.innerHTML='Please <a href="/login.html?redirect='+encodeURIComponent(location.pathname+location.search||'/')+'">sign in</a> to chat with DBH AI. Your message has not been sent.';
       note.style.display='block';
