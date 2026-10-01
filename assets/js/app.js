@@ -199,8 +199,8 @@ function setupCustomerCareWidget(){
     humanBtn.classList.toggle('online',humanOnline);
   }
 
+  const renderedMessages=new Set();
   async function loadConversation(){
-    if(conversationLoaded)return;
     const t=token();
     if(!t)return;
     try{
@@ -209,10 +209,13 @@ function setupCustomerCareWidget(){
       const data=await r.json().catch(()=>({}));
       const messages=Array.isArray(data.messages)?data.messages:[];
       messages.forEach(m=>{
+        const key=String(m?.id||'');
+        if(!key||renderedMessages.has(key))return;
         if(m?.message)bubble(m.message,true,m.created_at,true);
         if(m?.agent_reply)bubble(m.agent_reply,false,m.updated_at,false);
+        if(m?.human_reply)bubble(m.human_reply,false,m.updated_at,false);
+        renderedMessages.add(key);
       });
-      conversationLoaded=true;
       scrollBottom();
     }catch{}
   }
@@ -294,6 +297,7 @@ function setupCustomerCareWidget(){
   heartbeatStaff();
   setInterval(heartbeatStaff,45000);
   setInterval(checkAvailability,30000);
+  setInterval(()=>{if(widget.classList.contains('open'))loadConversation()},7000);
   if(new URLSearchParams(location.search).get('care')==='1')setTimeout(open,650);
 }
 function hideLoader(){const l=document.getElementById('app-loader');if(l){l.classList.add('fade');setTimeout(()=>{l.style.display='none'},650)}}
