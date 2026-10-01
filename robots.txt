@@ -12,3 +12,5 @@ Disallow: /reset-password.html
 Disallow: /auth-callback.html
 Disallow: /onboarding.html
 Disallow: /callback.html
+
+Disallow: /customer-care.html
