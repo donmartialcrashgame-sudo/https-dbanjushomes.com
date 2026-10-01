@@ -110,7 +110,7 @@ function setupDBHPWA(){
 
 function setupCustomerCareWidget(){
   if(document.getElementById('dbh-care-widget'))return;
-  const css='/assets/css/customer-care.css?v=20261001-3';
+  const css='/assets/css/customer-care.css?v=20261001-4';
   if(!document.querySelector('link[data-dbh-customer-care-css]')){
     const link=document.createElement('link');
     link.rel='stylesheet';link.href=css;link.dataset.dbhCustomerCareCss='1';document.head.appendChild(link);
@@ -178,7 +178,16 @@ function setupCustomerCareWidget(){
     if(!show)el?.remove();
   }
 
+  async function heartbeatStaff(){
+    const t=token();
+    if(!t)return;
+    try{
+      await fetch(api+'?action=heartbeat',{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'});
+    }catch{}
+  }
+
   async function checkAvailability(){
+    heartbeatStaff();
     try{
       const r=await fetch(api+'?action=availability',{headers:{Accept:'application/json'},cache:'no-store'});
       const d=await r.json().catch(()=>({}));
@@ -282,6 +291,9 @@ function setupCustomerCareWidget(){
 
   checkAvailability();
   loadConversation();
+  heartbeatStaff();
+  setInterval(heartbeatStaff,45000);
+  setInterval(checkAvailability,30000);
   if(new URLSearchParams(location.search).get('care')==='1')setTimeout(open,650);
 }
 function hideLoader(){const l=document.getElementById('app-loader');if(l){l.classList.add('fade');setTimeout(()=>{l.style.display='none'},650)}}
