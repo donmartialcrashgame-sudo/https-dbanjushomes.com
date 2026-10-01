@@ -142,10 +142,33 @@ async function handleGoogleCredential(response){
       throw new Error(data?.message||data?.error||'Google sign-in could not be completed.');
     }
 
+    const syncUri=DBH_CONFIG.googleSyncUri;
+    if(!syncUri)throw new Error('DBH account synchronization is not configured.');
+
+    setMessage('Google verified. Saving your DBH account…');
+    const syncResponse=await fetch(syncUri,{
+      method:'POST',
+      headers:{'Content-Type':'application/json',Accept:'application/json'},
+      credentials:'omit',
+      body:JSON.stringify({credential:response.credential})
+    });
+    const syncData=await syncResponse.json().catch(()=>({}));
+    if(!syncResponse.ok||!syncData?.success||!syncData?.user?.id){
+      throw new Error(syncData?.message||'Your Google account could not be saved to DBH. Please try again.');
+    }
+
+    const syncedUser={
+      ...data.user,
+      ...syncData.user,
+      supabaseUserId:syncData.user.id,
+      provider:'google'
+    };
+
     localStorage.setItem('dbh_session',JSON.stringify({
       authenticated:true,
       provider:'google',
-      user:data.user,
+      user:syncedUser,
+      supabaseUserId:syncData.user.id,
       sessionToken:data.sessionToken||null
     }));
     sessionStorage.setItem('dbh_google_completed','1');
