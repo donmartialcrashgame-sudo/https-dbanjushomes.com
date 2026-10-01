@@ -90,10 +90,9 @@ registerForm?.addEventListener('submit',async e=>{
   setLoading(form,true);setMessage('Creating your account…');
   const email=String(f.get('email')).trim(),fullName=String(f.get('fullName')).trim();
   try{
-    const d=await supabaseAuth('signup',{email,password,data:{full_name:fullName,role:'customer'}});
+    const d=await supabaseAuth('signup',{email,password,options:{data:{full_name:fullName,role:'customer'},emailRedirectTo:new URL('/auth-callback.html',location.origin).href}});
     if(d.access_token){
       localStorage.setItem('dbh_session',JSON.stringify(d));
-      try{await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/profiles',{method:'POST',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+d.access_token,Prefer:'resolution=merge-duplicates'},body:JSON.stringify({id:d.user.id,full_name:fullName,email,role:'customer'})})}catch{}
       setMessage('Account created. Let us verify your account…');location.href='/verify-account.html?redirect='+encodeURIComponent(redirect());
     }else{
       setMessage('Account created. Please check your email to confirm your account.','success');setLoading(form,false);
