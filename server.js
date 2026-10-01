@@ -12,6 +12,9 @@ const GOOGLE_CLIENT_ID =
 const SESSION_SECRET = process.env.DBH_SESSION_SECRET;
 const SESSION_COOKIE = 'dbh_session';
 const SESSION_TTL_SECONDS = 7 * 24 * 60 * 60;
+const GOOGLE_SYNC_URI =
+  process.env.GOOGLE_SYNC_URI ||
+  'https://cpgajlsyuieeengdnamy.supabase.co/functions/v1/dbh-google-sync';
 
 if (!SESSION_SECRET) {
   console.warn(
@@ -149,6 +152,21 @@ function sessionCookieOptions(req) {
   };
 }
 
+async function syncGoogleUser(credential) {
+  const response = await fetch(GOOGLE_SYNC_URI, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({ idToken: credential })
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || !data?.success || !data?.user?.id) {
+    throw new Error(
+      data?.message || 'Google account could not be synchronized with DBH.'
+    );
+  }
+  return data.user;
+}
+
 function setSessionCookie(req, res, session) {
   res.cookie(SESSION_COOKIE, session, sessionCookieOptions(req));
 }
@@ -233,9 +251,10 @@ app.post('/api/auth/google', async (req, res) => {
       });
     }
 
+    const syncedUser = await syncGoogleUser(credential);
     const now = Math.floor(Date.now() / 1000);
     const session = signSession({
-      sub: 'google:' + payload.sub,
+      sub: syncedUser.id,
       googleSub: payload.sub,
       provider: 'google',
       email: payload.email,
