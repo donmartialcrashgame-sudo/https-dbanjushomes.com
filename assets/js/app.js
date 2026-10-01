@@ -190,7 +190,7 @@ function setupCustomerCareWidget(){
     if(!show)el?.remove();
   }
 
-  const renderedMessages=new Set();  const renderedMessages=new Set();
+  const renderedMessages=new Set();
   async function loadConversation(){
     const t=await resolveToken();
     if(!t)return;
