@@ -547,46 +547,19 @@ function setupNativeNotificationPopups(){
     }catch(e){console.warn('DBH native notification poll:',e)}
   }
 
-  window.DBHEnableNotifications=async function(){
+  window.DBHPrepareNotifications=async function(){
     if(Notification.permission==='denied')return false;
     if(Notification.permission!=='granted'){
       const permission=await Notification.requestPermission();
       if(permission!=='granted')return false;
     }
-
-    let pushReady=false;
     try{
-      pushReady=Boolean(await ensureWebPushSubscription());
+      await ensureWebPushSubscription();
+      return true;
     }catch(e){
       console.warn('DBH Web Push subscribe:',e);
+      return false;
     }
-
-    await showLocalPopup('DBH Notifications enabled',{
-      body:pushReady
-        ?'This device is now registered for DBH notifications.'
-        :'DBH notifications are enabled for this browser session.',
-      icon:'/dbh-logo.jpg',
-      badge:'/dbh-logo.jpg',
-      tag:'dbh-notifications-enabled',
-      data:{link:'/dashboard.html'}
-    });
-    return true;
-  };
-
-  window.DBHTestNotification=async function(){
-    if(Notification.permission!=='granted'){
-      const ok=await window.DBHEnableNotifications();
-      if(!ok)return false;
-    }
-    await ensureWebPushSubscription().catch(()=>null);
-    return showLocalPopup('DBH Test Notification',{
-      body:'Your DBH desktop/mobile/tablet notification popup is working.',
-      icon:'/dbh-logo.jpg',
-      badge:'/dbh-logo.jpg',
-      tag:'dbh-test-'+Date.now(),
-      renotify:true,
-      data:{link:'/dashboard.html'}
-    });
   };
 
   poll();
