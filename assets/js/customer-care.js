@@ -5,7 +5,7 @@
   const start=()=>{
     if(document.getElementById('dbh-care-widget'))return;
 
-    const css='/assets/css/customer-care.css?v=20261001-1';
+    const css='/assets/css/customer-care.css?v=20261001-2';
     if(!document.querySelector('link[data-dbh-customer-care-css]')){
       const l=document.createElement('link');
       l.rel='stylesheet';l.href=css;l.dataset.dbhCustomerCareCss='1';document.head.appendChild(l);
@@ -71,7 +71,16 @@
         row.style.cssText='display:flex;justify-content:flex-end;margin:8px 0;';
         const bubble=document.createElement('div');
         bubble.style.cssText='max-width:85%;padding:9px 11px;border-radius:14px 14px 5px 14px;background:#0b63ce;color:#fff;border:1px solid #0b63ce;font-size:11px;line-height:1.55;';
-        bubble.textContent=message;row.appendChild(bubble);body.insertBefore(row,form.parentElement);input.value='';note.textContent='Message sent to DBH Customer Care.';scroll();setTimeout(()=>{note.style.display='none'},3500);
+        bubble.textContent=message;row.appendChild(bubble);body.insertBefore(row,form);
+        const aiReply=String(data?.message?.agent_reply||'').trim();
+        if(aiReply){
+          const aiRow=document.createElement('div');
+          aiRow.style.cssText='display:flex;justify-content:flex-start;margin:8px 0;';
+          const aiBubble=document.createElement('div');
+          aiBubble.style.cssText='max-width:85%;padding:9px 11px;border-radius:14px 14px 14px 5px;background:#fff;color:#405873;border:1px solid #e3ebf3;font-size:11px;line-height:1.55;';
+          aiBubble.textContent=aiReply;aiRow.appendChild(aiBubble);body.insertBefore(aiRow,form);
+        }
+        input.value='';note.textContent=data?.aiReplied?'DBH AI replied.':'Message sent to DBH Customer Care.';scroll();setTimeout(()=>{note.style.display='none'},3500);
       }catch(err){note.style.display='block';note.textContent=err.message||'Unable to send your message. Please email info@dbanjushomes.com.'}
       finally{send.disabled=false;input.disabled=false;input.focus()}
     });
