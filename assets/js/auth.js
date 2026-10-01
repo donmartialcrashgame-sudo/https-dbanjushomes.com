@@ -123,50 +123,38 @@ async function loadGoogleIdentityServices(){
 
 async function syncGoogleIdentityToSupabase(idToken){
   if(!DBH_CONFIG.supabaseUrl||!DBH_CONFIG.supabaseAnonKey)throw new Error('Supabase configuration is missing.');
-  const r=await fetch(DBH_CONFIG.supabaseUrl.replace(/\/$/,'')+'/auth/v1/token?grant_type=id_token',{
-    method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      apikey:DBH_CONFIG.supabaseAnonKey,
-      Accept:'application/json'
-    },
-    body:JSON.stringify({
-      provider:'google',
-      id_token:idToken
-    })
-  });
-  const data=await r.json().catch(()=>({}));
-  if(!r.ok||!data?.user)throw new Error(data?.error_description||data?.msg||data?.message||'Supabase Google identity sync failed.');
+  const errors=[];
 
-  // Keep DBH custom authentication as the source of truth. We only use the
-  // short-lived Supabase response to ensure the Google identity exists there.
+  const direct=await fetch(DBH_CONFIG.supabaseUrl.replace(/\/$/,'')+'/auth/v1/token?grant_type=id_token',{
+    method:'POST',
+    headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey,Accept:'application/json'},
+    body:JSON.stringify({provider:'google',id_token:idToken})
+  });
+  const directData=await direct.json().catch(()=>({}));
+  if(direct.ok&&directData?.user){
+    return directData;
+  }
+  errors.push(directData?.error_description||directData?.msg||directData?.message||('Supabase Auth returned HTTP '+direct.status));
+
+  const fallbackUri=DBH_CONFIG.googleSupabaseSyncUri||
+    DBH_CONFIG.supabaseUrl.replace(/\/$/,'')+'/functions/v1/google-auth-callback';
   try{
-    const supabaseUser=data.user;
-    const accessToken=data.access_token;
-    if(supabaseUser?.id&&accessToken){
-      await fetch(DBH_CONFIG.supabaseUrl.replace(/\/$/,'')+'/rest/v1/profiles',{
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json',
-          apikey:DBH_CONFIG.supabaseAnonKey,
-          Authorization:'Bearer '+accessToken,
-          Prefer:'resolution=merge-duplicates,return=minimal'
-        },
-        body:JSON.stringify({
-          id:supabaseUser.id,
-          full_name:supabaseUser.user_metadata?.full_name||supabaseUser.user_metadata?.name||'',
-          email:supabaseUser.email||'',
-          role:'customer'
-        })
-      });
+    const fallback=await fetch(fallbackUri,{
+      method:'POST',
+      headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey,Accept:'application/json'},
+      body:JSON.stringify({credential:idToken})
+    });
+    const fallbackData=await fallback.json().catch(()=>({}));
+    if(fallback.ok&&fallbackData?.user){
+      return fallbackData;
     }
-  }catch(profileError){
-    console.warn('DBH Supabase profile sync:',profileError);
+    errors.push(fallbackData?.error||fallbackData?.error_description||fallbackData?.message||('Google sync function returned HTTP '+fallback.status));
+  }catch(error){
+    errors.push(error.message||'Google sync function failed');
   }
 
-  return data;
+  throw new Error(errors.join(' | '));
 }
-
 async function handleGoogleCredential(response){
   const form=document.getElementById('login-form')||document.getElementById('register-form');
   try{
@@ -177,9 +165,7 @@ async function handleGoogleCredential(response){
     try{
       supabaseSync=await syncGoogleIdentityToSupabase(response.credential);
     }catch(syncError){
-      // Google sign-in must remain usable even if Supabase's provider
-      // configuration is temporarily unavailable.
-      console.warn('DBH Supabase Google sync:',syncError);
+      throw new Error('Google account could not be synchronized with DBH. Please try Google sign-in again. '+(syncError.message||''));
     }
 
     const endpoint=DBH_CONFIG.googleLoginUri;
@@ -191,7 +177,7 @@ async function handleGoogleCredential(response){
     });
     const data=await r.json().catch(()=>({}));
     if(!r.ok||!data?.success||!data?.user)throw new Error(data?.error||data?.message||'Google sign-in could not be completed.');
-    localStorage.setItem('dbh_session',JSON.stringify({authenticated:true,provider:'google',user:data.user,sessionToken:data.sessionToken||null}));
+    localStorage.setItem('dbh_session',JSON.stringify({authenticated:true,provider:'google',user:data.user,sessionToken:data.sessionToken||null,supabaseUserId:supabaseSync?.user?.id||null}));
     sessionStorage.setItem('dbh_google_completed','1');
     setMessage('Google sign-in successful. Opening your account…','success');
     location.href='/callback.html?google=1';
