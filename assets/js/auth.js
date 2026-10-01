@@ -121,6 +121,43 @@ async function loadGoogleIdentityServices(){
   return window.__dbhGooglePromise;
 }
 
+async function handleGoogleCredential(response){
+  const form=document.getElementById('login-form')||document.getElementById('register-form');
+  try{
+    if(!response?.credential)throw new Error('Google did not return a sign-in credential.');
+    setLoading(form,true);
+    setMessage('Signing in with Google…');
+
+    const endpoint=DBH_CONFIG.googleLoginUri;
+    if(!endpoint)throw new Error('Google sign-in is not configured.');
+
+    const r=await fetch(endpoint,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      credentials:'include',
+      body:JSON.stringify({credential:response.credential})
+    });
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok||!data?.success||!data?.user){
+      throw new Error(data?.message||data?.error||'Google sign-in could not be completed.');
+    }
+
+    localStorage.setItem('dbh_session',JSON.stringify({
+      authenticated:true,
+      provider:'google',
+      user:data.user,
+      sessionToken:data.sessionToken||null
+    }));
+    sessionStorage.setItem('dbh_google_completed','1');
+    setMessage('Google sign-in successful. Opening your account…','success');
+    location.href='/callback.html?google=1';
+  }catch(error){
+    console.error('DBH Google sign-in error:',error);
+    setMessage(error.message||'Unable to sign in with Google.');
+    setLoading(form,false);
+  }
+}
+
 async function setupGoogleSignIn(){
   const hosts=document.querySelectorAll('[data-google-signin]');
   if(!hosts.length)return;
