@@ -62,3 +62,23 @@
 .dbh-care-handoff button:disabled{opacity:.6;cursor:wait}
 .dbh-care-handoff span{font-size:9px;color:#7a8da1;line-height:1.4}
 .dbh-care-status b{font-weight:700}
+
+/* DBH AI rich replies */
+.dbh-care-ai-line{display:flex;align-items:flex-start;gap:7px;min-width:0}
+.dbh-care-ai-icon{width:24px;height:24px;flex:0 0 24px;border-radius:8px;background:#eaf3ff;color:#0b63ce;display:grid;place-items:center;margin-top:1px}
+.dbh-care-ai-icon svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dbh-care-generated-image-wrap{width:100%;margin-bottom:9px;border-radius:14px;overflow:hidden;background:#eef4fb}
+.dbh-care-generated-image{display:block;width:100%;height:auto;max-height:290px;object-fit:cover}
+.dbh-care-message-bubble.theirs .dbh-care-generated-image{border:1px solid #e0e9f2}
+.dbh-care-message-text{min-width:0;overflow-wrap:anywhere;word-break:break-word}
+.dbh-care-note a{color:#0b63ce;font-weight:850;text-decoration:none}
+.dbh-care-note a:hover{text-decoration:underline}
+@media(max-width:560px){
+  .dbh-care-panel{width:min(390px,calc(100vw - 12px));right:0}
+  .dbh-care-body{padding:13px;max-height:min(58vh,520px)}
+  .dbh-care-message-bubble{max-width:90%;font-size:10.5px}
+  .dbh-care-quick{margin-left:0}
+  .dbh-care-form{padding:9px 10px}
+  .dbh-care-form textarea{font-size:12px}
+  .dbh-care-generated-image{max-height:240px}
+}
