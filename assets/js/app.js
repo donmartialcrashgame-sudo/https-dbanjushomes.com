@@ -399,6 +399,83 @@ function setupNativeNotificationPopups(){
   let firstLoad=true;
   let lastSeen='';
 
+  function vapidKeyToUint8Array(base64String){
+    const padding='='.repeat((4-(base64String.length%4))%4);
+    const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
+    const raw=atob(base64);
+    const output=new Uint8Array(raw.length);
+    for(let i=0;i<raw.length;i++)output[i]=raw.charCodeAt(i);
+    return output;
+  }
+
+  async function savePushSubscription(subscription){
+    const t=token();
+    if(!t||!subscription)return false;
+    const payload=typeof subscription.toJSON==='function'?subscription.toJSON():subscription;
+    const r=await fetch(api,{
+      method:'POST',
+      headers:{'Content-Type':'application/json',Accept:'application/json',Authorization:'Bearer '+t},
+      body:JSON.stringify({action:'subscribe',subscription:payload,userAgent:navigator.userAgent})
+    });
+    if(!r.ok){
+      const d=await r.json().catch(()=>({}));
+      throw new Error(d?.message||'Unable to register this device for notifications.');
+    }
+    return true;
+  }
+
+  async function ensureWebPushSubscription(){
+    if(!('serviceWorker' in navigator)||!('PushManager' in window)||!window.isSecureContext)return null;
+    const registration=await navigator.serviceWorker.ready;
+    if(!registration.pushManager)return null;
+    let subscription=await registration.pushManager.getSubscription();
+    if(subscription){
+      await savePushSubscription(subscription);
+      return subscription;
+    }
+
+    const t=token();
+    if(!t)throw new Error('Please sign in before enabling notifications.');
+    const keyResponse=await fetch(api+'?action=vapid-public-key',{
+      headers:{Accept:'application/json',Authorization:'Bearer '+t},
+      cache:'no-store'
+    });
+    const keyData=await keyResponse.json().catch(()=>({}));
+    if(!keyResponse.ok||!keyData?.publicKey)throw new Error(keyData?.message||'DBH push notifications are not ready yet.');
+
+    subscription=await registration.pushManager.subscribe({
+      userVisibleOnly:true,
+      applicationServerKey:vapidKeyToUint8Array(String(keyData.publicKey))
+    });
+    await savePushSubscription(subscription);
+    return subscription;
+  }
+
+  async function showLocalPopup(title,options){
+    try{
+      if('serviceWorker' in navigator){
+        const registration=await navigator.serviceWorker.ready;
+        if(registration?.showNotification){
+          await registration.showNotification(title,options);
+          return true;
+        }
+      }
+    }catch(e){console.warn('DBH service-worker notification:',e)}
+    try{
+      if(Notification.permission==='granted'){
+        const note=new Notification(title,options);
+        note.onclick=()=>{window.focus();if(options?.data?.link)window.location.href=options.data.link;note.close()};
+        return true;
+      }
+    }catch(e){console.warn('DBH browser notification:',e)}
+    return false;
+  }
+
+  async function syncExistingPushSubscription(){
+    if(Notification.permission!=='granted')return;
+    try{await ensureWebPushSubscription()}catch(e){console.warn('DBH existing push subscription:',e)}
+  }
+
   async function poll(){
     const t=token();
     if(!t)return;
@@ -430,33 +507,42 @@ function setupNativeNotificationPopups(){
       localStorage.setItem(stateKey(),newerId);
 
       if(Notification.permission==='granted'){
-        const note=new Notification(String(newer.title||'DBH Notification'),{
+        await showLocalPopup(String(newer.title||'DBH Notification'),{
           body:String(newer.message||'You have a new notification from D Banjus Homes Nig Ltd.'),
           icon:'/dbh-logo.jpg',
           badge:'/dbh-logo.jpg',
           tag:'dbh-'+newerId,
-          renotify:true
+          renotify:true,
+          data:{link:newer.link||'/',notificationId:newerId}
         });
-        note.onclick=()=>{window.focus();if(newer.link)window.location.href=newer.link;note.close()};
       }
     }catch(e){console.warn('DBH native notification poll:',e)}
   }
 
   window.DBHEnableNotifications=async function(){
-    if(Notification.permission==='granted')return true;
     if(Notification.permission==='denied')return false;
-    const permission=await Notification.requestPermission();
-    if(permission==='granted'){
-      const test=new Notification('DBH Notifications enabled',{
-        body:'You will now receive DBH notification popups on this device.',
-        icon:'/dbh-logo.jpg',
-        badge:'/dbh-logo.jpg',
-        tag:'dbh-notifications-enabled'
-      });
-      setTimeout(()=>test.close(),6000);
-      return true;
+    if(Notification.permission!=='granted'){
+      const permission=await Notification.requestPermission();
+      if(permission!=='granted')return false;
     }
-    return false;
+
+    let pushReady=false;
+    try{
+      pushReady=Boolean(await ensureWebPushSubscription());
+    }catch(e){
+      console.warn('DBH Web Push subscribe:',e);
+    }
+
+    await showLocalPopup('DBH Notifications enabled',{
+      body:pushReady
+        ?'This device is now registered for DBH notifications.'
+        :'DBH notifications are enabled for this browser session.',
+      icon:'/dbh-logo.jpg',
+      badge:'/dbh-logo.jpg',
+      tag:'dbh-notifications-enabled',
+      data:{link:'/dashboard.html'}
+    });
+    return true;
   };
 
   window.DBHTestNotification=async function(){
@@ -464,21 +550,21 @@ function setupNativeNotificationPopups(){
       const ok=await window.DBHEnableNotifications();
       if(!ok)return false;
     }
-    const note=new Notification('DBH Test Notification',{
+    await ensureWebPushSubscription().catch(()=>null);
+    return showLocalPopup('DBH Test Notification',{
       body:'Your DBH desktop/mobile/tablet notification popup is working.',
       icon:'/dbh-logo.jpg',
       badge:'/dbh-logo.jpg',
       tag:'dbh-test-'+Date.now(),
-      renotify:true
+      renotify:true,
+      data:{link:'/dashboard.html'}
     });
-    note.onclick=()=>{window.focus();note.close()};
-    return true;
   };
 
   poll();
+  syncExistingPushSubscription();
   setInterval(poll,20000);
-}
-function dbhCookieValue(name){return document.cookie.split(';').map(x=>x.trim()).find(x=>x.indexOf(name+'=')===0)?.slice(name.length+1)||null}
+}function dbhCookieValue(name){return document.cookie.split(';').map(x=>x.trim()).find(x=>x.indexOf(name+'=')===0)?.slice(name.length+1)||null}
 function setDbhCookie(name,value,days){try{document.cookie=name+'='+encodeURIComponent(value)+'; Max-Age='+(days*86400)+'; Path=/; SameSite=Lax; Secure'}catch{}}
 function consentIcon(type){const m={cookie:'<svg viewBox="0 0 24 24"><path d="M20 13a8 8 0 1 1-9-9 6 6 0 0 0 9 9Z"/><circle cx="8" cy="14" r="1"/><circle cx="11" cy="17" r="1"/><circle cx="14" cy="13" r="1"/><circle cx="9" cy="9" r="1"/></svg>',bell:'<svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>',pin:'<svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>'};return m[type]||m.cookie}
 function permissionState(name){try{return navigator.permissions?.query({name}).then(x=>x.state).catch(()=>null)}catch{return Promise.resolve(null)}}
