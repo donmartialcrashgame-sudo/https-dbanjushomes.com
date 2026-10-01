@@ -78,21 +78,30 @@
     }
     const scroll=()=>{body.scrollTop=body.scrollHeight};
 
-    function addBubble(text,mine=false,time=null,checks=false){
+    function aiIcon(text){
+      const t=String(text||'').toLowerCase();
+      if(/property|house|home|land|listing/.test(t))return '<span class="dbh-care-ai-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 11 9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></span>';
+      if(/verify|verified|document|security|safe/.test(t))return '<span class="dbh-care-ai-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 20 6v5.4c0 4.7-3.3 7.8-8 9.6-4.7-1.8-8-4.9-8-9.6V6l8-3Z"/><path d="m8.5 11.8 2.2 2.2 4.8-5"/></svg></span>';
+      if(/account|profile|sign in|login/.test(t))return '<span class="dbh-care-ai-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c.7-4 2.8-6 7-6s6.3 2 7 6"/></svg></span>';
+      if(/search|find|location/.test(t))return '<span class="dbh-care-ai-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m16 16 5 5"/></svg></span>';
+      return '<span class="dbh-care-ai-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 14.1 9.9 21 12l-6.9 2.1L12 21l-2.1-6.9L3 12l6.9-2.1L12 3Z"/></svg></span>';
+    }
+    function addBubble(text,mine=false,time=null,checks=false,media=null){
       const row=document.createElement('div');
       row.className='dbh-care-row '+(mine?'mine':'theirs');
       const b=document.createElement('div');
       b.className='dbh-care-message-bubble '+(mine?'mine':'theirs');
-      const t=document.createElement('span');
-      t.className='dbh-care-message-text';
-      t.textContent=text;
-      const m=document.createElement('span');
-      m.className='dbh-care-message-meta';
+      if(!mine&&media?.image_data&&/^data:image\/(png|jpeg|jpg|webp);base64,/i.test(String(media.image_data))){
+        const wrap=document.createElement('div');wrap.className='dbh-care-generated-image-wrap';
+        const img=document.createElement('img');img.className='dbh-care-generated-image';img.src=media.image_data;img.alt='AI-generated DBH image';img.loading='lazy';
+        wrap.appendChild(img);b.appendChild(wrap);
+      }
+      const line=document.createElement('div');line.className='dbh-care-ai-line';
+      if(!mine)line.insertAdjacentHTML('beforeend',aiIcon(text));
+      const t=document.createElement('span');t.className='dbh-care-message-text';t.textContent=text||'';line.appendChild(t);b.appendChild(line);
+      const m=document.createElement('span');m.className='dbh-care-message-meta';
       m.textContent=new Date(time||Date.now()).toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'})+(checks?'  ✓✓':'');
-      b.append(t,m);
-      row.appendChild(b);
-      body.insertBefore(row,form);
-      return row;
+      b.appendChild(m);row.appendChild(b);body.insertBefore(row,form);return row;
     }
 
     function typing(show){
@@ -118,7 +127,7 @@
         const d=await r.json().catch(()=>({}));
         (Array.isArray(d.messages)?d.messages:[]).forEach(m=>{
           if(m?.message)addBubble(m.message,true,m.created_at,true);
-          if(m?.agent_reply)addBubble(m.agent_reply,false,m.updated_at,false);
+          if(m?.agent_reply)addBubble(m.agent_reply,false,m.updated_at,false,m?.image_data?{image_data:m.image_data}:null);
         });
         conversationLoaded=true;
         scroll();
@@ -184,8 +193,9 @@
         typing(false);
 
         const reply=String(d?.message?.agent_reply||'').trim();
-        if(reply){
-          addBubble(reply,false,new Date().toISOString(),false);
+        const aiImage=d?.message?.image_data?{image_data:String(d.message.image_data)}:null;
+        if(reply||aiImage){
+          addBubble(reply||(aiImage?'Here’s the image you requested.':''),false,new Date().toISOString(),false,aiImage);
         }else{
           sent.querySelector('.dbh-care-message-meta').textContent='Sent';
           note.style.display='block';
