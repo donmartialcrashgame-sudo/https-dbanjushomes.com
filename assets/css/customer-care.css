@@ -40,3 +40,25 @@
   .dbh-care-panel{bottom:70px;width:min(390px,calc(100vw - 20px));border-radius:20px}
   .dbh-care-label{display:none}
 }
+
+.dbh-care-row{display:flex;margin:8px 0}.dbh-care-row.mine{justify-content:flex-end}.dbh-care-row.theirs{justify-content:flex-start}
+.dbh-care-message-bubble{max-width:82%;padding:9px 11px;border-radius:15px;font-size:11px;line-height:1.5;box-shadow:0 4px 12px rgba(17,47,83,.035);word-break:break-word}
+.dbh-care-message-bubble.mine{background:#0b63ce;color:#fff;border-radius:15px 15px 5px 15px;border:1px solid #0b63ce}
+.dbh-care-message-bubble.theirs{background:#fff;color:#405873;border-radius:15px 15px 15px 5px;border:1px solid #e3ebf3}
+.dbh-care-message-text{display:block;white-space:pre-wrap}
+.dbh-care-message-meta{display:block;text-align:right;margin-top:4px;font-size:8px;opacity:.72;letter-spacing:.01em}
+.dbh-care-message-bubble.mine .dbh-care-message-meta{color:rgba(255,255,255,.9)}
+.dbh-care-message-bubble.theirs .dbh-care-message-meta{color:#7b8da0}
+.dbh-care-typing{display:flex;justify-content:flex-start;margin:8px 0}
+.dbh-care-typing-bubble{display:flex;align-items:center;gap:4px;padding:10px 12px;border-radius:15px 15px 15px 5px;background:#fff;border:1px solid #e3ebf3;color:#7a8da2;box-shadow:0 4px 12px rgba(17,47,83,.035)}
+.dbh-care-typing-bubble i{width:5px;height:5px;border-radius:50%;background:#7890aa;animation:dbhCareTyping 1.15s infinite ease-in-out}
+.dbh-care-typing-bubble i:nth-child(2){animation-delay:.16s}.dbh-care-typing-bubble i:nth-child(3){animation-delay:.32s}
+.dbh-care-typing-bubble span{font-size:9px;margin-left:4px}
+@keyframes dbhCareTyping{0%,60%,100%{transform:translateY(0);opacity:.45}30%{transform:translateY(-3px);opacity:1}}
+.dbh-care-handoff{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:2px 0 12px 38px}
+.dbh-care-handoff button{border:1px solid #c9dff6;background:#eef6ff;color:#0b63ce;border-radius:999px;padding:8px 11px;font:800 10px/1 inherit;cursor:pointer;transition:.18s}
+.dbh-care-handoff button:hover{background:#e2f0ff;border-color:#9ec8f3}
+.dbh-care-handoff button.online{background:#eaf8ef;border-color:#c5e8d2;color:#177b4b}
+.dbh-care-handoff button:disabled{opacity:.6;cursor:wait}
+.dbh-care-handoff span{font-size:9px;color:#7a8da1;line-height:1.4}
+.dbh-care-status b{font-weight:700}
