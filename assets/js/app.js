@@ -231,7 +231,7 @@ function setupCustomerCareWidget(){
   }
 
   const open=()=>{widget.classList.add('open');launcher.setAttribute('aria-expanded','true');panel.setAttribute('aria-hidden','false');loadConversation();setTimeout(()=>input?.focus(),120);};
-  const shut=()=>{widget.classList.remove('open');launcher.setAttribute('aria-expanded','false');panel.setAttribute('aria-hidden','true');};
+  const shut=()=>{widget.classList.remove('open');launcher.setAttribute('aria-expanded','false');launcher.focus({preventScroll:true});panel.setAttribute('aria-hidden','true');};
 
   launcher.addEventListener('click',()=>widget.classList.contains('open')?shut():open());
   close.addEventListener('click',shut);
