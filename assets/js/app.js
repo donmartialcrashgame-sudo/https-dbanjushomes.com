@@ -110,7 +110,7 @@ function setupDBHPWA(){
 
 function setupCustomerCareWidget(){
   if(document.getElementById('dbh-care-widget'))return;
-  const css='/assets/css/customer-care.css?v=20261001-1';
+  const css='/assets/css/customer-care.css?v=20261001-2';
   if(!document.querySelector('link[data-dbh-customer-care-css]')){
     const link=document.createElement('link');
     link.rel='stylesheet';
@@ -223,7 +223,17 @@ function setupCustomerCareWidget(){
         bubble.style.cssText='max-width:85%;padding:9px 11px;border-radius:'+(mine?'14px 14px 5px 14px':'14px 14px 14px 5px')+';background:'+(mine?'#0b63ce':'#fff')+';color:'+(mine?'#fff':'#405873')+';border:1px solid '+(mine?'#0b63ce':'#e3ebf3')+';font-size:11px;line-height:1.55;';
         bubble.textContent=m.message;
         row.appendChild(bubble);
-        body.insertBefore(row,form.parentElement);
+        body.insertBefore(row,form);
+        const aiReply=String(m.agent_reply||'').trim();
+        if(aiReply){
+          const aiRow=document.createElement('div');
+          aiRow.style.cssText='display:flex;justify-content:flex-start;margin:8px 0;';
+          const aiBubble=document.createElement('div');
+          aiBubble.style.cssText='max-width:85%;padding:9px 11px;border-radius:14px 14px 14px 5px;background:#fff;color:#405873;border:1px solid #e3ebf3;font-size:11px;line-height:1.55;';
+          aiBubble.textContent=aiReply;
+          aiRow.appendChild(aiBubble);
+          body.insertBefore(aiRow,form);
+        }
       });
       scrollBottom();
     }catch{}
@@ -265,9 +275,21 @@ function setupCustomerCareWidget(){
       bubble.style.cssText='max-width:85%;padding:9px 11px;border-radius:14px 14px 5px 14px;background:#0b63ce;color:#fff;border:1px solid #0b63ce;font-size:11px;line-height:1.55;';
       bubble.textContent=message;
       row.appendChild(bubble);
-      body.insertBefore(row,form.parentElement);
+      body.insertBefore(row,form);
+
+      const aiReply=String(data?.message?.agent_reply||'').trim();
+      if(aiReply){
+        const aiRow=document.createElement('div');
+        aiRow.style.cssText='display:flex;justify-content:flex-start;margin:8px 0;';
+        const aiBubble=document.createElement('div');
+        aiBubble.style.cssText='max-width:85%;padding:9px 11px;border-radius:14px 14px 14px 5px;background:#fff;color:#405873;border:1px solid #e3ebf3;font-size:11px;line-height:1.55;';
+        aiBubble.textContent=aiReply;
+        aiRow.appendChild(aiBubble);
+        body.insertBefore(aiRow,form);
+      }
+
       input.value='';
-      note.textContent='Message sent to DBH Customer Care.';
+      note.textContent=data?.aiReplied?'DBH AI replied.':'Message sent to DBH Customer Care.';
       scrollBottom();
       setTimeout(()=>{note.style.display='none'},3500);
     }catch(err){
