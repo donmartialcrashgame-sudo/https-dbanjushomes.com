@@ -156,7 +156,7 @@ async function syncGoogleUser(credential) {
   const response = await fetch(GOOGLE_SYNC_URI, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify({ idToken: credential })
+    body: JSON.stringify({ credential })
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok || !data?.success || !data?.user?.id) {
