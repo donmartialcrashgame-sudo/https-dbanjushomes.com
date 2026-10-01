@@ -256,12 +256,53 @@ function setupNotifications(){
 
   let drawer=document.getElementById('notification-drawer');
 
+  const api=(window.DBH_CONFIG?.notificationsUri||((window.DBH_CONFIG?.supabaseUrl||'').replace(/\/$/,'')+'/functions/v1/dbh-notifications'));
+
+  function localSession(){
+    try{return JSON.parse(localStorage.getItem(DBH.sessionKey)||'null')}
+    catch{return null}
+  }
+
+  function tokenForNotifications(){
+    const s=localSession();
+    return s?.sessionToken||s?.access_token||s?.accessToken||s?.session?.access_token||'';
+  }
+
+  function setUnreadIndicator(unread){
+    const button=document.getElementById('notification-button');
+    if(!button)return;
+    let count=document.getElementById('notification-count');
+    if(!count){
+      count=document.createElement('i');
+      count.id='notification-count';
+      button.appendChild(count);
+    }
+    const n=Math.max(0,Number(unread)||0);
+    count.textContent=n>99?'99+':String(n);
+    count.style.display=n?'grid':'none';
+    button.classList.toggle('has-unread',n>0);
+    button.setAttribute('aria-label',n?('Notifications, '+n+' unread'): 'Notifications');
+    button.title=n?('Notifications ('+n+' unread)'):'Notifications';
+  }
+
+  async function refreshNotificationIndicator(){
+    const token=tokenForNotifications();
+    if(!token){setUnreadIndicator(0);return;}
+    try{
+      const r=await fetch(api,{method:'GET',headers:{Accept:'application/json',Authorization:'Bearer '+token},cache:'no-store'});
+      const data=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error('notification indicator request failed');
+      const rows=Array.isArray(data.notifications)?data.notifications:[];
+      setUnreadIndicator(rows.filter(n=>n&&!n.is_read).length);
+    }catch{}
+  }
+
   if(!drawer){
     drawer=document.createElement('aside');
     drawer.id='notification-drawer';
     drawer.className='notification-drawer';
     drawer.setAttribute('aria-label','DBH notifications');
-    drawer.innerHTML='<div class="notification-drawer-head"><div><span class="eyebrow">DBH ACCOUNT</span><h2>Notifications</h2><p class="notification-subtitle">Your latest DBH updates</p></div><button type="button" id="notification-drawer-close" class="notification-cancel" aria-label="Close notifications">Cancel<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div id="notification-drawer-body" class="notification-drawer-body"><div class="notification-loading"><span class="notification-loader"></span><strong>Loading notifications…</strong></div></div><div class="notification-drawer-footer"><button type="button" id="notification-native-enable" class="btn btn-primary">Enable pop-up notifications</button><button type="button" id="notification-native-test" class="btn btn-outline">Test popup</button><button type="button" id="notification-footer-close" class="btn btn-outline">Close notifications</button></div>';
+    drawer.innerHTML='<div class="notification-drawer-head"><div><span class="eyebrow">DBH ACCOUNT</span><h2>Notifications</h2><p class="notification-subtitle">Your latest DBH updates</p></div><button type="button" id="notification-drawer-close" class="notification-cancel" aria-label="Close notifications">Cancel<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div id="notification-drawer-body" class="notification-drawer-body"><div class="notification-loading"><span class="notification-loader"></span><strong>Loading notifications…</strong></div></div><div class="notification-drawer-footer"><button type="button" id="notification-footer-close" class="btn btn-outline">Close notifications</button></div>';
     document.body.appendChild(drawer);
 
     const overlay=document.createElement('div');
@@ -276,12 +317,6 @@ function setupNotifications(){
 
     document.getElementById('notification-drawer-close')?.addEventListener('click',close);
     document.getElementById('notification-footer-close')?.addEventListener('click',close);
-    document.getElementById('notification-native-enable')?.addEventListener('click',async()=>{
-      const ok=await window.DBHEnableNotifications?.();
-      const btn=document.getElementById('notification-native-enable');
-      if(btn)btn.textContent=ok?'Pop-up notifications enabled':'Notifications not enabled';
-    });
-    document.getElementById('notification-native-test')?.addEventListener('click',()=>window.DBHTestNotification?.());
     overlay.addEventListener('click',close);
     document.addEventListener('keydown',e=>{
       if(e.key==='Escape')close();
@@ -289,17 +324,6 @@ function setupNotifications(){
   }
 
   const body=document.getElementById('notification-drawer-body');
-  const api=(window.DBH_CONFIG?.notificationsUri||((window.DBH_CONFIG?.supabaseUrl||'').replace(/\/$/,'')+'/functions/v1/dbh-notifications'));
-
-  function localSession(){
-    try{return JSON.parse(localStorage.getItem(DBH.sessionKey)||'null')}
-    catch{return null}
-  }
-
-  function tokenForNotifications(){
-    const s=localSession();
-    return s?.sessionToken||s?.access_token||s?.accessToken||s?.session?.access_token||'';
-  }
 
   function closeDetail(){
     loadNotifications();
@@ -309,6 +333,7 @@ function setupNotifications(){
     body.innerHTML='<div class="notification-loading"><span class="notification-loader"></span><strong>Opening notification…</strong></div>';
     const token=tokenForNotifications();
     if(!token){
+      setUnreadIndicator(0);
       body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('security')+'</div><h3>Please sign in</h3><p>Your DBH notifications are private to your account.</p></div>';
       return;
     }
@@ -316,7 +341,8 @@ function setupNotifications(){
     try{
       const r=await fetch(api+'?id='+encodeURIComponent(id),{
         method:'GET',
-        headers:{Accept:'application/json',Authorization:'Bearer '+token}
+        headers:{Accept:'application/json',Authorization:'Bearer '+token},
+        cache:'no-store'
       });
       const data=await r.json().catch(()=>({}));
       const n=Array.isArray(data.notifications)?data.notifications[0]:null;
@@ -329,9 +355,11 @@ function setupNotifications(){
       }).catch(()=>{});
 
       body.innerHTML='<div class="notification-detail"><button type="button" class="notification-back" id="notification-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>Back to notifications</button><div class="notification-detail-icon">'+notificationIcon(n.type)+'</div><span class="notification-detail-type">'+escapeHtml(n.type||'general')+'</span><h3>'+escapeHtml(n.title||'Notification')+'</h3><time>'+new Date(n.created_at).toLocaleString('en-NG',{dateStyle:'full',timeStyle:'short'})+'</time><p>'+escapeHtml(n.message||'')+'</p>'+(n.link?'<a class="btn btn-primary notification-detail-link" href="'+escapeHtml(n.link)+'">Open related page <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"></path></svg></a>':'')+'</div>';
+      setUnreadIndicator(Math.max(0,(Number(document.getElementById('notification-count')?.textContent)||0)-1));
       document.getElementById('notification-back')?.addEventListener('click',closeDetail);
-    }catch(e){
-      body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('security')+'</div><h3>Could not open notification</h3><p>'+escapeHtml(e.message||'Please try again later.')+'</p><button type="button" class="btn btn-outline" id="notification-retry">Try again</button></div>';
+      refreshNotificationIndicator();
+    }catch(err){
+      body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('security')+'</div><h3>Could not open notification</h3><p>'+escapeHtml(err.message||'Please try again later.')+'</p><button type="button" class="btn btn-outline" id="notification-retry">Try again</button></div>';
       document.getElementById('notification-retry')?.addEventListener('click',()=>loadDetail(id));
     }
   }
@@ -341,26 +369,23 @@ function setupNotifications(){
     const token=tokenForNotifications();
 
     if(!token){
+      setUnreadIndicator(0);
       body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('security')+'</div><h3>Sign in to view notifications</h3><p>Your DBH notifications are private to your account.</p><div class="notification-auth-actions"><a class="btn btn-primary" href="/login.html?redirect='+encodeURIComponent(location.href)+'">Login</a><a class="btn btn-outline" href="/register.html?redirect='+encodeURIComponent(location.href)+'">Sign Up</a></div></div>';
       return;
     }
 
     try{
-      const r=await fetch(api,{method:'GET',headers:{Accept:'application/json',Authorization:'Bearer '+token}});
+      const r=await fetch(api,{method:'GET',headers:{Accept:'application/json',Authorization:'Bearer '+token},cache:'no-store'});
       const data=await r.json().catch(()=>({}));
       if(!r.ok)throw new Error(data?.message||'Notification service could not be reached.');
       const rows=Array.isArray(data.notifications)?data.notifications:[];
+      const unread=rows.filter(n=>!n.is_read).length;
+      setUnreadIndicator(unread);
 
       if(!rows.length){
         body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('general')+'</div><h3>Nothing for now — you are all caught up</h3><p>Please check back later. New DBH account, property and marketplace updates will appear here.</p></div>';
-        const count=document.getElementById('notification-count');
-        if(count){count.textContent='0';count.style.display='none';}
         return;
       }
-
-      const unread=rows.filter(n=>!n.is_read).length;
-      const count=document.getElementById('notification-count');
-      if(count){count.textContent=unread>99?'99+':String(unread);count.style.display=unread?'grid':'none';}
 
       body.innerHTML=rows.map(n=>{
         const preview=String(n.message||'').length>125?String(n.message).slice(0,125).trim()+'…':String(n.message||'');
@@ -370,21 +395,24 @@ function setupNotifications(){
       body.querySelectorAll('[data-notification-id]').forEach(item=>{
         item.addEventListener('click',()=>loadDetail(item.dataset.notificationId));
       });
-    }catch(e){
-      body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('security')+'</div><h3>Notifications are unavailable</h3><p>'+escapeHtml(e.message||'Please check your connection and try again later.')+'</p><button type="button" class="btn btn-outline" id="notification-retry-list">Try again</button></div>';
+    }catch(err){
+      body.innerHTML='<div class="notification-empty"><div class="notification-empty-icon">'+notificationIcon('security')+'</div><h3>Notifications are unavailable</h3><p>'+escapeHtml(err.message||'Please check your connection and try again later.')+'</p><button type="button" class="btn btn-outline" id="notification-retry-list">Try again</button></div>';
       document.getElementById('notification-retry-list')?.addEventListener('click',loadNotifications);
     }
   }
 
-  const open=()=>{
+  const open=async()=>{
     document.documentElement.classList.add('notification-open');
     drawer.setAttribute('aria-hidden','false');
+    try{await window.DBHPrepareNotifications?.()}catch{}
     loadNotifications();
   };
 
   b.replaceWith(b.cloneNode(true));
   const button=document.getElementById('notification-button');
   button?.addEventListener('click',open);
+  refreshNotificationIndicator();
+  setInterval(refreshNotificationIndicator,20000);
 }
 function setupNativeNotificationPopups(){
   if(window.__dbhNativeNotificationsReady)return;
