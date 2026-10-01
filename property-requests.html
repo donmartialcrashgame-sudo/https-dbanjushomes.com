@@ -74,10 +74,14 @@ const verification=(p)=>{const s=String(p.verification_status||'').toLowerCase()
 function renderPropertyCards(){
  const rows=propertyRows;
  pickerCount.textContent=rows.length+' '+(rows.length===1?'property':'properties');
- if(!rows.length){results.innerHTML='<div class="pr-property-note">No published properties are currently available for this type. You can still submit a general request without selecting a property.</div>';return}
+ if(!rows.length){
+  results.innerHTML='<div class="pr-property-note">No published properties are currently available for this type. You can still submit a general request without selecting a property.</div>';
+  return;
+ }
  results.innerHTML=rows.map(p=>{
-   const img=imageMap[p.id]||p.og_image_url||'/dbh-logo.jpg',loc=[p.area,p.city,p.state].filter(Boolean).join(', ')||'Location available',
-   return '<a class="pr-property-option" href="/property.html?id='+encodeURIComponent(p.property_code||p.id)+'"><img src="'+esc(img)+'" alt="'+esc(p.title||'DBH property')+'" onerror="this.onerror=null;this.src=&quot;/dbh-logo.jpg&quot;"><div class="pr-property-info"><div class="pr-property-badges"><span class="pr-property-badge">'+esc(p.property_code||'DBH Property')+'</span>'+verification(p)+'</div><h3 class="pr-property-title">'+esc(p.title||'DBH property')+'</h3><div class="pr-property-meta">'+esc(loc)+'</div><div class="pr-property-price">'+money(p.price,p.currency||'NGN')+'</div></div><button type="button" class="pr-property-select">'+(sel?'Selected':'Select property')+'</button></article>';
+  const img=imageMap[p.id]||p.og_image_url||'/dbh-logo.jpg';
+  const loc=[p.area,p.city,p.state].filter(Boolean).join(', ')||'Location available';
+  return '<a class="pr-property-option" href="/property.html?id='+encodeURIComponent(p.property_code||p.id)+'"><img src="'+esc(img)+'" alt="'+esc(p.title||'DBH property')+'" onerror="this.onerror=null;this.src=&quot;/dbh-logo.jpg&quot;"><div class="pr-property-info"><div class="pr-property-badges"><span class="pr-property-badge">'+esc(p.property_code||'DBH Property')+'</span>'+verification(p)+'</div><h3 class="pr-property-title">'+esc(p.title||'DBH property')+'</h3><div class="pr-property-meta">'+esc(loc)+'</div><div class="pr-property-price">'+money(p.price,p.currency||'NGN')+'</div></div><span class="pr-property-open">View details →</span></a>';
  }).join('');
 }
 async function loadProperties(){
