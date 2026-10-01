@@ -110,13 +110,10 @@ function setupDBHPWA(){
 
 function setupCustomerCareWidget(){
   if(document.getElementById('dbh-care-widget'))return;
-  const css='/assets/css/customer-care.css?v=20261001-2';
+  const css='/assets/css/customer-care.css?v=20261001-3';
   if(!document.querySelector('link[data-dbh-customer-care-css]')){
     const link=document.createElement('link');
-    link.rel='stylesheet';
-    link.href=css;
-    link.dataset.dbhCustomerCareCss='1';
-    document.head.appendChild(link);
+    link.rel='stylesheet';link.href=css;link.dataset.dbhCustomerCareCss='1';document.head.appendChild(link);
   }
 
   const widget=document.createElement('div');
@@ -124,37 +121,18 @@ function setupCustomerCareWidget(){
   widget.className='dbh-care-widget';
   widget.innerHTML='<span class="dbh-care-label">Message us — we’re online</span>'+
     '<button type="button" class="dbh-care-launcher" id="dbh-care-launcher" aria-label="Message customer care" aria-expanded="false">'+
-      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-1a8 8 0 0 1 16 0v1"></path><path d="M4 13h2.5A1.5 1.5 0 0 1 8 14.5V17a1.5 1.5 0 0 1-1.5 1.5H5A1 1 0 0 1 4 17.5z"></path><path d="M20 13h-2.5a1.5 1.5 0 0 0-1.5 1.5V17a1.5 1.5 0 0 0 1.5 1.5H19a1 1 0 0 0 1-1z"></path><path d="M16 20h-2"></path></svg>'+
-      '<i class="dbh-care-online-dot" aria-hidden="true"></i>'+
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-1a8 8 0 0 1 16 0v1"></path><path d="M4 13h2.5A1.5 1.5 0 0 1 8 14.5V17a1.5 1.5 0 0 1-1.5 1.5H5A1 1 0 0 1 4 17.5z"></path><path d="M20 13h-2.5a1.5 1.5 0 0 0-1.5 1.5V17a1.5 1.5 0 0 0 1.5 1.5H19a1 1 0 0 0 1-1z"></path><path d="M16 20h-2"></path></svg><i class="dbh-care-online-dot" aria-hidden="true"></i>'+
     '</button>'+
     '<section class="dbh-care-panel" id="dbh-care-panel" aria-label="DBH customer care chat" aria-hidden="true">'+
-      '<div class="dbh-care-head">'+
-        '<div class="dbh-care-avatar"><img src="/dbh-logo.jpg" alt="DBH Customer Care"></div>'+
-        '<div class="dbh-care-head-copy"><strong>DBH Customer Care</strong><span class="dbh-care-status"><i></i> We’re online</span></div>'+
-        '<button type="button" class="dbh-care-close" id="dbh-care-close" aria-label="Close customer care">'+
-          '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"></path></svg>'+
-        '</button>'+
-      '</div>'+
+      '<div class="dbh-care-head"><div class="dbh-care-avatar"><img src="/dbh-logo.jpg" alt="DBH Customer Care"></div><div class="dbh-care-head-copy"><strong>DBH Customer Care</strong><span class="dbh-care-status"><i></i> <b id="dbh-care-status-text">AI assistant</b></span></div><button type="button" class="dbh-care-close" id="dbh-care-close" aria-label="Close customer care"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"></path></svg></button></div>'+
       '<div class="dbh-care-body" id="dbh-care-body">'+
-        '<div class="dbh-care-intro">'+
-          '<div class="dbh-care-mini-avatar"><img src="/dbh-logo.jpg" alt=""></div>'+
-          '<div class="dbh-care-bubble"><strong>Hello 👋</strong>Welcome to DBH. We’re online and ready to help with properties, enquiries, verification and listings.</div>'+
-        '</div>'+
-        '<div class="dbh-care-quick">'+
-          '<button type="button" data-care-message="I need help finding a property.">Find a property</button>'+
-          '<button type="button" data-care-message="I need help with a property enquiry.">Property enquiry</button>'+
-          '<button type="button" data-care-message="I need help verifying a listing.">Verify a listing</button>'+
-          '<button type="button" data-care-message="I want to list a property.">List a property</button>'+
-        '</div>'+
+        '<div class="dbh-care-intro"><div class="dbh-care-mini-avatar"><img src="/dbh-logo.jpg" alt=""></div><div class="dbh-care-bubble"><strong>Hello 👋</strong>Welcome to DBH. I can help with properties, enquiries, verification, listings and using the website.</div></div>'+
+        '<div class="dbh-care-quick"><button type="button" data-care-message="I need help finding a property.">Find a property</button><button type="button" data-care-message="I need help with a property enquiry.">Property enquiry</button><button type="button" data-care-message="I need help verifying a listing.">Verify a listing</button><button type="button" data-care-message="I want to list a property.">List a property</button></div>'+
+        '<div class="dbh-care-handoff"><button type="button" id="dbh-care-human">Talk to a person</button><span id="dbh-care-human-status" aria-live="polite">Checking customer care availability…</span></div>'+
         '<p class="dbh-care-note" id="dbh-care-note"></p>'+
-        '<form class="dbh-care-form" id="dbh-care-form">'+
-          '<textarea id="dbh-care-input" maxlength="2000" rows="2" placeholder="Type your message…" aria-label="Your message"></textarea>'+
-          '<button class="dbh-care-send" type="submit" aria-label="Send message">'+
-            '<svg viewBox="0 0 24 24"><path d="m21 3-7.5 18-3.5-7L3 10.5z"></path><path d="M21 3 10 14"></path></svg>'+
-          '</button>'+
-        '</form>'+
+        '<form class="dbh-care-form" id="dbh-care-form"><textarea id="dbh-care-input" maxlength="2000" rows="2" placeholder="Type your message…" aria-label="Your message"></textarea><button class="dbh-care-send" type="submit" aria-label="Send message"><svg viewBox="0 0 24 24"><path d="m21 3-7.5 18-3.5-7L3 10.5z"></path><path d="M21 3 10 14"></path></svg></button></form>'+
       '</div>'+
-      '<div class="dbh-care-foot"><span>Customer care</span><a href="mailto:info@dbanjushomes.com">Email us</a></div>'+
+      '<div class="dbh-care-foot"><span>AI + Human Customer Care</span><a href="mailto:info@dbanjushomes.com">Email us</a></div>'+
     '</section>'+
   '</div>';
   document.body.appendChild(widget);
@@ -166,47 +144,54 @@ function setupCustomerCareWidget(){
   const input=document.getElementById('dbh-care-input');
   const body=document.getElementById('dbh-care-body');
   const note=document.getElementById('dbh-care-note');
+  const statusText=document.getElementById('dbh-care-status-text');
+  const humanBtn=document.getElementById('dbh-care-human');
+  const humanStatus=document.getElementById('dbh-care-human-status');
   const api=window.DBH_CONFIG?.customerCareUri||((window.DBH_CONFIG?.supabaseUrl||'').replace(/\/$/,'')+'/functions/v1/dbh-customer-care');
+  let humanOnline=false;
+  let conversationLoaded=false;
 
-  const localSession=()=>{
-    try{return JSON.parse(localStorage.getItem(DBH.sessionKey)||'null')}catch{return null}
-  };
-  const token=()=>{
-    const s=localSession();
-    return s?.sessionToken||s?.access_token||s?.accessToken||s?.session?.access_token||'';
-  };
-  const sessionUser=()=>{
-    const s=localSession();
-    return s?.user||s||null;
-  };
-  const guestEmailKey='dbh_care_guest_email';
-  const guestNameKey='dbh_care_guest_name';
-
+  const localSession=()=>{try{return JSON.parse(localStorage.getItem(DBH.sessionKey)||'null')}catch{return null}};
+  const token=()=>{const s=localSession();return s?.sessionToken||s?.access_token||s?.accessToken||s?.session?.access_token||''};
+  const sessionUser=()=>{const s=localSession();return s?.user||s||null};
   const scrollBottom=()=>{body.scrollTop=body.scrollHeight};
-  const open=()=>{
-    widget.classList.add('open');
-    launcher.setAttribute('aria-expanded','true');
-    panel.setAttribute('aria-hidden','false');
-    setTimeout(()=>input?.focus(),120);
-  };
-  const shut=()=>{
-    widget.classList.remove('open');
-    launcher.setAttribute('aria-expanded','false');
-    panel.setAttribute('aria-hidden','true');
-  };
 
-  launcher.addEventListener('click',()=>widget.classList.contains('open')?shut():open());
-  close.addEventListener('click',shut);
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&widget.classList.contains('open'))shut()});
+  function bubble(text,mine=false,time=null,checks=false,label=''){
+    const row=document.createElement('div');
+    row.className='dbh-care-row '+(mine?'mine':'theirs');
+    const b=document.createElement('div');
+    b.className='dbh-care-message-bubble '+(mine?'mine':'theirs');
+    const main=document.createElement('span');main.className='dbh-care-message-text';main.textContent=text;
+    const meta=document.createElement('span');meta.className='dbh-care-message-meta';
+    meta.textContent=(time?new Date(time).toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'}):new Date().toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'}))+(checks?'  ✓✓':'');
+    b.append(main,meta);row.appendChild(b);body.insertBefore(row,form);
+    return row;
+  }
 
-  widget.querySelectorAll('[data-care-message]').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      input.value=btn.dataset.careMessage||'';
-      input.focus();
-    });
-  });
+  function typing(show){
+    let el=document.getElementById('dbh-care-typing');
+    if(show&&!el){
+      el=document.createElement('div');el.id='dbh-care-typing';el.className='dbh-care-typing';
+      el.innerHTML='<div class="dbh-care-typing-bubble"><i></i><i></i><i></i><span>AI is typing…</span></div>';
+      body.insertBefore(el,form);scrollBottom();
+    }
+    if(!show)el?.remove();
+  }
+
+  async function checkAvailability(){
+    try{
+      const r=await fetch(api+'?action=availability',{headers:{Accept:'application/json'},cache:'no-store'});
+      const d=await r.json().catch(()=>({}));
+      humanOnline=Boolean(d?.online);
+    }catch{humanOnline=false}
+    statusText.textContent=humanOnline?'AI assistant • Human online':'AI assistant • Human offline';
+    humanStatus.textContent=humanOnline?'A DBH customer-care representative is online.':'AI is available now. A human representative is currently offline.';
+    humanBtn.textContent=humanOnline?'Talk to customer care':'Request customer care';
+    humanBtn.classList.toggle('online',humanOnline);
+  }
 
   async function loadConversation(){
+    if(conversationLoaded)return;
     const t=token();
     if(!t)return;
     try{
@@ -215,94 +200,89 @@ function setupCustomerCareWidget(){
       const data=await r.json().catch(()=>({}));
       const messages=Array.isArray(data.messages)?data.messages:[];
       messages.forEach(m=>{
-        if(!m?.message)return;
-        const mine=String(m.sender_email||'').toLowerCase()===String(sessionUser()?.email||'').toLowerCase();
-        const row=document.createElement('div');
-        row.style.cssText='display:flex;justify-content:'+(mine?'flex-end':'flex-start')+';margin:8px 0;';
-        const bubble=document.createElement('div');
-        bubble.style.cssText='max-width:85%;padding:9px 11px;border-radius:'+(mine?'14px 14px 5px 14px':'14px 14px 14px 5px')+';background:'+(mine?'#0b63ce':'#fff')+';color:'+(mine?'#fff':'#405873')+';border:1px solid '+(mine?'#0b63ce':'#e3ebf3')+';font-size:11px;line-height:1.55;';
-        bubble.textContent=m.message;
-        row.appendChild(bubble);
-        body.insertBefore(row,form);
-        const aiReply=String(m.agent_reply||'').trim();
-        if(aiReply){
-          const aiRow=document.createElement('div');
-          aiRow.style.cssText='display:flex;justify-content:flex-start;margin:8px 0;';
-          const aiBubble=document.createElement('div');
-          aiBubble.style.cssText='max-width:85%;padding:9px 11px;border-radius:14px 14px 14px 5px;background:#fff;color:#405873;border:1px solid #e3ebf3;font-size:11px;line-height:1.55;';
-          aiBubble.textContent=aiReply;
-          aiRow.appendChild(aiBubble);
-          body.insertBefore(aiRow,form);
-        }
+        if(m?.message)bubble(m.message,true,m.created_at,true);
+        if(m?.agent_reply)bubble(m.agent_reply,false,m.updated_at,false);
       });
+      conversationLoaded=true;
       scrollBottom();
     }catch{}
   }
+
+  async function requestHuman(){
+    const t=token();
+    if(!t){
+      input.value='I would like to speak with a DBH customer-care representative.';
+      input.focus();
+      note.style.display='block';
+      note.textContent='Please sign in first so DBH can connect your request to your account.';
+      return;
+    }
+    humanBtn.disabled=true;
+    humanStatus.textContent='Connecting you to customer care…';
+    try{
+      const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json',Authorization:'Bearer '+t},body:JSON.stringify({action:'handover'})});
+      const data=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error(data?.message||'Customer-care handover could not be requested.');
+      humanOnline=Boolean(data?.humanOnline);
+      bubble(humanOnline?'I’ve requested a DBH customer-care representative to join this conversation.':'I’ve sent your request to DBH customer care. A representative is currently offline, so the team will need to respond when available.',true,null,true);
+      note.style.display='block';
+      note.textContent=humanOnline?'A human representative has been requested. AI will stop replying after handover.':'Your human-support request has been saved. AI can continue helping until a representative is available.';
+      await checkAvailability();
+      scrollBottom();
+    }catch(err){
+      humanStatus.textContent=err.message||'Unable to request customer care right now.';
+    }finally{humanBtn.disabled=false}
+  }
+
+  const open=()=>{widget.classList.add('open');launcher.setAttribute('aria-expanded','true');panel.setAttribute('aria-hidden','false');loadConversation();checkAvailability();setTimeout(()=>input?.focus(),120);};
+  const shut=()=>{widget.classList.remove('open');launcher.setAttribute('aria-expanded','false');panel.setAttribute('aria-hidden','true');};
+
+  launcher.addEventListener('click',()=>widget.classList.contains('open')?shut():open());
+  close.addEventListener('click',shut);
+  humanBtn.addEventListener('click',requestHuman);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&widget.classList.contains('open'))shut()});
+  widget.querySelectorAll('[data-care-message]').forEach(btn=>btn.addEventListener('click',()=>{input.value=btn.dataset.careMessage||'';input.focus()}));
 
   form.addEventListener('submit',async e=>{
     e.preventDefault();
     const message=String(input.value||'').trim();
     if(!message)return;
-
     const t=token();
     if(!t){
-      const subject='DBH Customer Care Message';
-      const text='Hello DBH Customer Care,%0D%0A%0D%0A'+encodeURIComponent(message)+'%0D%0A%0D%0ASent from dbanjushomes.com.';
-      window.location.href='mailto:info@dbanjushomes.com?subject='+encodeURIComponent(subject)+'&body='+text;
-      note.textContent='Your email app is opening with your message ready to send.';
-      note.style.display='block';
-      input.value='';
-      return;
+      window.location.href='mailto:info@dbanjushomes.com?subject='+encodeURIComponent('DBH Customer Care Message')+'&body='+encodeURIComponent(message+'\n\nSent from dbanjushomes.com.');
+      note.textContent='Your email app is opening with your message ready to send.';note.style.display='block';input.value='';return;
     }
 
     const send=form.querySelector('.dbh-care-send');
-    send.disabled=true;
-    input.disabled=true;
-    note.textContent='Sending your message…';
-    note.style.display='block';
+    send.disabled=true;input.disabled=true;note.style.display='none';
+    const sent=bubble(message,true,null,true);
+    scrollBottom();
+    typing(true);
 
     try{
-      const r=await fetch(api,{
-        method:'POST',
-        headers:{'Content-Type':'application/json',Accept:'application/json',Authorization:'Bearer '+t},
-        body:JSON.stringify({message})
-      });
+      const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json',Authorization:'Bearer '+t},body:JSON.stringify({message})});
       const data=await r.json().catch(()=>({}));
       if(!r.ok)throw new Error(data?.message||'Your message could not be sent.');
-      const row=document.createElement('div');
-      row.style.cssText='display:flex;justify-content:flex-end;margin:8px 0;';
-      const bubble=document.createElement('div');
-      bubble.style.cssText='max-width:85%;padding:9px 11px;border-radius:14px 14px 5px 14px;background:#0b63ce;color:#fff;border:1px solid #0b63ce;font-size:11px;line-height:1.55;';
-      bubble.textContent=message;
-      row.appendChild(bubble);
-      body.insertBefore(row,form);
-
+      typing(false);
       const aiReply=String(data?.message?.agent_reply||'').trim();
-      if(aiReply){
-        const aiRow=document.createElement('div');
-        aiRow.style.cssText='display:flex;justify-content:flex-start;margin:8px 0;';
-        const aiBubble=document.createElement('div');
-        aiBubble.style.cssText='max-width:85%;padding:9px 11px;border-radius:14px 14px 14px 5px;background:#fff;color:#405873;border:1px solid #e3ebf3;font-size:11px;line-height:1.55;';
-        aiBubble.textContent=aiReply;
-        aiRow.appendChild(aiBubble);
-        body.insertBefore(aiRow,form);
+      if(aiReply)bubble(aiReply,false,new Date().toISOString(),false);
+      else{
+        const handoff=data?.message?.handover_requested;
+        note.textContent=handoff?'Your message is with DBH customer care.':'Your message was sent to DBH Customer Care.';
+        note.style.display='block';
       }
-
-      input.value='';
-      note.textContent=data?.aiReplied?'DBH AI replied.':'Message sent to DBH Customer Care.';
+      await checkAvailability();
       scrollBottom();
-      setTimeout(()=>{note.style.display='none'},3500);
     }catch(err){
-      note.textContent=err.message||'Unable to send your message. Please email info@dbanjushomes.com.';
-      note.style.display='block';
-    }finally{
-      send.disabled=false;
-      input.disabled=false;
-      input.focus();
-    }
+      typing(false);
+      sent.querySelector('.dbh-care-message-meta').textContent='Not sent';
+      note.style.display='block';note.textContent=err.message||'Unable to send your message. Please email info@dbanjushomes.com.';
+    }finally{send.disabled=false;input.disabled=false;input.focus()}
   });
 
+  checkAvailability();
   loadConversation();
+  if(new URLSearchParams(location.search).get('care')==='1')setTimeout(open,650);
 }
 function hideLoader(){const l=document.getElementById('app-loader');if(l){l.classList.add('fade');setTimeout(()=>{l.style.display='none'},650)}}
 window.addEventListener('error',hideLoader);
