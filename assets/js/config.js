@@ -4,7 +4,7 @@ window.DBH_CONFIG={
   googleClientId:'406190338800-aok5c0rj9294tkr073cb2q0mtp7rjurn.apps.googleusercontent.com',
   apiBaseUrl:'https://dbanjushomes-auth-xsm3.onrender.com',
   googleLoginUri:'https://dbanjushomes-auth-xsm3.onrender.com/api/auth/google',googleSupabaseSyncUri:'https://cpgajlsyuieeengdnamy.supabase.co/functions/v1/google-auth-callback',
-  notificationsUri:'https://cpgajlsyuieeengdnamy.supabase.co/functions/v1/dbh-notifications',
+  notificationsUri:'https://cpgajlsyuieeengdnamy.supabase.co/functions/v1/dbh-notifications',customerCareUri:'https://cpgajlsyuieeengdnamy.supabase.co/functions/v1/dbh-customer-care',
   propertyDocumentsUri:'https://cpgajlsyuieeengdnamy.supabase.co/functions/v1/dbh-property-documents',
   watermarkName:'D Banjus Homes Nig Ltd',
   watermarkLogoUrl:'',
