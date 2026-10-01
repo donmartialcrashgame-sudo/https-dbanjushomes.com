@@ -1,10 +1,11 @@
-const CACHE_NAME="dbh-shell-v2";
+const CACHE_NAME="dbh-shell-v3";
 const CORE=[
   "/",
   "/index.html",
   "/properties.html",
   "/property.html",
   "/contact.html",
+  "/profile.html",
   "/save.html",
   "/offline.html",
   "/manifest.webmanifest",
@@ -15,7 +16,7 @@ const CORE=[
   "/assets/css/pwa.css",
   "/assets/js/config.js",
   "/assets/js/properties.js?v=20260930-2",
-  "/assets/js/app.js?v=20260930-8"
+  "/assets/js/app.js?v=20261001-1"
 ];
 
 self.addEventListener("install",event=>{
