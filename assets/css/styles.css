@@ -325,3 +325,45 @@ html.sidebar-open .sidebar-backdrop{
   .mobile-menu-button{width:40px!important;height:40px!important;flex-basis:40px!important}
   .dbh-header-actions{gap:5px!important}
 }
+
+
+/* DBH preference controls */
+.sidebar-preferences .theme-options b,
+.sidebar-preferences .text-options b{cursor:pointer;transition:background .2s ease,color .2s ease,box-shadow .2s ease,transform .2s ease}
+.sidebar-preferences .theme-options b:hover,
+.sidebar-preferences .text-options b:hover{transform:translateY(-1px);color:var(--blue)}
+.sidebar-preferences .theme-options b.active,
+.sidebar-preferences .text-options b.active{background:#fff;color:var(--blue);box-shadow:0 2px 7px rgba(9,45,99,.13)}
+.sidebar-preferences>button[data-theme-toggle],
+.sidebar-preferences>button[data-text-size]{user-select:none}
+html[data-dbh-text-size="large"] body{font-size:17px}
+html[data-dbh-text-size="xlarge"] body{font-size:18px}
+html[data-dbh-text-size="large"] .site-header,
+html[data-dbh-text-size="large"] .dbh-sidebar{font-size:1.035em}
+html[data-dbh-text-size="xlarge"] .site-header,
+html[data-dbh-text-size="xlarge"] .dbh-sidebar{font-size:1.07em}
+html[data-dbh-text-size="large"] .page-heading h1,
+html[data-dbh-text-size="xlarge"] .page-heading h1{letter-spacing:-.025em}
+html[data-dbh-text-size="large"] .page-heading h1{font-size:clamp(2rem,4vw,3.25rem)}
+html[data-dbh-text-size="xlarge"] .page-heading h1{font-size:clamp(2.1rem,4.3vw,3.45rem)}
+html[data-dbh-text-size="large"] .sidebar-preferences>button>span:nth-child(2),
+html[data-dbh-text-size="large"] .sidebar-setting>span:nth-child(2){font-size:13px}
+html[data-dbh-text-size="xlarge"] .sidebar-preferences>button>span:nth-child(2),
+html[data-dbh-text-size="xlarge"] .sidebar-setting>span:nth-child(2){font-size:14px}
+html[data-dbh-text-size="large"] .dbh-sidebar .sidebar-nav a{font-size:13px}
+html[data-dbh-text-size="xlarge"] .dbh-sidebar .sidebar-nav a{font-size:14px}
+html[data-dbh-text-size="large"] .dbh-dark .sidebar-preferences>button:hover,
+html[data-dbh-text-size="large"] .dbh-dark .sidebar-setting:hover,
+html[data-dbh-text-size="xlarge"] .dbh-dark .sidebar-preferences>button:hover,
+html[data-dbh-text-size="xlarge"] .dbh-dark .sidebar-setting:hover{background:#132b48}
+.dbh-dark .sidebar-preferences>button,
+.dbh-dark .sidebar-setting{color:#dce9f8}
+.dbh-dark .sidebar-preferences>button:hover,
+.dbh-dark .sidebar-setting:hover{background:#132b48}
+.dbh-dark .theme-options,
+.dbh-dark .text-options{background:#102942}
+.dbh-dark .theme-options b,
+.dbh-dark .text-options b{color:#9eb3cc}
+.dbh-dark .theme-options b.active,
+.dbh-dark .text-options b.active{background:#1c3a5d;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.22)}
+.dbh-dark .currency-setting select{color:#b8c9dc}
