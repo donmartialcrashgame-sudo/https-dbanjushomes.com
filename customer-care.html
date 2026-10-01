@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Customer Care | DBH</title>
+<link rel="icon" href="/dbh-logo.jpg">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<link rel="stylesheet" href="/assets/css/customer-care.css?v=20261001-4">
+<style>
+:root{--cc-blue:#0b63ce;--cc-navy:#062e67;--cc-line:#dfe8f2;--cc-bg:#f4f7fb}
+body{margin:0;background:var(--cc-bg);color:#18324f;font-family:inherit}.cc-shell{min-height:100vh;display:grid;grid-template-columns:330px minmax(0,1fr)}.cc-side{background:#fff;border-right:1px solid var(--cc-line);display:flex;flex-direction:column;min-width:0}.cc-side-head{padding:20px;border-bottom:1px solid var(--cc-line)}.cc-brand{display:flex;align-items:center;gap:10px}.cc-brand img{width:40px;height:40px;border-radius:12px;object-fit:cover}.cc-brand strong{display:block;font-size:15px}.cc-brand span{display:block;color:#74879c;font-size:10px;margin-top:2px}.cc-presence{margin-top:15px;padding:12px;border:1px solid #dbe7f2;background:#f8fbff;border-radius:13px;font-size:10px;color:#6c8197}.cc-presence b{color:#0b63ce}.cc-list{overflow:auto;flex:1}.cc-conversation{width:100%;border:0;border-bottom:1px solid #edf1f5;background:#fff;text-align:left;padding:15px 16px;cursor:pointer}.cc-conversation.active{background:#eef6ff}.cc-conversation:hover{background:#f7fbff}.cc-conversation-top{display:flex;justify-content:space-between;gap:8px}.cc-conversation strong{font-size:12px;color:#18324f}.cc-conversation time{font-size:8px;color:#8a9bad}.cc-conversation p{margin:5px 0 7px;color:#71859b;font-size:10px;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cc-pill{display:inline-flex;padding:4px 7px;border-radius:999px;background:#f1f5f8;color:#668099;font-size:8px;font-weight:900}.cc-pill.handoff{background:#fff3dd;color:#9b6900}.cc-empty{padding:30px 18px;color:#7a8da2;font-size:11px;line-height:1.7}.cc-main{min-width:0;display:flex;flex-direction:column}.cc-top{height:72px;background:#fff;border-bottom:1px solid var(--cc-line);display:flex;align-items:center;justify-content:space-between;padding:0 22px;gap:15px}.cc-top h1{font-size:18px;margin:0}.cc-top p{margin:4px 0 0;color:#8090a1;font-size:10px}.cc-actions{display:flex;gap:8px;align-items:center}.cc-main button,.cc-main textarea{font:inherit}.cc-refresh{border:1px solid var(--cc-line);background:#fff;color:#47637e;border-radius:10px;padding:9px 12px;font-size:10px;font-weight:900;cursor:pointer}.cc-logout{border:0;background:#eef6ff;color:#0b63ce;border-radius:10px;padding:9px 12px;font-size:10px;font-weight:900;cursor:pointer}.cc-thread{flex:1;overflow:auto;padding:22px}.cc-thread-empty{height:100%;display:grid;place-items:center;color:#8295a8;font-size:12px}.cc-thread-head{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--cc-line);border-radius:18px;padding:16px;margin-bottom:14px}.cc-avatar{width:42px;height:42px;border-radius:14px;background:#eaf3ff;display:grid;place-items:center;color:#0b63ce;font-weight:950;font-size:12px;overflow:hidden}.cc-avatar img{width:100%;height:100%;object-fit:cover}.cc-thread-head strong{font-size:13px}.cc-thread-head span{display:block;color:#788ca1;font-size:10px;margin-top:4px}.cc-msg{display:flex;margin:8px 0}.cc-msg.customer{justify-content:flex-start}.cc-msg.agent{justify-content:flex-end}.cc-msg-bubble{max-width:min(720px,86%);padding:11px 13px;border-radius:15px;font-size:11px;line-height:1.6;border:1px solid var(--cc-line);background:#fff}.cc-msg.agent .cc-msg-bubble{background:#0b63ce;color:#fff;border-color:#0b63ce;border-radius:15px 15px 5px 15px}.cc-msg.customer .cc-msg-bubble{border-radius:15px 15px 15px 5px}.cc-label{font-size:8px;font-weight:950;text-transform:uppercase;letter-spacing:.08em;opacity:.7;margin-bottom:4px}.cc-text{white-space:pre-wrap}.cc-time{font-size:8px;opacity:.65;margin-top:5px;text-align:right}.cc-reply{position:sticky;bottom:0;background:rgba(244,247,251,.94);backdrop-filter:blur(10px);padding:12px 22px 20px}.cc-reply-box{background:#fff;border:1px solid var(--cc-line);border-radius:16px;padding:10px}.cc-reply textarea{width:100%;min-height:80px;resize:vertical;border:0;outline:0;background:transparent;color:#18324f;font-size:12px;line-height:1.6}.cc-reply-actions{display:flex;justify-content:flex-end;gap:8px;align-items:center}.cc-handoff-note{margin-right:auto;font-size:9px;color:#7b8da0}.cc-send{border:0;background:#0b63ce;color:#fff;border-radius:10px;padding:10px 15px;font-size:10px;font-weight:950;cursor:pointer}.cc-send:disabled{opacity:.55;cursor:wait}.cc-error{padding:12px 14px;background:#fff1f2;border:1px solid #efcfd4;color:#9b3941;border-radius:12px;font-size:10px;margin-bottom:12px}.cc-mobile-menu{display:none}.cc-unread{min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#dc3545;color:#fff;display:inline-grid;place-items:center;font-size:8px;font-weight:950}
+@media(max-width:850px){.cc-shell{grid-template-columns:1fr}.cc-side{position:fixed;inset:0 auto 0 0;width:min(330px,88vw);z-index:24000;transform:translateX(-102%);transition:.2s;box-shadow:20px 0 60px rgba(0,0,0,.16)}body.cc-open .cc-side{transform:none}.cc-mobile-menu{display:inline-grid;place-items:center;border:1px solid var(--cc-line);background:#fff;border-radius:10px;width:38px;height:38px}.cc-top{padding:0 14px}.cc-thread{padding:14px}.cc-reply{padding:10px 14px 14px}.cc-side-backdrop{display:none}body.cc-open .cc-side-backdrop{display:block;position:fixed;inset:0;background:rgba(6,23,45,.3);z-index:23999}}
+</style>
+</head>
+<body>
+<div class="cc-shell">
+  <aside class="cc-side" id="cc-side">
+    <div class="cc-side-head">
+      <div class="cc-brand"><img src="/dbh-logo.jpg" alt="DBH"><div><strong>Customer Care</strong><span>D Banjus Homes Nig Ltd</span></div></div>
+      <div class="cc-presence" id="cc-presence">Checking your staff status…</div>
+    </div>
+    <div class="cc-list" id="cc-list"><div class="cc-empty">Loading conversations…</div></div>
+  </aside>
+  <div class="cc-main">
+    <header class="cc-top">
+      <div style="display:flex;gap:9px;align-items:center"><button class="cc-mobile-menu" id="cc-menu" type="button" aria-label="Open conversations">☰</button><div><h1 id="cc-title">DBH Customer Care</h1><p id="cc-subtitle">AI + Human support inbox</p></div></div>
+      <div class="cc-actions"><button class="cc-refresh" id="cc-refresh">Refresh</button><button class="cc-logout" id="cc-logout">Sign out</button></div>
+    </header>
+    <main class="cc-thread" id="cc-thread"><div class="cc-thread-empty">Select a customer conversation.</div></main>
+    <div class="cc-reply" id="cc-reply" hidden>
+      <div class="cc-reply-box"><textarea id="cc-reply-input" maxlength="2000" placeholder="Reply as DBH Customer Care…"></textarea><div class="cc-reply-actions"><span class="cc-handoff-note" id="cc-handoff-note"></span><button class="cc-send" id="cc-send" type="button">Send reply</button></div></div>
+    </div>
+  </div>
+</div>
+<div class="cc-side-backdrop" id="cc-side-backdrop"></div>
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/app.js?v=20261001-9"></script>
+<script>
+(()=>{
+const api=(window.DBH_CONFIG?.customerCareUri)||'https://cpgajlsyuieeengdnamy.supabase.co/functions/v1/dbh-customer-care';
+const session=()=>{try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}};
+const token=()=>{const s=session();return s?.sessionToken||s?.access_token||s?.accessToken||s?.session?.access_token||''};
+const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const $=id=>document.getElementById(id);
+let rows=[],selectedEmail='',selectedId='';
+function time(v){return new Date(v).toLocaleString('en-NG',{dateStyle:'medium',timeStyle:'short'})}
+function group(){
+ const map=new Map();
+ rows.forEach(r=>{const email=String(r.sender_email||'').toLowerCase();if(!email)return;if(!map.has(email))map.set(email,{email,name:r.sender_name||email,messages:[]});map.get(email).messages.push(r)});
+ return Array.from(map.values()).sort((a,b)=>new Date(b.messages[0]?.created_at||0)-new Date(a.messages[0]?.created_at||0));
+}
+function drawList(){
+ const list=$('cc-list'),groups=group();
+ if(!groups.length){list.innerHTML='<div class="cc-empty">No customer conversations yet.</div>';return}
+ list.innerHTML=groups.map(g=>{
+   const latest=g.messages[0],handoff=g.messages.some(x=>x.handover_requested);
+   return '<button class="cc-conversation '+(selectedEmail===g.email?'active':'')+'" data-email="'+esc(g.email)+'"><div class="cc-conversation-top"><strong>'+esc(g.name)+'</strong><time>'+time(latest.created_at)+'</time></div><p>'+esc(latest.message||latest.human_reply||latest.agent_reply||'Customer conversation')+'</p><span class="cc-pill '+(handoff?'handoff':'')+'">'+(handoff?'Human handover':'AI support')+'</span></button>'
+ }).join('');
+ list.querySelectorAll('[data-email]').forEach(b=>b.onclick=()=>{selectedEmail=b.dataset.email;selectedId='';drawList();drawThread();document.body.classList.remove('cc-open')});
+}
+function currentMessages(){return group().find(g=>g.email===selectedEmail)?.messages||[]}
+function drawThread(){
+ const thread=$('cc-thread'),messages=currentMessages();
+ if(!selectedEmail){thread.innerHTML='<div class="cc-thread-empty">Select a customer conversation.</div>';$('cc-reply').hidden=true;return}
+ const g=group().find(x=>x.email===selectedEmail);if(!g)return;
+ const handoff=messages.some(x=>x.handover_requested);
+ $('cc-title').textContent=g.name;$('cc-subtitle').textContent=g.email+(handoff?' • Human handover requested':'');
+ let html='<div class="cc-thread-head"><div class="cc-avatar"><img src="/dbh-logo.jpg" alt=""></div><div><strong>'+esc(g.name)+'</strong><span>'+esc(g.email)+(handoff?' • Human support requested':'')+'</span></div></div>';
+ messages.slice().reverse().forEach(m=>{
+   html+='<div class="cc-msg customer"><div class="cc-msg-bubble"><div class="cc-label">Customer</div><div class="cc-text">'+esc(m.message)+'</div><div class="cc-time">'+time(m.created_at)+'</div></div></div>';
+   if(m.agent_reply)html+='<div class="cc-msg agent"><div class="cc-msg-bubble"><div class="cc-label">DBH AI</div><div class="cc-text">'+esc(m.agent_reply)+'</div><div class="cc-time">'+time(m.updated_at)+'</div></div></div>';
+   if(m.human_reply)html+='<div class="cc-msg agent"><div class="cc-msg-bubble"><div class="cc-label">DBH Customer Care</div><div class="cc-text">'+esc(m.human_reply)+'</div><div class="cc-time">'+time(m.updated_at)+'</div></div></div>';
+ });
+ thread.innerHTML=html;
+ $('cc-reply').hidden=false;
+ $('cc-handoff-note').textContent=handoff?'Human handover requested. AI is paused.':'AI support is active.';
+ setTimeout(()=>thread.scrollTop=thread.scrollHeight,0);
+}
+async function heartbeat(){
+ const t=token();if(!t)return;
+ try{const r=await fetch(api+'?action=heartbeat',{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'});const d=await r.json().catch(()=>({}));$('cc-presence').innerHTML=d?.staff?'<b>● You are online</b><br>DBH can show human support as available.':'This account is not an active DBH customer-care staff account.'}catch{$('cc-presence').textContent='Staff presence could not be checked.'}
+}
+async function load(){
+ const t=token();if(!t){location.href='/login.html?redirect=/customer-care.html';return}
+ $('cc-list').innerHTML='<div class="cc-empty">Loading conversations…</div>';
+ try{
+   const r=await fetch(api+'?action=staff-inbox',{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'});
+   const d=await r.json().catch(()=>({}));
+   if(r.status===403){$('cc-list').innerHTML='<div class="cc-error">Customer-care staff access is required for this page.</div>';return}
+   if(!r.ok)throw Error(d?.message||'Unable to load customer-care conversations.');
+   rows=Array.isArray(d.messages)?d.messages:[];
+   drawList();drawThread();
+ }catch(e){$('cc-list').innerHTML='<div class="cc-error">'+esc(e.message||'Customer care could not be loaded.')+'</div>'}
+}
+$('cc-refresh').onclick=load;
+$('cc-logout').onclick=async()=>{localStorage.removeItem('dbh_session');try{await fetch((window.DBH_CONFIG?.apiBaseUrl||'')+'/api/auth/logout',{method:'POST',credentials:'include'})}catch{}location.href='/login.html'};
+$('cc-menu').onclick=()=>document.body.classList.add('cc-open');
+$('cc-side-backdrop').onclick=()=>document.body.classList.remove('cc-open');
+$('cc-send').onclick=async()=>{
+ const reply=String($('cc-reply-input').value||'').trim();if(!reply||!selectedEmail)return;
+ const msgs=currentMessages();const latest=msgs[0];if(!latest?.id)return;
+ $('cc-send').disabled=true;
+ try{
+   const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json',Authorization:'Bearer '+token()},body:JSON.stringify({action:'staff-reply',id:latest.id,reply})});
+   const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d?.message||'Reply could not be sent.');
+   $('cc-reply-input').value='';await load();
+ }catch(e){alert(e.message||'Reply failed.')}finally{$('cc-send').disabled=false}
+};
+heartbeat();load();setInterval(heartbeat,45000);setInterval(()=>{if(document.visibilityState==='visible')load()},10000);
+})();
+</script>
+</body>
+</html>
