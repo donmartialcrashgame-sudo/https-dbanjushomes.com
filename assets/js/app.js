@@ -478,7 +478,7 @@ function setupNativeNotificationPopups(){
   poll();
   setInterval(poll,20000);
 }
-\nfunction dbhCookieValue(name){return document.cookie.split(';').map(x=>x.trim()).find(x=>x.indexOf(name+'=')===0)?.slice(name.length+1)||null}
+function dbhCookieValue(name){return document.cookie.split(';').map(x=>x.trim()).find(x=>x.indexOf(name+'=')===0)?.slice(name.length+1)||null}
 function setDbhCookie(name,value,days){try{document.cookie=name+'='+encodeURIComponent(value)+'; Max-Age='+(days*86400)+'; Path=/; SameSite=Lax; Secure'}catch{}}
 function consentIcon(type){const m={cookie:'<svg viewBox="0 0 24 24"><path d="M20 13a8 8 0 1 1-9-9 6 6 0 0 0 9 9Z"/><circle cx="8" cy="14" r="1"/><circle cx="11" cy="17" r="1"/><circle cx="14" cy="13" r="1"/><circle cx="9" cy="9" r="1"/></svg>',bell:'<svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>',pin:'<svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>'};return m[type]||m.cookie}
 function permissionState(name){try{return navigator.permissions?.query({name}).then(x=>x.state).catch(()=>null)}catch{return Promise.resolve(null)}}
