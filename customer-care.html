@@ -14,7 +14,7 @@ body{margin:0;background:var(--cc-bg);color:#18324f;font-family:inherit}.cc-shel
 @media(max-width:850px){.cc-shell{grid-template-columns:1fr}.cc-side{position:fixed;inset:0 auto 0 0;width:min(330px,88vw);z-index:24000;transform:translateX(-102%);transition:.2s;box-shadow:20px 0 60px rgba(0,0,0,.16)}body.cc-open .cc-side{transform:none}.cc-mobile-menu{display:inline-grid;place-items:center;border:1px solid var(--cc-line);background:#fff;border-radius:10px;width:38px;height:38px}.cc-top{padding:0 14px}.cc-thread{padding:14px}.cc-reply{padding:10px 14px 14px}.cc-side-backdrop{display:none}body.cc-open .cc-side-backdrop{display:block;position:fixed;inset:0;background:rgba(6,23,45,.3);z-index:23999}}
 </style>
 </head>
-<body>
+<body class="cc-page">
 <div class="cc-shell">
   <aside class="cc-side" id="cc-side">
     <div class="cc-side-head">
@@ -36,7 +36,6 @@ body{margin:0;background:var(--cc-bg);color:#18324f;font-family:inherit}.cc-shel
 </div>
 <div class="cc-side-backdrop" id="cc-side-backdrop"></div>
 <script src="/assets/js/config.js"></script>
-<script src="/assets/js/app.js?v=20261001-10"></script>
 <script>
 (()=>{
 const api=(window.DBH_CONFIG?.customerCareUri)||'https://cpgajlsyuieeengdnamy.supabase.co/functions/v1/dbh-customer-care';
