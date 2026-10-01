@@ -349,10 +349,16 @@ async function initAuthState(){
       const d=await r.json().catch(()=>null);
       if(d?.authenticated&&d?.user){
         user=d.user;
+        const preservedSupabaseId=local?.supabaseUserId||local?.user?.supabaseUserId||'';
+        const mergedUser={...(local?.user||{}),...user};
+        if(preservedSupabaseId){
+          mergedUser.supabaseUserId=preservedSupabaseId;
+        }
         localStorage.setItem(DBH.sessionKey,JSON.stringify({
           authenticated:true,
           provider:user.provider||local?.provider||'google',
-          user,
+          user:mergedUser,
+          supabaseUserId:preservedSupabaseId||local?.supabaseUserId||'',
           sessionToken:local?.sessionToken||d?.sessionToken||null
         }));
       }
