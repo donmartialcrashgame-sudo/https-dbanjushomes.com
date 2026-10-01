@@ -45,7 +45,7 @@
     async function heartbeat(){const t=token();if(!t)return;try{await fetch(api+'?action=heartbeat',{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'})}catch{}}
     async function loadConversation(){
       if(conversationLoaded)return;const t=token();if(!t)return;
-      try{const r=await fetch(api,{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'});if(!r.ok)return;const d=await r.json().catch(()=>({}));(Array.isArray(d.messages)?d.messages:[]).forEach(m=>{if(m?.message)addBubble(m.message,true,m.created_at,true);if(m?.agent_reply)addBubble(m.agent_reply,false,m.updated_at,false)});conversationLoaded=true;scroll()}catch{}
+      try{const r=await fetch(api,{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'});if(!r.ok)return;const d=await r.json().catch(()=>({}));(Array.isArray(d.messages)?d.messages:[]).forEach(m=>{if(m?.message)addBubble(m.message,true,m.created_at,true);if(m?.agent_reply)addBubble(m.agent_reply,false,m.updated_at,false);if(m?.human_reply)addBubble(m.human_reply,false,m.updated_at,false)});conversationLoaded=true;scroll()}catch{}
     }
     async function handover(){
       const t=token();if(!t){note.style.display='block';note.textContent='Please sign in first so DBH can connect a human-support request to your account.';return}
