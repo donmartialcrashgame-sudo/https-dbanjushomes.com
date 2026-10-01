@@ -408,7 +408,7 @@ function setupNativeNotificationPopups(){
       const data=await r.json().catch(()=>({}));
       const rows=(Array.isArray(data.notifications)?data.notifications:[])
         .filter(n=>n&&!n.is_read)
-        .sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0);
+        .sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
       if(!rows.length)return;
       const newest=rows[0];
       const id=String(newest.id||newest.created_at||'');
