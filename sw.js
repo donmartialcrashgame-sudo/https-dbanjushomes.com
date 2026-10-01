@@ -17,7 +17,7 @@ const CORE=[
   "/assets/css/pwa.css","/assets/css/customer-care.css?v=20261001-1",
   "/assets/js/config.js",
   "/assets/js/properties.js?v=20260930-2",
-  "/assets/js/app.js?v=20261001-7","/assets/js/customer-care.js?v=20261001-1"
+  "/assets/js/app.js?v=20261001-7","/assets/js/customer-care.js?v=20261001-2"
 ];
 
 self.addEventListener("install",event=>{
