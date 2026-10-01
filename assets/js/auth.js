@@ -126,8 +126,28 @@ async function handleGoogleCredential(response){
   try{
     if(!response?.credential)throw new Error('Google did not return a sign-in credential.');
     setLoading(form,true);
-    setMessage('Signing in with Google…');
+    setMessage('Verifying your Google account…');
 
+    // DBH uses Google Identity Services directly. Supabase OAuth/callback is not used.
+    // First synchronize/create the Google user in Supabase through the trusted DBH Edge Function.
+    const syncUri=DBH_CONFIG.googleSyncUri;
+    if(!syncUri)throw new Error('DBH account synchronization is not configured.');
+
+    const syncResponse=await fetch(syncUri,{
+      method:'POST',
+      headers:{'Content-Type':'application/json',Accept:'application/json'},
+      credentials:'omit',
+      body:JSON.stringify({credential:response.credential})
+    });
+    const syncData=await syncResponse.json().catch(()=>({}));
+
+    if(!syncResponse.ok||!syncData?.success||!syncData?.user?.id){
+      throw new Error(syncData?.message||'Your Google account could not be saved to DBH. Please try again.');
+    }
+
+    setMessage('Google account saved. Starting your DBH session…');
+
+    // Then let the DBH auth server establish the normal DBH session.
     const endpoint=DBH_CONFIG.googleLoginUri;
     if(!endpoint)throw new Error('Google sign-in is not configured.');
 
@@ -138,23 +158,9 @@ async function handleGoogleCredential(response){
       body:JSON.stringify({credential:response.credential})
     });
     const data=await r.json().catch(()=>({}));
+
     if(!r.ok||!data?.success||!data?.user){
       throw new Error(data?.message||data?.error||'Google sign-in could not be completed.');
-    }
-
-    const syncUri=DBH_CONFIG.googleSyncUri;
-    if(!syncUri)throw new Error('DBH account synchronization is not configured.');
-
-    setMessage('Google verified. Saving your DBH account…');
-    const syncResponse=await fetch(syncUri,{
-      method:'POST',
-      headers:{'Content-Type':'application/json',Accept:'application/json'},
-      credentials:'omit',
-      body:JSON.stringify({credential:response.credential})
-    });
-    const syncData=await syncResponse.json().catch(()=>({}));
-    if(!syncResponse.ok||!syncData?.success||!syncData?.user?.id){
-      throw new Error(syncData?.message||'Your Google account could not be saved to DBH. Please try again.');
     }
 
     const syncedUser={
@@ -171,6 +177,7 @@ async function handleGoogleCredential(response){
       supabaseUserId:syncData.user.id,
       sessionToken:data.sessionToken||null
     }));
+
     sessionStorage.setItem('dbh_google_completed','1');
     setMessage('Google sign-in successful. Opening your account…','success');
     location.href='/callback.html?google=1';
