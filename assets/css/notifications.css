@@ -177,3 +177,39 @@
 
 .notification-drawer-footer{display:grid;gap:8px}
 .notification-drawer-footer .btn{min-height:42px}
+
+/* DBH real bell unread indicator */
+.notification-button{
+  position:relative!important;
+}
+.notification-button #notification-count{
+  position:absolute;
+  top:-5px;
+  right:-5px;
+  min-width:17px;
+  height:17px;
+  padding:0 4px;
+  border-radius:999px;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+  background:#e53935;
+  color:#fff;
+  border:2px solid #fff;
+  font:700 8px/1 Arial,sans-serif;
+  letter-spacing:-.01em;
+  box-shadow:0 3px 9px rgba(229,57,53,.35);
+}
+.notification-button.has-unread #notification-count{
+  display:grid!important;
+  animation:dbhNotificationBadge .28s ease-out;
+}
+@keyframes dbhNotificationBadge{
+  0%{transform:scale(.65);opacity:.4}
+  70%{transform:scale(1.12)}
+  100%{transform:scale(1);opacity:1}
+}
+.dbh-dark .notification-button #notification-count{
+  border-color:#101c2e;
+}
