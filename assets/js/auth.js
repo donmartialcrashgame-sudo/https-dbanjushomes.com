@@ -121,73 +121,6 @@ async function loadGoogleIdentityServices(){
   return window.__dbhGooglePromise;
 }
 
-async function syncGoogleIdentityToSupabase(idToken){
-  if(!DBH_CONFIG.supabaseUrl||!DBH_CONFIG.supabaseAnonKey)throw new Error('Supabase configuration is missing.');
-  const errors=[];
-
-  const direct=await fetch(DBH_CONFIG.supabaseUrl.replace(/\/$/,'')+'/auth/v1/token?grant_type=id_token',{
-    method:'POST',
-    headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey,Accept:'application/json'},
-    body:JSON.stringify({provider:'google',id_token:idToken})
-  });
-  const directData=await direct.json().catch(()=>({}));
-  if(direct.ok&&directData?.user){
-    return directData;
-  }
-  errors.push(directData?.error_description||directData?.msg||directData?.message||('Supabase Auth returned HTTP '+direct.status));
-
-  const fallbackUri=DBH_CONFIG.googleSupabaseSyncUri||
-    DBH_CONFIG.supabaseUrl.replace(/\/$/,'')+'/functions/v1/google-auth-callback';
-  try{
-    const fallback=await fetch(fallbackUri,{
-      method:'POST',
-      headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey,Accept:'application/json'},
-      body:JSON.stringify({credential:idToken})
-    });
-    const fallbackData=await fallback.json().catch(()=>({}));
-    if(fallback.ok&&fallbackData?.user){
-      return fallbackData;
-    }
-    errors.push(fallbackData?.error||fallbackData?.error_description||fallbackData?.message||('Google sync function returned HTTP '+fallback.status));
-  }catch(error){
-    errors.push(error.message||'Google sync function failed');
-  }
-
-  throw new Error(errors.join(' | '));
-}
-async function handleGoogleCredential(response){
-  const form=document.getElementById('login-form')||document.getElementById('register-form');
-  try{
-    if(!response?.credential)throw new Error('Google did not return a sign-in credential.');
-    setLoading(form,true);
-    setMessage('Securing your Google account…');
-    let supabaseSync=null;
-    try{
-      supabaseSync=await syncGoogleIdentityToSupabase(response.credential);
-    }catch(syncError){
-      throw new Error('Google account could not be synchronized with DBH. Please try Google sign-in again. '+(syncError.message||''));
-    }
-
-    const endpoint=DBH_CONFIG.googleLoginUri;
-    if(!endpoint)throw new Error('Google sign-in is not configured.');
-    const r=await fetch(endpoint,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({credential:response.credential})
-    });
-    const data=await r.json().catch(()=>({}));
-    if(!r.ok||!data?.success||!data?.user)throw new Error(data?.error||data?.message||'Google sign-in could not be completed.');
-    localStorage.setItem('dbh_session',JSON.stringify({authenticated:true,provider:'google',user:data.user,sessionToken:data.sessionToken||null,supabaseUserId:supabaseSync?.user?.id||null}));
-    sessionStorage.setItem('dbh_google_completed','1');
-    setMessage('Google sign-in successful. Opening your account…','success');
-    location.href='/callback.html?google=1';
-  }catch(error){
-    console.error('DBH Google sign-in error:',error);
-    setMessage(error.message||'Unable to sign in with Google.');
-    setLoading(form,false);
-  }
-}
-
 async function setupGoogleSignIn(){
   const hosts=document.querySelectorAll('[data-google-signin]');
   if(!hosts.length)return;
@@ -221,6 +154,8 @@ async function setupGoogleSignIn(){
   }
 }
 setupGoogleSignIn();
+// DBH Google authentication is handled only by Google Identity Services + the DBH auth server.
+// Supabase Auth is intentionally not used for Google sign-in.
 
 async function startOAuth(provider){
   const providers={facebook:'facebook',twitter:'twitter',github:'github',gitlab:'gitlab'};
