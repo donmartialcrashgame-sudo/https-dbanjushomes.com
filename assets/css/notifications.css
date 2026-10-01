@@ -174,3 +174,6 @@
   .notification-drawer{width:94vw;padding:17px 15px 0!important}
   .notification-detail h3{font-size:21px}
 }
+
+.notification-drawer-footer{display:grid;gap:8px}
+.notification-drawer-footer .btn{min-height:42px}
