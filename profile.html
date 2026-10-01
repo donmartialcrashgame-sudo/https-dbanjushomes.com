@@ -25,6 +25,21 @@ const root=document.getElementById('profile-content');
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function initials(name){return String(name||'DB').trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'DB'}
 function session(){try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}}
+async function freshSession(){
+ try{
+  const local=session();
+  const headers={'Accept':'application/json'};
+  if(local?.sessionToken)headers.Authorization='Bearer '+local.sessionToken;
+  const base=(window.DBH_CONFIG?.apiBaseUrl||'https://dbanjushomes-auth-xsm3.onrender.com').replace(/\/$/,'');
+  const res=await fetch(base+'/api/auth/session',{credentials:'include',headers,cache:'no-store'});
+  const data=await res.json().catch(()=>({}));
+  if(res.ok&&data?.authenticated&&data?.user){
+   localStorage.setItem('dbh_session',JSON.stringify({...local,authenticated:true,user:data.user,sessionToken:local?.sessionToken||data?.sessionToken||null}));
+   return data.user;
+  }
+ }catch{}
+ return session()?.user||null;
+}
 function render(user){
  if(!user){root.innerHTML='<section class="profile-card profile-logged-out"><h1>Sign in to your profile</h1><p>Your DBH profile is available after you sign in. Use your DBH account to manage your personal information and saved properties.</p><div class="profile-actions"><a class="btn btn-primary" href="/login.html?redirect=/profile.html">Sign In</a><a class="btn btn-outline" href="/register.html">Create account</a></div></section>';return}
  const name=user.name||user.full_name||user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split('@')[0]||'DBH User';
@@ -48,7 +63,7 @@ function render(user){
    }catch(err){status.className='profile-status show error';status.textContent='Unable to update your profile.'}
  });
 }
-render(session()?.user||null);
+freshSession().then(render);
 })();
 </script>
 <style>.profile-avatar-lg img{width:100%;height:100%;object-fit:cover;display:block}.profile-avatar-lg span{display:grid;place-items:center;width:100%;height:100%}</style></body></html>
