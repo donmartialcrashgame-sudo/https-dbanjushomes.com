@@ -168,15 +168,34 @@ function setupCustomerCareWidget(){
   const sessionUser=()=>{const s=localSession();return s?.user||s||null};
   const scrollBottom=()=>{body.scrollTop=body.scrollHeight};
 
-  function bubble(text,mine=false,time=null,checks=false,label=''){
+  function aiIcon(text){
+    const t=String(text||'').toLowerCase();
+    if(/property|house|home|land|listing/.test(t))return '<span class="dbh-care-ai-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 11 9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></span>';
+    if(/verify|verified|document|security|safe/.test(t))return '<span class="dbh-care-ai-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 20 6v5.4c0 4.7-3.3 7.8-8 9.6-4.7-1.8-8-4.9-8-9.6V6l8-3Z"/><path d="m8.5 11.8 2.2 2.2 4.8-5"/></svg></span>';
+    if(/account|profile|sign in|login/.test(t))return '<span class="dbh-care-ai-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c.7-4 2.8-6 7-6s6.3 2 7 6"/></svg></span>';
+    if(/search|find|location/.test(t))return '<span class="dbh-care-ai-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m16 16 5 5"/></svg></span>';
+    return '<span class="dbh-care-ai-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 14.1 9.9 21 12l-6.9 2.1L12 21l-2.1-6.9L3 12l6.9-2.1L12 3Z"/></svg></span>';
+  }
+  function bubble(text,mine=false,time=null,checks=false,media=null){
     const row=document.createElement('div');
     row.className='dbh-care-row '+(mine?'mine':'theirs');
     const b=document.createElement('div');
     b.className='dbh-care-message-bubble '+(mine?'mine':'theirs');
-    const main=document.createElement('span');main.className='dbh-care-message-text';main.textContent=text;
+    if(!mine&&media?.image_data){
+      const src=String(media.image_data);
+      if(/^data:image\/(png|jpeg|jpg|webp);base64,/i.test(src)){
+        const imageWrap=document.createElement('div');imageWrap.className='dbh-care-generated-image-wrap';
+        const img=document.createElement('img');img.className='dbh-care-generated-image';img.src=src;img.alt='AI-generated DBH image';img.loading='lazy';
+        imageWrap.appendChild(img);b.appendChild(imageWrap);
+      }
+    }
+    const textWrap=document.createElement('div');textWrap.className='dbh-care-ai-line';
+    if(!mine)textWrap.insertAdjacentHTML('beforeend',aiIcon(text));
+    const main=document.createElement('span');main.className='dbh-care-message-text';main.textContent=text||'';
+    textWrap.appendChild(main);b.appendChild(textWrap);
     const meta=document.createElement('span');meta.className='dbh-care-message-meta';
     meta.textContent=(time?new Date(time).toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'}):new Date().toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'}))+(checks?'  ✓✓':'');
-    b.append(main,meta);row.appendChild(b);body.insertBefore(row,form);
+    b.append(meta);row.appendChild(b);body.insertBefore(row,form);
     return row;
   }
 
@@ -203,7 +222,7 @@ function setupCustomerCareWidget(){
         const key=String(m?.id||'');
         if(!key||renderedMessages.has(key))return;
         if(m?.message)bubble(m.message,true,m.created_at,true);
-        if(m?.agent_reply)bubble(m.agent_reply,false,m.updated_at,false);
+        if(m?.agent_reply)bubble(m.agent_reply,false,m.updated_at,false,m?.image_data?{image_data:m.image_data}:null);
         if(m?.human_reply)bubble(m.human_reply,false,m.updated_at,false);
         renderedMessages.add(key);
       });
@@ -243,7 +262,8 @@ function setupCustomerCareWidget(){
       if(!r.ok)throw new Error(data?.message||'Your message could not be sent.');
       typing(false);
       const aiReply=String(data?.message?.agent_reply||'').trim();
-      if(aiReply)bubble(aiReply,false,new Date().toISOString(),false);
+      const aiImage=data?.message?.image_data?{image_data:String(data.message.image_data)}:null;
+      if(aiReply||aiImage)bubble(aiReply||(aiImage?'Here’s the image you requested.':''),false,new Date().toISOString(),false,aiImage);
       else{
         note.textContent='Your message was sent, but the AI did not return a reply. Please try again.';
         note.style.display='block';
