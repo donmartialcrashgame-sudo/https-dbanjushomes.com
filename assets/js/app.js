@@ -111,7 +111,7 @@ function setupDBHPWA(){
 function hideLoader(){const l=document.getElementById('app-loader');if(l){l.classList.add('fade');setTimeout(()=>{l.style.display='none'},650)}}
 window.addEventListener('error',hideLoader);
 window.addEventListener('unhandledrejection',hideLoader);
-document.addEventListener('DOMContentLoaded',()=>{safe(setupDBHPWA);hideLoader();safe(bootShell);safe(loadData);safe(setupSearch);safe(setupNotifications);safe(initHeroSlider);safe(dbhGlobalInteractionFix);});
+document.addEventListener('DOMContentLoaded',()=>{safe(setupDBHPWA);hideLoader();safe(bootShell);safe(loadData);safe(setupSearch);safe(setupNotifications);safe(setupNativeNotificationPopups);safe(initHeroSlider);safe(dbhGlobalInteractionFix);});
 function dbhGlobalInteractionFix(){
   document.addEventListener('click',async(e)=>{
     const menu=e.target.closest('#mobile-menu-button');
@@ -261,7 +261,7 @@ function setupNotifications(){
     drawer.id='notification-drawer';
     drawer.className='notification-drawer';
     drawer.setAttribute('aria-label','DBH notifications');
-    drawer.innerHTML='<div class="notification-drawer-head"><div><span class="eyebrow">DBH ACCOUNT</span><h2>Notifications</h2><p class="notification-subtitle">Your latest DBH updates</p></div><button type="button" id="notification-drawer-close" class="notification-cancel" aria-label="Close notifications">Cancel<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div id="notification-drawer-body" class="notification-drawer-body"><div class="notification-loading"><span class="notification-loader"></span><strong>Loading notifications…</strong></div></div><div class="notification-drawer-footer"><button type="button" id="notification-footer-close" class="btn btn-outline">Close notifications</button></div>';
+    drawer.innerHTML='<div class="notification-drawer-head"><div><span class="eyebrow">DBH ACCOUNT</span><h2>Notifications</h2><p class="notification-subtitle">Your latest DBH updates</p></div><button type="button" id="notification-drawer-close" class="notification-cancel" aria-label="Close notifications">Cancel<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div id="notification-drawer-body" class="notification-drawer-body"><div class="notification-loading"><span class="notification-loader"></span><strong>Loading notifications…</strong></div></div><div class="notification-drawer-footer"><button type="button" id="notification-native-enable" class="btn btn-primary">Enable pop-up notifications</button><button type="button" id="notification-native-test" class="btn btn-outline">Test popup</button><button type="button" id="notification-footer-close" class="btn btn-outline">Close notifications</button></div>';
     document.body.appendChild(drawer);
 
     const overlay=document.createElement('div');
@@ -276,6 +276,12 @@ function setupNotifications(){
 
     document.getElementById('notification-drawer-close')?.addEventListener('click',close);
     document.getElementById('notification-footer-close')?.addEventListener('click',close);
+    document.getElementById('notification-native-enable')?.addEventListener('click',async()=>{
+      const ok=await window.DBHEnableNotifications?.();
+      const btn=document.getElementById('notification-native-enable');
+      if(btn)btn.textContent=ok?'Pop-up notifications enabled':'Notifications not enabled';
+    });
+    document.getElementById('notification-native-test')?.addEventListener('click',()=>window.DBHTestNotification?.());
     overlay.addEventListener('click',close);
     document.addEventListener('keydown',e=>{
       if(e.key==='Escape')close();
@@ -380,7 +386,99 @@ function setupNotifications(){
   const button=document.getElementById('notification-button');
   button?.addEventListener('click',open);
 }
-function dbhCookieValue(name){return document.cookie.split(';').map(x=>x.trim()).find(x=>x.indexOf(name+'=')===0)?.slice(name.length+1)||null}
+function setupNativeNotificationPopups(){
+  if(window.__dbhNativeNotificationsReady)return;
+  window.__dbhNativeNotificationsReady=true;
+  if(!('Notification' in window)||!window.fetch)return;
+
+  const api=(window.DBH_CONFIG?.notificationsUri||((window.DBH_CONFIG?.supabaseUrl||'').replace(/\/$/,'')+'/functions/v1/dbh-notifications'));
+  const session=()=>{try{return JSON.parse(localStorage.getItem(DBH.sessionKey)||'null')}catch{return null}};
+  const token=()=>{const s=session();return s?.sessionToken||s?.access_token||s?.accessToken||s?.session?.access_token||''};
+  const userKey=()=>{const s=session();const u=s?.user||s;return String(u?.email||u?.id||'guest').trim().toLowerCase()};
+  const stateKey=()=> 'dbh_native_notification_state:'+userKey();
+  let firstLoad=true;
+  let lastSeen='';
+
+  async function poll(){
+    const t=token();
+    if(!t)return;
+    try{
+      const r=await fetch(api,{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'});
+      if(!r.ok)return;
+      const data=await r.json().catch(()=>({}));
+      const rows=(Array.isArray(data.notifications)?data.notifications:[])
+        .filter(n=>n&&!n.is_read)
+        .sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0);
+      if(!rows.length)return;
+      const newest=rows[0];
+      const id=String(newest.id||newest.created_at||'');
+      const saved=localStorage.getItem(stateKey())||'';
+
+      if(firstLoad){
+        lastSeen=saved||id;
+        if(!saved)localStorage.setItem(stateKey(),id);
+        firstLoad=false;
+        return;
+      }
+
+      if(id===lastSeen)return;
+      const newer=rows.find(n=>String(n.id||n.created_at||'')!==lastSeen)||newest;
+      const newerId=String(newer.id||newer.created_at||'');
+      if(!newerId||newerId===lastSeen)return;
+
+      lastSeen=newerId;
+      localStorage.setItem(stateKey(),newerId);
+
+      if(Notification.permission==='granted'){
+        const note=new Notification(String(newer.title||'DBH Notification'),{
+          body:String(newer.message||'You have a new notification from D Banjus Homes Nig Ltd.'),
+          icon:'/dbh-logo.jpg',
+          badge:'/dbh-logo.jpg',
+          tag:'dbh-'+newerId,
+          renotify:true
+        });
+        note.onclick=()=>{window.focus();if(newer.link)window.location.href=newer.link;note.close()};
+      }
+    }catch(e){console.warn('DBH native notification poll:',e)}
+  }
+
+  window.DBHEnableNotifications=async function(){
+    if(Notification.permission==='granted')return true;
+    if(Notification.permission==='denied')return false;
+    const permission=await Notification.requestPermission();
+    if(permission==='granted'){
+      const test=new Notification('DBH Notifications enabled',{
+        body:'You will now receive DBH notification popups on this device.',
+        icon:'/dbh-logo.jpg',
+        badge:'/dbh-logo.jpg',
+        tag:'dbh-notifications-enabled'
+      });
+      setTimeout(()=>test.close(),6000);
+      return true;
+    }
+    return false;
+  };
+
+  window.DBHTestNotification=async function(){
+    if(Notification.permission!=='granted'){
+      const ok=await window.DBHEnableNotifications();
+      if(!ok)return false;
+    }
+    const note=new Notification('DBH Test Notification',{
+      body:'Your DBH desktop/mobile/tablet notification popup is working.',
+      icon:'/dbh-logo.jpg',
+      badge:'/dbh-logo.jpg',
+      tag:'dbh-test-'+Date.now(),
+      renotify:true
+    });
+    note.onclick=()=>{window.focus();note.close()};
+    return true;
+  };
+
+  poll();
+  setInterval(poll,20000);
+}
+\nfunction dbhCookieValue(name){return document.cookie.split(';').map(x=>x.trim()).find(x=>x.indexOf(name+'=')===0)?.slice(name.length+1)||null}
 function setDbhCookie(name,value,days){try{document.cookie=name+'='+encodeURIComponent(value)+'; Max-Age='+(days*86400)+'; Path=/; SameSite=Lax; Secure'}catch{}}
 function consentIcon(type){const m={cookie:'<svg viewBox="0 0 24 24"><path d="M20 13a8 8 0 1 1-9-9 6 6 0 0 0 9 9Z"/><circle cx="8" cy="14" r="1"/><circle cx="11" cy="17" r="1"/><circle cx="14" cy="13" r="1"/><circle cx="9" cy="9" r="1"/></svg>',bell:'<svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>',pin:'<svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>'};return m[type]||m.cookie}
 function permissionState(name){try{return navigator.permissions?.query({name}).then(x=>x.state).catch(()=>null)}catch{return Promise.resolve(null)}}
