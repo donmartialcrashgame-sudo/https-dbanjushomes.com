@@ -18,10 +18,10 @@ function addStyles(){
 .dbh-protected-close{width:40px;height:40px;border:1px solid #d5e1ef;border-radius:12px;background:#fff;display:grid;place-items:center;cursor:pointer}.dbh-protected-close svg{width:20px;fill:none;stroke:#36526f;stroke-width:1.8}
 .dbh-protected-stage{position:relative;flex:1;overflow:auto;padding:28px 20px}
 .dbh-protected-pages{max-width:900px;margin:0 auto;position:relative}
-.dbh-pdf-page,.dbh-doc-image{position:relative;overflow:hidden;background:#fff;margin:0 auto 22px;box-shadow:0 8px 28px rgba(25,55,90,.14);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
-.dbh-pdf-page canvas{display:block;width:100%;height:auto}.dbh-doc-image img{display:block;max-width:100%;width:100%}
-.dbh-document-watermark{position:absolute;inset:-18%;z-index:8;pointer-events:none;display:grid;grid-template-columns:repeat(3,minmax(180px,1fr));grid-auto-rows:145px;transform:rotate(-22deg) scale(1.15);transform-origin:center;opacity:.22;overflow:hidden}
-.dbh-document-watermark span{display:flex;align-items:center;justify-content:center;text-align:center;font:700 14px/1.25 Arial,sans-serif;color:#0d3c78;white-space:nowrap;user-select:none;-webkit-user-select:none}
+.dbh-pdf-page,.dbh-doc-image{position:relative;overflow:hidden;background:#fff;margin:0 auto 22px;box-shadow:0 8px 28px rgba(25,55,90,.14);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;width:min(900px,100%);height:auto}.dbh-pdf-page canvas{width:100%!important;height:auto!important;display:block}
+.dbh-doc-image img{display:block;max-width:100%;width:100%}
+.dbh-document-watermark{position:absolute;inset:-18%;z-index:8;pointer-events:none;display:grid;grid-template-columns:repeat(3,minmax(180px,1fr));grid-auto-rows:145px;transform:rotate(-22deg) scale(1.15);transform-origin:center;opacity:.24;overflow:hidden;mix-blend-mode:multiply}
+.dbh-document-watermark span{display:flex;align-items:center;justify-content:center;text-align:center;font:800 14px/1.25 Arial,sans-serif;color:#0d3c78;text-shadow:0 1px 0 rgba(255,255,255,.75);white-space:nowrap;user-select:none;-webkit-user-select:none}
 .dbh-protected-gate{position:absolute;inset:0;z-index:20;background:rgba(238,245,252,.97);display:none;place-items:center;padding:22px}.dbh-protected-gate.open{display:grid}
 .dbh-protected-gate-card{width:min(520px,100%);background:#fff;border:1px solid #d8e5f2;border-radius:24px;padding:28px;box-shadow:0 18px 60px rgba(28,65,105,.14);text-align:center}
 .dbh-protected-gate-icon{width:58px;height:58px;margin:0 auto 14px;border-radius:18px;background:#eaf3ff;display:grid;place-items:center}.dbh-protected-gate-icon svg{width:28px;height:28px;fill:none;stroke:#1264d6;stroke-width:1.8}
@@ -92,8 +92,8 @@ async function logView(propertyId,documentId,position){
 function addWatermark(box){
  const u=getUser(),name=String(u.name||u.full_name||u.user_metadata?.full_name||'DBH User'),email=String(u.email||'').toLowerCase();
  const wm=document.createElement('div');wm.className='dbh-document-watermark';
- const label=('D BANJUS HOMES NIG LTD • PROTECTED • '+name+' • '+email);
- for(let i=0;i<30;i++){const s=document.createElement('span');s.textContent=label;wm.appendChild(s)}
+ const label=('DBH — D BANJUS HOMES NIG LTD • PROTECTED DOCUMENT • FOR VIEWING ONLY — NOT THE ORIGINAL COPY • '+name+' • '+email);
+ for(let i=0;i<36;i++){const s=document.createElement('span');s.textContent=label;wm.appendChild(s)}
  box.appendChild(wm);
 }
 
@@ -112,9 +112,9 @@ async function renderPdf(url,title){
  const pdf=await window.pdfjsLib.getDocument({data:await response.arrayBuffer()}).promise;
  const pages=document.getElementById('dbh-protected-pages');pages.innerHTML='';
  for(let i=1;i<=pdf.numPages;i++){
-   const page=await pdf.getPage(i),viewport=page.getViewport({scale:1.45});
+   const page=await pdf.getPage(i); const base=page.getViewport({scale:1}); const maxWidth=Math.min(900,Math.max(280,document.getElementById('dbh-protected-pages').clientWidth||900)); const scale=maxWidth/base.width; const viewport=page.getViewport({scale});
    const box=document.createElement('div');box.className='dbh-pdf-page';
-   const canvas=document.createElement('canvas');canvas.width=viewport.width;canvas.height=viewport.height;box.appendChild(canvas);pages.appendChild(box);
+   const canvas=document.createElement('canvas');canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);canvas.style.width='100%';canvas.style.height='auto';canvas.setAttribute('aria-label','Protected document page '+i);box.appendChild(canvas);pages.appendChild(box);
    await page.render({canvasContext:canvas.getContext('2d',{alpha:false}),viewport}).promise;addWatermark(box);
  }
 }
@@ -155,9 +155,9 @@ document.addEventListener('keydown',e=>{
  if(k==='printscreen'||((e.ctrlKey||e.metaKey)&&['p','s','u','c'].includes(k))){e.preventDefault();const p=document.getElementById('dbh-protected-pages');if(p){p.style.visibility='hidden';setTimeout(()=>{if(!document.hidden)p.style.visibility='visible'},900)}}
 });
 document.addEventListener('contextmenu',e=>{if((e.target instanceof Element && e.target.closest('.dbh-protected-card')))e.preventDefault()});
-document.addEventListener('selectstart',e=>{if(e.target.closest('.dbh-protected-card'))e.preventDefault()});
-document.addEventListener('dragstart',e=>{if(e.target.closest('.dbh-protected-card'))e.preventDefault()});
-document.addEventListener('copy',e=>{if(e.target.closest('.dbh-protected-card'))e.preventDefault()});
+document.addEventListener('selectstart',e=>{if(e.target instanceof Element && e.target.closest('.dbh-protected-card'))e.preventDefault()});
+document.addEventListener('dragstart',e=>{if(e.target instanceof Element && e.target.closest('.dbh-protected-card'))e.preventDefault()});
+document.addEventListener('copy',e=>{if(e.target instanceof Element && e.target.closest('.dbh-protected-card'))e.preventDefault()});
 document.addEventListener('visibilitychange',()=>{const p=document.getElementById('dbh-protected-pages');if(p?.closest('.dbh-protected-overlay.open'))p.style.visibility=document.hidden?'hidden':'visible'});
 document.addEventListener('beforeprint',()=>{const p=document.getElementById('dbh-protected-pages');if(p)p.style.visibility='hidden'});
 window.DBHProtectedViewer={open:openViewer};
