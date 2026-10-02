@@ -1,4 +1,5 @@
 (function(){
+if(!document.getElementById("dbh-protected-style"))document.head.insertAdjacentHTML("beforeend","<style id=\"dbh-protected-style\">\n.dbh-protected-pages{position:relative;overflow:hidden}\n.dbh-pdf-page,.dbh-doc-image{position:relative;overflow:hidden}\n.dbh-document-watermark{position:absolute;inset:0;z-index:8;pointer-events:none;display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:150px;transform:rotate(-18deg) scale(1.18);transform-origin:center;opacity:.18;overflow:hidden}\n.dbh-document-watermark span{display:flex;align-items:center;justify-content:center;text-align:center;font:700 16px/1.25 Arial,sans-serif;color:#123b73;white-space:nowrap;user-select:none;-webkit-user-select:none}\n.dbh-protected-pages canvas,.dbh-protected-pages img{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}\n.dbh-location-required{margin-top:12px;padding:10px 12px;border-radius:12px;background:#f3f7fd;color:#27466f;font-size:12px}\n@media print{.dbh-protected-pages{visibility:hidden!important}.dbh-protected-card:after{content:\"DBH PROTECTED DOCUMENT — PRINTING NOT ALLOWED\";position:fixed;inset:40% 0;text-align:center;font:700 24px Arial;color:#123b73}}\n</style>");
 const C=window.DBH_CONFIG||{};
 const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 const token=()=>{try{const s=JSON.parse(localStorage.getItem('dbh_session')||'null');return s?.access_token||s?.accessToken||null}catch{return null}};
@@ -26,6 +27,31 @@ function gate(title,text,button){
  document.getElementById('dbh-protected-gate-icon').innerHTML=title.toLowerCase().includes('location')?svg.pin:title.toLowerCase().includes('sign')?svg.user:svg.lock;
  document.getElementById('dbh-protected-gate-action').innerHTML=button||'';
 }
+function sessionUser(){
+ try{const s=JSON.parse(localStorage.getItem('dbh_session')||'null');return s?.user||s||{}}
+ catch{return {}}
+}
+function addWatermark(box){
+ const old=box.querySelector('.dbh-document-watermark');if(old)old.remove();
+ const u=sessionUser(), name=String(u.name||u.full_name||u.user_metadata?.full_name||'DBH User'), email=String(u.email||'').toLowerCase();
+ const wm=document.createElement('div');wm.className='dbh-document-watermark';
+ const label=('D BANJUS HOMES NIG LTD • PROTECTED • '+name+' • '+email).slice(0,180);
+ for(let i=0;i<24;i++){const s=document.createElement('span');s.textContent=label;wm.appendChild(s)}
+ box.appendChild(wm);
+}
+async function logView(propertyId,documentId,position){
+ const t=(()=>{try{const s=JSON.parse(localStorage.getItem('dbh_session')||'null');return s?.sessionToken||s?.access_token||s?.accessToken||''}catch{return ''}})();
+ const fd=new FormData();fd.append('action','log_view');fd.append('property_id',propertyId);fd.append('document_id',documentId);fd.append('latitude',String(position.coords.latitude));fd.append('longitude',String(position.coords.longitude));
+ const r=await fetch(C.propertyDocumentsUri,{method:'POST',headers:{Authorization:'Bearer '+t},body:fd});
+ return r.ok;
+}
+ const el=build();el.classList.add('open');document.body.style.overflow='hidden';
+ document.getElementById('dbh-protected-gate').classList.add('open');
+ document.getElementById('dbh-protected-gate-title').textContent=title;
+ document.getElementById('dbh-protected-gate-text').textContent=text;
+ document.getElementById('dbh-protected-gate-icon').innerHTML=title.toLowerCase().includes('location')?svg.pin:title.toLowerCase().includes('sign')?svg.user:svg.lock;
+ document.getElementById('dbh-protected-gate-action').innerHTML=button||'';
+}
 async function getLocation(){
  if(!navigator.geolocation)throw Error('Location is not available in this browser.');
  return new Promise((resolve,reject)=>navigator.geolocation.getCurrentPosition(
@@ -45,7 +71,7 @@ async function renderImage(url,title){
  const pages=document.getElementById('dbh-protected-pages');pages.innerHTML='';
  const wrap=document.createElement('div');wrap.className='dbh-doc-image';
  const img=document.createElement('img');img.alt=title;img.src=url;wrap.appendChild(img);
- const wm=document.createElement('div');wm.className='dbh-document-watermark';wrap.appendChild(wm);pages.appendChild(wrap);
+ pages.appendChild(wrap);addWatermark(wrap);
 }
 async function renderPdf(url,title){
  if(!window.pdfjsLib){
@@ -58,7 +84,7 @@ async function renderPdf(url,title){
  for(let i=1;i<=pdf.numPages;i++){
    const page=await pdf.getPage(i), viewport=page.getViewport({scale:1.45});
    const box=document.createElement('div');box.className='dbh-pdf-page';const canvas=document.createElement('canvas');canvas.width=viewport.width;canvas.height=viewport.height;box.appendChild(canvas);
-   const wm=document.createElement('div');wm.className='dbh-document-watermark';box.appendChild(wm);pages.appendChild(box);
+   pages.appendChild(box);addWatermark(box);
    await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
  }
 }
@@ -74,8 +100,27 @@ async function openViewer(opts){
  const t=s?.sessionToken||s?.access_token||s?.accessToken||'';
  if(!t){gate('Sign in required','Your existing DBH session could not be found. Please sign in to your DBH account.','<a class="btn btn-primary" href="/login.html?redirect='+encodeURIComponent(location.href)+'">Sign in</a>');return}
  try{
-   gate('Opening protected document','Checking your existing DBH session…');
-   const result=await fetchDocument(opts.documentId,opts.propertyId);
+   gate('Location permission required','DBH requires browser location permission before this protected document can be displayed. If you deny or turn off location access, the document will remain hidden.','<button class="btn btn-primary" id="dbh-enable-location" type="button">Allow location & continue</button>');
+   const locButton=document.getElementById('dbh-enable-location');
+   if(locButton)locButton.onclick=async()=>{
+     locButton.disabled=true;locButton.textContent='Checking location…';
+     try{
+       const position=await getLocation();
+       gate('Opening protected document','Location verified. Checking your DBH account and document access…');
+       const result=await fetchDocument(opts.documentId,opts.propertyId);
+       if(!result.ok){gate(result.status===401?'Sign in required':'Document unavailable',result.data?.message||'DBH could not authorize this document with your current session.',result.status===401?'<a class="btn btn-primary" href="/login.html?redirect='+encodeURIComponent(location.href)+'">Sign in</a>':'');return}
+       const doc=result.data?.document;
+       const signed=doc?.signed_url||doc?.public_preview_url;
+       if(!doc||!signed){gate('Document unavailable','This document has not been uploaded to protected DBH storage yet.');return}
+       const logged=await logView(opts.propertyId,doc.id,position);
+       if(!logged){gate('Access blocked','DBH could not record this document viewing session, so the document remains hidden.');return}
+       document.getElementById('dbh-protected-gate').classList.remove('open');
+       document.getElementById('dbh-protected-doc').textContent=doc.document_type||opts.documentType||'Legal document';
+       const isPdf=doc.is_pdf===true || /\.pdf(?:$|\?)/i.test(signed) || /pdf/i.test(doc.document_type||'');
+       if(isPdf)await renderPdf(signed,doc.document_type||'DBH document');else await renderImage(signed,doc.document_type||'DBH document');
+     }catch(e){gate('Location required','DBH could not verify your browser location. Please enable location permission and try again.','<button class="btn btn-primary" id="dbh-retry-location" type="button">Try again</button>');const b=document.getElementById('dbh-retry-location');if(b)b.onclick=()=>openViewer(opts)}
+   };
+   return;
    if(!result.ok){gate(result.status===401?'Sign in required':'Document unavailable',result.data?.message||'DBH could not authorize this document with your current session.',result.status===401?'<a class="btn btn-primary" href="/login.html?redirect='+encodeURIComponent(location.href)+'">Sign in</a>':'');return}
    const doc=result.data?.document;
    const signed=doc?.signed_url||doc?.public_preview_url;
