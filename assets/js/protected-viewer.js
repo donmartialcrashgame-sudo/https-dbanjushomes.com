@@ -37,9 +37,9 @@ async function fetchDocument(docId,propertyId){
  const s=(()=>{try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}})();
  const t=s?.sessionToken||s?.access_token||s?.accessToken||'';
  if(!t)return {ok:false,status:401,data:null};
- const qs=docId?'id='+encodeURIComponent(docId):'property_id='+encodeURIComponent(propertyId);
+ const qs='property_id='+encodeURIComponent(propertyId);
  const r=await fetch((C.propertyDocumentsUri||C.supabaseUrl+'/functions/v1/dbh-property-documents')+'?'+qs,{headers:{Accept:'application/json',Authorization:'Bearer '+t,apikey:C.supabaseAnonKey},credentials:'include'});
- const data=await r.json().catch(()=>null);return {ok:r.ok,status:r.status,data};
+ const data=await r.json().catch(()=>null); if(data?.documents&&docId)data.document=data.documents.find(x=>String(x.id)===String(docId))||data.documents[0]||null; return {ok:r.ok,status:r.status,data};
 }
 async function renderImage(url,title){
  const pages=document.getElementById('dbh-protected-pages');pages.innerHTML='';
