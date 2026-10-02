@@ -21,6 +21,25 @@ if(location.pathname.endsWith('/reset-password.html')){
   if(!s?.access_token||s.type!=='recovery') location.replace('/forgot-password.html');
 }
 const redirect=()=>new URLSearchParams(location.search).get('redirect')||'/dashboard.html';
+async function loadSupabaseClient(){
+  if(window.__dbhSupabaseClient)return window.__dbhSupabaseClient;
+  const mod=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+  window.__dbhSupabaseClient=mod.createClient(DBH_CONFIG.supabaseUrl,DBH_CONFIG.supabaseAnonKey,{auth:{persistSession:false,autoRefreshToken:true,detectSessionInUrl:false}});
+  return window.__dbhSupabaseClient;
+}
+async function getMfaRedirect(nextPath='/dashboard.html'){
+  const s=(()=>{try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}})();
+  if(!s?.access_token||!s?.refresh_token)return nextPath;
+  try{
+    const sb=await loadSupabaseClient();
+    const {error}=await sb.auth.setSession({access_token:s.access_token,refresh_token:s.refresh_token});
+    if(error)throw error;
+    const {data,error:aalError}=await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+    if(aalError)throw aalError;
+    if(data?.currentLevel==='aal1'&&data?.nextLevel==='aal2')return '/totp.html?redirect='+encodeURIComponent(nextPath);
+  }catch(error){console.warn('DBH MFA status check unavailable:',error)}
+  return nextPath;
+}
 async function postAuthRedirect(defaultPath){
   const next=redirect();
   if(next!=='/dashboard.html') return next;
@@ -62,12 +81,12 @@ loginForm?.addEventListener('submit',async e=>{
   try{
     const d=await supabaseAuth('token?grant_type=password',{email:String(f.get('email')).trim(),password:f.get('password')});
     localStorage.setItem('dbh_session',JSON.stringify(d));
-    setMessage('Signed in. Opening your account…');
-    location.href=await postAuthRedirect('/dashboard.html');
+    setMessage('Signed in. Checking account security…');
+    location.href=await getMfaRedirect(await postAuthRedirect('/dashboard.html'));
   }catch(primary){
     try{
       const d=await fallback('/auth/login',{email:String(f.get('email')).trim(),password:f.get('password')});
-      localStorage.setItem('dbh_session',JSON.stringify(d));location.href=await postAuthRedirect('/dashboard.html');
+      localStorage.setItem('dbh_session',JSON.stringify(d));location.href=await getMfaRedirect(await postAuthRedirect('/dashboard.html'));
     }catch(error){setMessage(primary.message||'Unable to sign in. Please check your email and password.');setLoading(form,false);}
   }
 });
@@ -144,7 +163,19 @@ async function handleGoogleCredential(response){
       throw new Error(syncData?.message||'Your Google account could not be saved to DBH. Please try again.');
     }
 
-    setMessage('Google account saved. Starting your DBH session…');
+    // Google Identity Services remains the branded sign-in UI. We exchange the
+    // already-issued Google ID token with Supabase only to obtain the same user's
+    // secure Auth session, which lets DBH use password recovery and TOTP MFA.
+    setMessage('Google account matched. Securing your DBH session…');
+    const sb=await loadSupabaseClient();
+    const {data:supaData,error:supaError}=await sb.auth.signInWithIdToken({provider:'google',token:response.credential});
+    if(supaError||!supaData?.session||!supaData?.user){
+      throw new Error(supaError?.message||'DBH could not establish the secure account session. Please enable Google in Supabase Auth settings and try again.');
+    }
+    if(String(supaData.user.id)!==String(syncData.user.id)){
+      await sb.auth.signOut();
+      throw new Error('The Google email matched a different DBH account. Sign in with the original account email.');
+    }
 
     // Then let the DBH auth server establish the normal DBH session.
     const endpoint=DBH_CONFIG.googleLoginUri;
@@ -170,6 +201,7 @@ async function handleGoogleCredential(response){
     };
 
     localStorage.setItem('dbh_session',JSON.stringify({
+      ...supaData.session,
       authenticated:true,
       provider:'google',
       user:syncedUser,
@@ -178,8 +210,14 @@ async function handleGoogleCredential(response){
     }));
 
     sessionStorage.setItem('dbh_google_completed','1');
-    setMessage('Google sign-in successful. Opening your account…','success');
-    location.href='/callback.html?google=1';
+    const next=await getMfaRedirect('/dashboard.html');
+    if(next!=='/dashboard.html'){
+      setMessage('Google sign-in successful. Enter your authenticator code…','success');
+      location.href=next;
+    }else{
+      setMessage('Google sign-in successful. Opening your account…','success');
+      location.href='/callback.html?google=1';
+    }
   }catch(error){
     console.error('DBH Google sign-in error:',error);
     setMessage(error.message||'Unable to sign in with Google.');
@@ -220,8 +258,8 @@ async function setupGoogleSignIn(){
   }
 }
 setupGoogleSignIn();
-// DBH Google authentication is handled only by Google Identity Services + the DBH auth server.
-// Supabase Auth is intentionally not used for Google sign-in.
+// Google Identity Services remains the visible/branded sign-in. Supabase receives only the
+// Google ID token exchange so this same account can use password recovery and TOTP MFA.
 
 async function startOAuth(provider){
   const providers={facebook:'facebook',twitter:'twitter',github:'github',gitlab:'gitlab'};
