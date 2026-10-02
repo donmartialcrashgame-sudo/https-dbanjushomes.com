@@ -85,7 +85,7 @@
 <main class="property-detail-page"><a class="property-back" href="/"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Back to Home</a><div id="property-detail"><div class="property-detail-skeleton"><div class="pds-gallery"></div><div class="pds-body"><div class="pds-line title"></div><div class="pds-line price"></div><div class="pds-line"></div><div class="pds-line wide"></div><div class="pds-grid"><i></i><i></i><i></i><i></i><i></i></div></div></div></div></main>
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/app.js?v=20261001-10"></script>
-<script src="/assets/js/protected-viewer.js"></script>
+<script src="/assets/js/protected-viewer.js?v=20261002-2"></script>
 <script>
 (function(){
 const c=window.DBH_CONFIG||{};
@@ -146,13 +146,18 @@ if(legalList){
  const docIcon='<svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h4M9 13h6M9 17h6"/></svg>';
  const closeRecord=()=>{const m=document.getElementById('dbh-document-record-modal');if(m){m.classList.remove('open');document.body.style.overflow=''}};
  const openRecord=doc=>{
-   let m=document.getElementById('dbh-document-record-modal');if(m)m.remove();
-   m=document.createElement('div');m.id='dbh-document-record-modal';m.className='dbh-document-record-modal';
-   const demo=doc.is_demo_document===true;
-   m.innerHTML='<section class="dbh-document-record-card" role="dialog" aria-modal="true" aria-labelledby="dbh-doc-title"><header class="dbh-document-record-head"><div><span class="detail-eyebrow">DBH DOCUMENT RECORD</span><h2 id="dbh-doc-title">'+esc(doc.document_type||'Property document')+'</h2><p>'+esc(doc.document_reference||'No reference supplied')+'</p></div><button class="dbh-document-record-close" type="button" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header><div class="dbh-document-record-body">'+(demo?'<div class="dbh-document-record-banner"><strong>DEMO / TEST RECORD.</strong> This record is for website testing and must not be treated as proof of legal ownership, title, or encumbrance.</div>':'<div class="dbh-document-record-banner" style="background:#eaf8ef;border-color:#cce8d8;color:#256245"><strong>VERIFIED RECORD.</strong> This document is marked verified in the DBH property records.</div>')+'<div class="dbh-document-record-meta"><div><small>Document type</small><strong>'+esc(doc.document_type||'Property document')+'</strong></div><div><small>Reference</small><strong>'+esc(doc.document_reference||'Not provided')+'</strong></div><div><small>Issuing authority</small><strong>'+esc(doc.issuing_authority||'Not provided')+'</strong></div><div><small>Status</small><strong>'+esc(doc.status||'verified')+'</strong></div><div><small>Issue date</small><strong>'+esc(fmtDate(doc.issue_date))+'</strong></div><div><small>Expiry date</small><strong>'+esc(fmtDate(doc.expiry_date))+'</strong></div><div><small>Added</small><strong>'+esc(fmtDate(doc.created_at))+'</strong></div><div><small>Updated</small><strong>'+esc(fmtDate(doc.updated_at))+'</strong></div></div></div><footer class="dbh-document-record-footer"><button type="button" class="btn btn-outline" data-close>Close</button>'+(doc.public_preview_url?'<a class="btn btn-primary" href="'+esc(doc.public_preview_url)+'" target="_blank" rel="noopener">Open document</a>':'<button type="button" class="btn btn-primary" disabled>No file uploaded</button>')+'</footer></section>';
-   document.body.appendChild(m);m.classList.add('open');document.body.style.overflow='hidden';
-   m.querySelector('.dbh-document-record-close').onclick=closeRecord;m.querySelector('[data-close]').onclick=closeRecord;m.addEventListener('click',e=>{if(e.target===m)closeRecord()});
- };
+ if(!window.DBHProtectedViewer||typeof window.DBHProtectedViewer.open!=='function'){
+   dbhToast('Protected document viewer is unavailable. Please refresh the page.');
+   return;
+ }
+ window.DBHProtectedViewer.open({
+   propertyId:p.id,
+   propertyTitle:p.title||'DBH Property',
+   propertyCode:p.property_code||'DBH',
+   documentId:doc.id,
+   documentType:doc.document_type||'Legal document'
+ });
+};
  const renderLegal=docs=>{
    legalCount.textContent=docs.length+(docs.length===1?' record':' records');
    if(!docs.length){legalList.innerHTML='<div class="feature-empty">No verified legal-document records have been released for this property yet.</div>';return}
