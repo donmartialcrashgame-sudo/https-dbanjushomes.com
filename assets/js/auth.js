@@ -18,7 +18,7 @@ if(hashSession && location.pathname.endsWith('/auth-callback.html')){
 }
 if(location.pathname.endsWith('/reset-password.html')){
   const s=hashSession||(()=>{try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}})();
-  if(!s?.access_token||s.type!=='recovery') location.replace('/forgot-password.html');
+  if((!s?.access_token&&!s?.sessionToken)||(!s?.sessionToken&&s.type!=='recovery')) location.replace('/forgot-password.html');
 }
 const redirect=()=>new URLSearchParams(location.search).get('redirect')||'/dashboard.html';
 async function loadSupabaseClient(){
@@ -295,11 +295,18 @@ resetForm?.addEventListener('submit',async e=>{
   if(password.length<8)return setMessage('Password must be at least 8 characters.');
   if(password!==confirm)return setMessage('Passwords do not match.');
   const session=JSON.parse(localStorage.getItem('dbh_session')||'null');
-  if(!session?.access_token)return setMessage('This reset link is invalid or expired. Request a new one.');
+  const token=session?.sessionToken||session?.access_token;
+  if(!token)return setMessage('This reset link or DBH session is invalid or expired.');
   setLoading(form,true);setMessage('Updating your password…');
   try{
-    const r=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/user',{method:'PUT',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+session.access_token},body:JSON.stringify({password})});
-    const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error_description||d.msg||d.message||'Unable to update your password.');
+    let d;
+    if(session?.sessionToken){
+      const r=await fetch(DBH_CONFIG.accountSecurityUri,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({action:'change_password',password})});
+      d=await r.json().catch(()=>({}));if(!r.ok||d.success===false)throw new Error(d.message||d.error||'Unable to update your password.');
+    }else{
+      const r=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/user',{method:'PUT',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+token},body:JSON.stringify({password})});
+      d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error_description||d.msg||d.message||'Unable to update your password.');
+    }
     localStorage.removeItem('dbh_session');setMessage('Password updated successfully. Redirecting to sign in…','success');setTimeout(()=>location.href='/login.html',1200);
   }catch(error){setMessage(error.message||'Unable to update your password.');}
   setLoading(form,false);
