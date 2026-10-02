@@ -40,6 +40,21 @@ async function getMfaRedirect(nextPath='/dashboard.html'){
   }catch(error){console.warn('DBH MFA status check unavailable:',error)}
   return nextPath;
 }
+async function recordLoginSecurityEvent(){
+  try{
+    const s=JSON.parse(localStorage.getItem('dbh_session')||'null');
+    if(!s?.access_token||!DBH_CONFIG.accountSecurityUri)return;
+    const send=(latitude=null,longitude=null,permission=false)=>{
+      fetch(DBH_CONFIG.accountSecurityUri,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+s.access_token},body:JSON.stringify({action:'login_event',latitude,longitude,location_permission:permission,user_agent:navigator.userAgent,device_label:navigator.platform||'Browser'})}).catch(()=>{});
+    };
+    if(!navigator.geolocation){send();return}
+    navigator.geolocation.getCurrentPosition(
+      p=>send(p.coords.latitude,p.coords.longitude,true),
+      ()=>send(null,null,false),
+      {enableHighAccuracy:false,timeout:7000,maximumAge:300000}
+    );
+  }catch{}
+}
 async function postAuthRedirect(defaultPath){
   const next=redirect();
   if(next!=='/dashboard.html') return next;
@@ -81,12 +96,13 @@ loginForm?.addEventListener('submit',async e=>{
   try{
     const d=await supabaseAuth('token?grant_type=password',{email:String(f.get('email')).trim(),password:f.get('password')});
     localStorage.setItem('dbh_session',JSON.stringify(d));
+    recordLoginSecurityEvent();
     setMessage('Signed in. Checking account security…');
     location.href=await getMfaRedirect(await postAuthRedirect('/dashboard.html'));
   }catch(primary){
     try{
       const d=await fallback('/auth/login',{email:String(f.get('email')).trim(),password:f.get('password')});
-      localStorage.setItem('dbh_session',JSON.stringify(d));location.href=await getMfaRedirect(await postAuthRedirect('/dashboard.html'));
+      localStorage.setItem('dbh_session',JSON.stringify(d));recordLoginSecurityEvent();location.href=await getMfaRedirect(await postAuthRedirect('/dashboard.html'));
     }catch(error){setMessage(primary.message||'Unable to sign in. Please check your email and password.');setLoading(form,false);}
   }
 });
