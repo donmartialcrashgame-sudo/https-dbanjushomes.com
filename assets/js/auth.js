@@ -315,4 +315,3 @@ resetForm?.addEventListener('submit',async e=>{
   }catch(error){setMessage(error.message||'Unable to update your password.');}
   setLoading(form,false);
 });
-});
