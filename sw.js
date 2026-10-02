@@ -1,4 +1,4 @@
-const CACHE_NAME="dbh-shell-v14";
+const CACHE_NAME="dbh-shell-v15";
 const CORE=[
   "/",
   "/index.html",
@@ -54,11 +54,11 @@ self.addEventListener("notificationclick",event=>{
   const target=event.notification?.data?.link||"/dashboard.html";
   event.waitUntil((async()=>{
     const absolute=new URL(target,self.location.origin).href;
-    const clientsList=await clients.matchAll({type:"window",includeUncontrolled:true});
+    const clientsList=await self.clients.matchAll({type:"window",includeUncontrolled:true});
     for(const client of clientsList){
       if("focus" in client){try{if(client.url===absolute)await client.focus();else if(client.navigate)await client.navigate(absolute);await client.focus();return;}catch{}}
     }
-    if(clients.openWindow)await clients.openWindow(absolute);
+    try{if(self.clients.openWindow)await self.clients.openWindow(absolute)}catch{}
   })());
 });
 
