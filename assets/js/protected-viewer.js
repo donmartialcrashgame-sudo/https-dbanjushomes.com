@@ -82,7 +82,7 @@ async function openViewer(opts){
    if(!doc||!signed){gate('Document unavailable','This document has not been uploaded to protected DBH storage yet.');return}
    document.getElementById('dbh-protected-gate').classList.remove('open');
    document.getElementById('dbh-protected-doc').textContent=doc.document_type||opts.documentType||'Legal document';
-   const isPdf=/\.pdf($|\?)/i.test(doc.storage_path||doc.document_type||signed);
+   const isPdf=doc.is_pdf===true || /\.pdf(?:$|\?)/i.test(signed) || /pdf/i.test(doc.document_type||'');
    if(isPdf)await renderPdf(signed,doc.document_type||'DBH document');else await renderImage(signed,doc.document_type||'DBH document');
  }catch(e){gate('Document access blocked',e.message||'DBH could not open this protected document.')} 
 }
@@ -95,6 +95,8 @@ document.addEventListener('keydown',e=>{
  if(shot){e.preventDefault();const p=document.getElementById('dbh-protected-pages');if(p){p.style.visibility='hidden';setTimeout(()=>{if(!document.hidden)p.style.visibility='visible'},900)}}
 });
 document.addEventListener('contextmenu',e=>{if(e.target.closest('.dbh-protected-card'))e.preventDefault()});
+document.addEventListener('selectstart',e=>{if(e.target.closest('.dbh-protected-card'))e.preventDefault()});
+document.addEventListener('beforeprint',()=>{const p=document.getElementById('dbh-protected-pages');if(p)p.style.visibility='hidden'});
 document.addEventListener('dragstart',e=>{if(e.target.closest('.dbh-protected-card'))e.preventDefault()});
 document.addEventListener('copy',e=>{if(e.target.closest('.dbh-protected-card'))e.preventDefault()});
 window.DBHProtectedViewer={open:openViewer};
