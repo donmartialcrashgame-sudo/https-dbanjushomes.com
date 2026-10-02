@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b63ce"><title>Security | DBH — D Banjus Homes Nig Ltd</title>
+<meta name="description" content="Manage your DBH account security and sign-in information.">
+<link rel="icon" href="/dbh-logo.jpg"><link rel="stylesheet" href="/assets/css/styles.css"><link rel="stylesheet" href="/assets/css/consent.css">
+<style>
+.dbh-security{width:min(1080px,calc(100% - 48px));margin:auto;padding:34px 0 80px}
+.sec-hero{padding:34px;border-radius:28px;color:#fff;background:linear-gradient(135deg,#062e67,#0b63ce 62%,#3592ff);box-shadow:0 24px 65px rgba(6,46,103,.18)}
+.sec-kicker{font-size:11px;font-weight:900;letter-spacing:.18em;color:#d8ecff}.sec-hero h1{font-size:clamp(30px,4.5vw,48px);line-height:1.04;margin:9px 0 10px;letter-spacing:-.04em}.sec-hero p{margin:0;max-width:700px;color:#e4f1ff;line-height:1.65}
+.sec-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:18px;margin-top:20px}.sec-card{background:#fff;border:1px solid #e0e8f2;border-radius:21px;padding:22px;box-shadow:0 10px 30px rgba(9,45,99,.05)}.sec-card h2{margin:0 0 6px;font-size:19px}.sec-card>p{margin:0 0 18px;color:#6d8098;font-size:13px;line-height:1.6}
+.sec-row{display:flex;align-items:center;gap:13px;padding:15px 0;border-top:1px solid #edf1f6}.sec-row:first-of-type{border-top:0;padding-top:4px}.sec-icon{width:40px;height:40px;border-radius:12px;background:#edf5ff;color:#0b63ce;display:grid;place-items:center;flex:none}.sec-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.sec-main{min-width:0;flex:1}.sec-main strong{display:block;font-size:13px}.sec-main span{display:block;color:#71839a;font-size:11px;margin-top:4px;overflow:hidden;text-overflow:ellipsis}.sec-badge{font-size:10px;font-weight:850;padding:6px 9px;border-radius:999px;background:#eaf8f0;color:#138a54;white-space:nowrap}.sec-action{display:inline-flex;align-items:center;justify-content:center;border:1px solid #d5e2ef;background:#fff;color:#0b63ce;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap}.sec-action.primary{background:#0b63ce;color:#fff;border-color:#0b63ce}
+.sec-checks{display:grid;gap:10px}.sec-check{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:13px;background:#f8fbff}.sec-check svg{width:17px;height:17px;flex:none;color:#138a54;fill:none;stroke:currentColor;stroke-width:2}.sec-check strong{display:block;font-size:12px}.sec-check span{display:block;color:#71839a;font-size:11px;line-height:1.5;margin-top:3px}.sec-note{padding:14px;border-radius:14px;background:#f5f9fd;border:1px solid #e1ebf5;color:#61758e;font-size:12px;line-height:1.65;margin-top:14px}.sec-note strong{color:#193a60}.sec-help{margin-top:18px;border-color:#f0d9d9;background:#fffafa}.sec-help h2{color:#8f2f2f}
+@media(max-width:800px){.sec-grid{grid-template-columns:1fr}}@media(max-width:560px){.dbh-security{width:calc(100% - 24px);padding-top:18px}.sec-hero{padding:24px 20px;border-radius:21px}.sec-card{padding:18px}.sec-row{align-items:flex-start;flex-wrap:wrap}.sec-action{margin-left:53px}}
+</style>
+</head>
+<body>
+<header class="site-header" aria-label="DBH site navigation"></header>
+<main class="dbh-security">
+<section class="sec-hero"><div class="sec-kicker">ACCOUNT SECURITY</div><h1>Keep your DBH account protected.</h1><p>Review your sign-in method, manage your password and keep your account information secure.</p></section>
+<section class="sec-grid">
+<article class="sec-card">
+<h2>Sign-in & account security</h2><p>Your current DBH account security information.</p>
+<div class="sec-row"><div class="sec-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c.7-4 2.8-6 7-6s6.3 2 7 6"/></svg></div><div class="sec-main"><strong>Account</strong><span id="sec-email">Checking your account…</span></div><span class="sec-badge">Protected</span></div>
+<div class="sec-row"><div class="sec-icon"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M7 10V8a5 5 0 0 1 10 0v2"/></svg></div><div class="sec-main"><strong>Sign-in method</strong><span id="sec-provider">Checking…</span></div></div>
+<div class="sec-row"><div class="sec-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></div><div class="sec-main"><strong>Password</strong><span>Use DBH's secure password recovery flow to change or reset it.</span></div><a class="sec-action primary" href="/forgot-password.html">Change password</a></div>
+<div class="sec-row"><div class="sec-icon"><svg viewBox="0 0 24 24"><path d="M12 3 20 6v5.5c0 4.8-3.3 7.8-8 9.5-4.7-1.7-8-4.7-8-9.5V6l8-3Z"/><path d="m8.5 11.8 2.2 2.2 4.8-5"/></svg></div><div class="sec-main"><strong>Protected property documents</strong><span>Legal records require authenticated access and browser location permission before viewing.</span></div><a class="sec-action" href="/properties.html">Browse</a></div>
+</article>
+<aside class="sec-card">
+<h2>Security checklist</h2><p>Simple steps to protect your account.</p>
+<div class="sec-checks">
+<div class="sec-check"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg><div><strong>Use a strong password</strong><span>Avoid short or reused passwords.</span></div></div>
+<div class="sec-check"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg><div><strong>Protect your email</strong><span>Your email may be used for account recovery.</span></div></div>
+<div class="sec-check"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg><div><strong>Watch for unfamiliar activity</strong><span>If something looks wrong, reset your password and contact DBH.</span></div></div>
+</div>
+<div class="sec-note"><strong>Important:</strong> Never send your password or private recovery codes through a property enquiry.</div>
+</aside>
+</section>
+<section class="sec-card sec-help"><h2>Need help securing your account?</h2><p>If you believe someone else may have access, reset your password first and contact DBH support.</p><a class="sec-action primary" href="/contact.html">Contact DBH support</a></section>
+</main>
+<script src="/assets/js/config.js"></script><script src="/assets/js/app.js?v=20261002-12"></script>
+<script>
+(function(){function s(){try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}}const x=s(),u=x?.user||x||{};if(!u?.email){location.href='/login.html?redirect='+encodeURIComponent(location.pathname+location.search);return}document.getElementById('sec-email').textContent=String(u.email||u.user_metadata?.email||'Account email');const p=String(u.provider||u.app_metadata?.provider||u.user_metadata?.provider||'').toLowerCase();document.getElementById('sec-provider').textContent=p==='google'?'Google sign-in':(p?'DBH '+p+' sign-in':'DBH email and password')})();
+</script>
+</body></html>
