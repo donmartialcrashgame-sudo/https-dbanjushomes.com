@@ -112,9 +112,25 @@ async function renderPdf(url,title){
  const pdf=await window.pdfjsLib.getDocument({data:await response.arrayBuffer()}).promise;
  const pages=document.getElementById('dbh-protected-pages');pages.innerHTML='';
  for(let i=1;i<=pdf.numPages;i++){
-   const page=await pdf.getPage(i); const base=page.getViewport({scale:1}); const maxWidth=Math.min(900,Math.max(280,document.getElementById('dbh-protected-pages').clientWidth||900)); const scale=maxWidth/base.width; const viewport=page.getViewport({scale});
+   const page=await pdf.getPage(i);
+   const base=page.getViewport({scale:1});
+   const stage=document.getElementById('dbh-protected-stage');
+   const availableWidth=Math.max(280,Math.min(900,(stage?.clientWidth||900)-44));
+   const availableHeight=Math.max(320,(stage?.clientHeight||900)-44);
+   const fitScale=Math.min(availableWidth/base.width,availableHeight/base.height);
+   const scale=Math.max(0.25,fitScale);
+   const viewport=page.getViewport({scale});
    const box=document.createElement('div');box.className='dbh-pdf-page';
-   const canvas=document.createElement('canvas');canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);canvas.style.width='100%';canvas.style.height='auto';canvas.setAttribute('aria-label','Protected document page '+i);box.appendChild(canvas);pages.appendChild(box);
+   const canvas=document.createElement('canvas');
+   canvas.width=Math.ceil(viewport.width);
+   canvas.height=Math.ceil(viewport.height);
+   canvas.style.width=viewport.width+'px';
+   canvas.style.height=viewport.height+'px';
+   canvas.style.maxWidth='100%';
+   canvas.setAttribute('aria-label','Protected document page '+i);
+   box.style.width=viewport.width+'px';
+   box.style.height=viewport.height+'px';
+   box.appendChild(canvas);pages.appendChild(box);
    await page.render({canvasContext:canvas.getContext('2d',{alpha:false}),viewport}).promise;addWatermark(box);
  }
 }
