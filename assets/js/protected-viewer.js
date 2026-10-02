@@ -85,6 +85,7 @@ async function openViewer(opts){
    const isPdf=/\.pdf($|\?)/i.test(doc.storage_path||doc.document_type||signed);
    if(isPdf)await renderPdf(signed,doc.document_type||'DBH document');else await renderImage(signed,doc.document_type||'DBH document');
  }catch(e){gate('Document access blocked',e.message||'DBH could not open this protected document.')} 
+}
 const shieldPages=()=>{const o=document.getElementById('dbh-protected-overlay'),p=document.getElementById('dbh-protected-pages');if(!o||!o.classList.contains('open')||!p)return;if(document.hidden){p.style.visibility='hidden'}else{p.style.visibility='visible'}};
 document.addEventListener('visibilitychange',shieldPages);
 document.addEventListener('keydown',e=>{
