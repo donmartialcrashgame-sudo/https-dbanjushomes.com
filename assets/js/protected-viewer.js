@@ -33,15 +33,13 @@ async function getLocation(){
    {enableHighAccuracy:false,timeout:12000,maximumAge:60000}
  ));
 }
-async function fetchDocs(propertyId){
- const r=await api('/rest/v1/property_documents?select=id,document_type,document_reference,issuing_authority,issue_date,status,storage_path&property_id=eq.'+encodeURIComponent(propertyId)+'&status=eq.verified&order=created_at.asc');
- return r.ok&&Array.isArray(r.data)?r.data:[];
-}
-async function signPath(path){
- const r=await api('/storage/v1/object/sign/property-documents/'+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({expiresIn:120})});
- if(!r.ok)throw Error('The protected document could not be opened.');
- const u=r.data?.signedURL; if(!u)throw Error('No protected document URL was returned.');
- return u.startsWith('http')?u:C.supabaseUrl+'/storage/v1'+u;
+async function fetchDocument(docId,propertyId){
+ const s=(()=>{try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}})();
+ const t=s?.sessionToken||s?.access_token||s?.accessToken||'';
+ if(!t)return {ok:false,status:401,data:null};
+ const qs=docId?'id='+encodeURIComponent(docId):'property_id='+encodeURIComponent(propertyId);
+ const r=await fetch((C.propertyDocumentsUri||C.supabaseUrl+'/functions/v1/dbh-property-documents')+'?'+qs,{headers:{Accept:'application/json',Authorization:'Bearer '+t,apikey:C.supabaseAnonKey},credentials:'include'});
+ const data=await r.json().catch(()=>null);return {ok:r.ok,status:r.status,data};
 }
 async function renderImage(url,title){
  const pages=document.getElementById('dbh-protected-pages');pages.innerHTML='';
@@ -72,27 +70,21 @@ async function openViewer(opts){
  document.getElementById('dbh-protected-pages').innerHTML='';
  document.getElementById('dbh-protected-prev').onclick=()=>window.scrollBy({top:-window.innerHeight*.75,behavior:'smooth'});
  document.getElementById('dbh-protected-next').onclick=()=>window.scrollBy({top:window.innerHeight*.75,behavior:'smooth'});
- const t=token();
- if(!t){gate('Sign in required','You are not allowed to view this protected DBH document. Please sign in to your DBH account.', '<a class="btn btn-primary" href="/login.html?redirect='+encodeURIComponent(location.href)+'">Sign in</a>');return}
- const user=await api('/auth/v1/user');
- if(!user.ok||!user.data?.id){gate('Sign in required','Your DBH session is no longer valid. Please sign in again.','<a class="btn btn-primary" href="/login.html?redirect='+encodeURIComponent(location.href)+'">Sign in</a>');return}
- const verify=await api('/rest/v1/identity_verification_requests?select=status&user_id=eq.'+encodeURIComponent(user.data.id)+'&limit=1');
- if(!verify.ok||!verify.data?.[0]||verify.data[0].status!=='verified'){
-   gate('Identity verification required','Your DBH account must be verified before you can view protected property documents.','<a class="btn btn-primary" href="/verify-account.html?redirect='+encodeURIComponent(location.href)+'">Verify my account</a>');return;
- }
+ const s=(()=>{try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}})();
+ const t=s?.sessionToken||s?.access_token||s?.accessToken||'';
+ if(!t){gate('Sign in required','Your existing DBH session could not be found. Please sign in to your DBH account.','<a class="btn btn-primary" href="/login.html?redirect='+encodeURIComponent(location.href)+'">Sign in</a>');return}
  try{
-   gate('Location permission required','Allow location access to continue to this protected document.');
-   await getLocation();
-   const docs=await fetchDocs(opts.propertyId);
-   const doc=opts.documentId?docs.find(x=>x.id===opts.documentId):docs.find(x=>x.document_type===opts.documentType)||docs[0];
-   if(!doc||!doc.storage_path){gate('Document unavailable','This document has not been made available for protected viewing yet.');return}
-   const signed=await signPath(encodeURIComponent(doc.storage_path).replace(/%2F/g,'/'));
+   gate('Opening protected document','Checking your existing DBH session…');
+   const result=await fetchDocument(opts.documentId,opts.propertyId);
+   if(!result.ok){gate(result.status===401?'Sign in required':'Document unavailable',result.data?.message||'DBH could not authorize this document with your current session.',result.status===401?'<a class="btn btn-primary" href="/login.html?redirect='+encodeURIComponent(location.href)+'">Sign in</a>':'');return}
+   const doc=result.data?.document;
+   const signed=doc?.signed_url||doc?.public_preview_url;
+   if(!doc||!signed){gate('Document unavailable','This document has not been uploaded to protected DBH storage yet.');return}
    document.getElementById('dbh-protected-gate').classList.remove('open');
    document.getElementById('dbh-protected-doc').textContent=doc.document_type||opts.documentType||'Legal document';
-   const isPdf=/\.pdf($|\?)/i.test(doc.storage_path);
+   const isPdf=/\.pdf($|\?)/i.test(doc.storage_path||doc.document_type||signed);
    if(isPdf)await renderPdf(signed,doc.document_type||'DBH document');else await renderImage(signed,doc.document_type||'DBH document');
- }catch(e){gate('Document access blocked',e.message||'DBH could not open this protected document.')}
-}
+ }catch(e){gate('Document access blocked',e.message||'DBH could not open this protected document.')} 
 const shieldPages=()=>{const o=document.getElementById('dbh-protected-overlay'),p=document.getElementById('dbh-protected-pages');if(!o||!o.classList.contains('open')||!p)return;if(document.hidden){p.style.visibility='hidden'}else{p.style.visibility='visible'}};
 document.addEventListener('visibilitychange',shieldPages);
 document.addEventListener('keydown',e=>{
