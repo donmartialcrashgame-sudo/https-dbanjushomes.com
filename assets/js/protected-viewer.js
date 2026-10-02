@@ -154,7 +154,7 @@ document.addEventListener('keydown',e=>{
  const k=String(e.key||'').toLowerCase();
  if(k==='printscreen'||((e.ctrlKey||e.metaKey)&&['p','s','u','c'].includes(k))){e.preventDefault();const p=document.getElementById('dbh-protected-pages');if(p){p.style.visibility='hidden';setTimeout(()=>{if(!document.hidden)p.style.visibility='visible'},900)}}
 });
-document.addEventListener('contextmenu',e=>{if(e.target.closest('.dbh-protected-card'))e.preventDefault()});
+document.addEventListener('contextmenu',e=>{if((e.target instanceof Element && e.target.closest('.dbh-protected-card')))e.preventDefault()});
 document.addEventListener('selectstart',e=>{if(e.target.closest('.dbh-protected-card'))e.preventDefault()});
 document.addEventListener('dragstart',e=>{if(e.target.closest('.dbh-protected-card'))e.preventDefault()});
 document.addEventListener('copy',e=>{if(e.target.closest('.dbh-protected-card'))e.preventDefault()});
