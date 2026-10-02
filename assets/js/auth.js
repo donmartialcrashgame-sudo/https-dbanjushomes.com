@@ -276,7 +276,7 @@ forgotForm?.addEventListener('submit',async e=>{
   e.preventDefault();const form=e.currentTarget;setLoading(form,true);
   const email=String(new FormData(form).get('email')).trim();
   try{
-    const r=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/recover',{method:'POST',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey},body:JSON.stringify({email,redirect_to:new URL('/reset-password.html',location.origin).href})});
+    const r=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/recover',{method:'POST',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey},body:JSON.stringify({email,redirect_to:new URL('/account-recovery.html',location.origin).href})});
     const d=await r.json().catch(()=>({}));
     if(!r.ok)throw new Error(d.error_description||d.msg||d.message||'Unable to send the reset email.');
     setMessage('If an account exists for that email, a password reset link has been sent. Check your inbox.','success');form.reset();
@@ -294,9 +294,9 @@ resetForm?.addEventListener('submit',async e=>{
   setLoading(form,true);setMessage('Updating your password…');
   try{
     const r=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/user',{method:'PUT',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+session.access_token},body:JSON.stringify({password})});
-    const d=await r.json().catch(()=>({}));
-    if(!r.ok)throw new Error(d.error_description||d.msg||d.message||'Unable to update your password.');
-    localStorage.removeItem('dbh_session');setMessage('Password updated. Redirecting to sign in…','success');setTimeout(()=>location.href='/login.html',1200);
+    const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error_description||d.msg||d.message||'Unable to update your password.');
+    localStorage.removeItem('dbh_session');setMessage('Password updated successfully. Redirecting to sign in…','success');setTimeout(()=>location.href='/login.html',1200);
   }catch(error){setMessage(error.message||'Unable to update your password.');}
   setLoading(form,false);
+});
 });
