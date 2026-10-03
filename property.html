@@ -99,6 +99,7 @@ const filter=id?(id.toUpperCase().startsWith('DBH-')?'property_code=eq.'+encodeU
 const rows=await get('properties?select=*,property_images(*)&'+filter+'&is_published=eq.true&limit=1');
 const p=rows?.[0], root=document.getElementById('property-detail');
 if(!p){root.innerHTML='<div class="error-panel"><h1>Property not found</h1><p>This property is not currently published on DBH.</p><a class="btn btn-primary" href="/properties.html">Browse properties</a></div>';return}
+try{const trackerKey='dbh-property-activity-session';let trackerSession=sessionStorage.getItem(trackerKey);if(!trackerSession){trackerSession=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(36).slice(2));sessionStorage.setItem(trackerKey,trackerSession)};fetch(c.supabaseUrl+'/rest/v1/rpc/track_property_activity',{method:'POST',headers:{apikey:c.supabaseAnonKey,'Content-Type':'application/json'},body:JSON.stringify({p_property_id:p.id,p_action:'view',p_session_id:trackerSession,p_referrer:document.referrer||null})}).catch(()=>{});}catch(e){console.debug('DBH activity tracking unavailable',e)}
 const imgs=(p.property_images||[]).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)).map(x=>x.image_url).filter(Boolean);if(!imgs.length&&p.og_image_url)imgs.push(p.og_image_url);
 const verified=p.is_verified===true;
 document.title=(p.seo_title||p.title+' | DBH — D Banjus Homes Nig Ltd');
