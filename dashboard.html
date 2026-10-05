@@ -33,6 +33,25 @@
 .dbh-empty{color:var(--muted);font-size:13px;padding:16px 0}
 @media(max-width:900px){.dbh-dash-stats{grid-template-columns:repeat(2,1fr)}.dbh-dash-grid{grid-template-columns:1fr}.dbh-dash-top{flex-direction:column}.dbh-dash-user{width:100%}}
 @media(max-width:560px){.dbh-dashboard{width:min(100% - 24px,1180px);padding-top:18px}.dbh-dash-hero{padding:24px 20px;border-radius:21px}.dbh-dash-stats{gap:10px}.dbh-dash-stat{padding:15px}.dbh-dash-stat strong{font-size:26px}.dbh-dash-actions a{flex:1}.dbh-dash-banner{align-items:flex-start;flex-direction:column}}
+
+.dbh-dash-hero{animation:dashHeroIn .7s cubic-bezier(.2,.8,.2,1) both;background-size:180% 180%;animation-name:dashHeroIn,dashGradient;animation-duration:.7s,8s;animation-delay:0s,.7s;animation-iteration-count:1,infinite;}
+.dbh-dash-hero:after{content:"";position:absolute;left:-90px;bottom:-170px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.12),transparent 68%);animation:dashOrb 8s ease-in-out infinite;pointer-events:none}
+.dbh-dash-top>div:first-child{animation:dashRise .65s .08s both}.dbh-dash-user{animation:dashRise .65s .18s both}.dbh-dash-actions{animation:dashRise .65s .28s both}
+.dbh-dash-stat{transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s,border-color .28s;animation:dashCardIn .55s cubic-bezier(.2,.8,.2,1) both}.dbh-dash-stat:nth-child(1){animation-delay:.08s}.dbh-dash-stat:nth-child(2){animation-delay:.14s}.dbh-dash-stat:nth-child(3){animation-delay:.20s}.dbh-dash-stat:nth-child(4){animation-delay:.26s}.dbh-dash-stat:hover{transform:translateY(-6px);border-color:#c5dbf1;box-shadow:0 20px 42px rgba(9,45,99,.11)}
+.dbh-dash-stat-icon{transition:transform .25s,background .25s}.dbh-dash-stat:hover .dbh-dash-stat-icon{transform:rotate(-5deg) scale(1.08);background:#e2efff}
+.dbh-dash-card{animation:dashCardIn .6s .3s both;transition:transform .25s,box-shadow .25s}.dbh-dash-card:hover{box-shadow:0 18px 42px rgba(9,45,99,.08)}
+.dbh-activity-item{transition:transform .2s,background .2s,border-color .2s;animation:dashSlide .45s both}.dbh-activity-item:hover{transform:translateX(4px);background:#f1f7ff;border-color:#d9e8f7}.dbh-activity-dot{animation:dashPulse 2s ease-in-out infinite}
+.dbh-quick{transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .2s,box-shadow .2s}.dbh-quick:hover{transform:translateX(5px);border-color:#bcd6f3;box-shadow:0 10px 25px rgba(9,45,99,.07)}.dbh-quick-icon{transition:transform .25s}.dbh-quick:hover .dbh-quick-icon{transform:scale(1.08) rotate(-4deg)}
+.dbh-dash-banner{animation:dashCardIn .6s .42s both;transition:transform .25s,box-shadow .25s}.dbh-dash-banner:hover{transform:translateY(-3px);box-shadow:0 16px 35px rgba(9,45,99,.08)}
+@keyframes dashHeroIn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes dashGradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes dashRise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes dashCardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes dashSlide{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+@keyframes dashOrb{0%,100%{transform:translate(0,0)}50%{transform:translate(35px,-20px)}}
+@keyframes dashPulse{0%,100%{box-shadow:0 0 0 5px #e4efff}50%{box-shadow:0 0 0 8px rgba(228,239,255,.25)}}
+@media(max-width:560px){.dbh-dash-hero{animation-duration:.65s,10s}.dbh-dash-stat:hover{transform:translateY(-3px)}.dbh-dash-quick:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.dbh-dash-hero,.dbh-dash-top>div:first-child,.dbh-dash-user,.dbh-dash-actions,.dbh-dash-stat,.dbh-dash-card,.dbh-dash-banner,.dbh-activity-item{animation:none!important}.dbh-dash-hero,.dbh-dash-stat,.dbh-dash-card,.dbh-dash-banner,.dbh-quick{transition:none!important}}
 </style>
 </head>
 <body>
@@ -98,6 +117,6 @@
 
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/app.js?v=20261001-10"></script>
-<script src="/assets/js/dashboard.js"></script>
+<script src="/assets/js/dashboard.js?v=20261005-1"></script>
 </body>
 </html>
