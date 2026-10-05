@@ -14,10 +14,31 @@ function card(p){
 }
 
 async function fetchProperties(){
- const c=cfg(); if(!c.supabaseUrl||!c.supabaseAnonKey)throw Error('Supabase configuration missing');
- const r=await fetch(c.supabaseUrl+'/rest/v1/properties?select=*&is_published=eq.true&order=created_at.desc',{headers:{Accept:'application/json',apikey:c.supabaseAnonKey}});
- if(!r.ok)throw Error('Supabase HTTP '+r.status);
- return r.json();
+ const c=cfg();
+ if(!c.supabaseUrl||!c.supabaseAnonKey)throw Error('Supabase configuration missing');
+ const headers={Accept:'application/json',apikey:c.supabaseAnonKey};
+ const propertyUrl=new URL(c.supabaseUrl+'/rest/v1/properties');
+ propertyUrl.searchParams.set('select','*');
+ propertyUrl.searchParams.set('is_published','eq.true');
+ propertyUrl.searchParams.set('verification_status','eq.verified');
+ propertyUrl.searchParams.set('order','created_at.desc');
+ const propertyResponse=await fetch(propertyUrl.toString(),{headers});
+ if(!propertyResponse.ok)throw Error('Supabase properties HTTP '+propertyResponse.status);
+ const properties=await propertyResponse.json();
+ if(!Array.isArray(properties)||!properties.length)return [];
+ const ids=properties.map(p=>p.id).filter(Boolean);
+ const imageUrl=new URL(c.supabaseUrl+'/rest/v1/property_images');
+ imageUrl.searchParams.set('select','property_id,image_url,sort_order,is_cover');
+ imageUrl.searchParams.set('property_id','in.('+ids.join(',')+')');
+ imageUrl.searchParams.set('order','sort_order.asc');
+ const imageResponse=await fetch(imageUrl.toString(),{headers});
+ const images=imageResponse.ok?await imageResponse.json():[];
+ const covers={};
+ (Array.isArray(images)?images:[]).forEach(img=>{
+   if(!img.property_id||!img.image_url)return;
+   if(img.is_cover===true||covers[img.property_id]===undefined)covers[img.property_id]=img.image_url;
+ });
+ return properties.map(p=>({...p,og_image_url:p.og_image_url||covers[p.id]||'/dbh-logo.jpg'}));
 }
 let all=[];
 function renderVisibleSaveStates(){
