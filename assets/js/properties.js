@@ -5,12 +5,13 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&
 const money=(v,c)=>{try{return new Intl.NumberFormat(c==='NGN'?'en-NG':'en-US',{style:'currency',currency:c||'NGN',maximumFractionDigits:c==='NGN'?0:2}).format(Number(v))}catch{return String(v||'')}};
 function skeleton(n=6){return Array.from({length:n},()=>'<div class="property-skeleton"><div class="property-skeleton-image"></div><div class="property-skeleton-line wide"></div><div class="property-skeleton-line"></div><div class="property-skeleton-line short"></div></div>').join('')}
 function card(p){
- const id=p.property_code||p.id, loc=[p.area,p.city,p.state].filter(Boolean).join(', ')||'Location available';
+ const id=p.property_code||p.id, loc=[p.address,p.area,p.city,p.lga,p.state].map(v=>String(v??'').trim()).filter(v=>v&&v.toLowerCase()!=='nigeria').filter((v,i,a)=>a.findIndex(x=>x.toLowerCase()===v.toLowerCase())===i).join(', ')||'Location available';
  const img=p.og_image_url||'/dbh-logo.jpg';
+ const imageCount=Number(p.image_count||0);
  const saved=window.DBHSaved?.isSaved?.(p.id)===true;
  const href='/property.html?id='+encodeURIComponent(id);
  const heart='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.8c0 5-8.8 10.2-8.8 10.2S3.2 13.8 3.2 8.8A4.8 4.8 0 0 1 12 6.1a4.8 4.8 0 0 1 8.8 2.7Z"/></svg>';
- return '<article class="property-card dbh-market-card reveal" data-property-id="'+esc(p.id)+'"><a class="property-media dbh-market-media" href="'+href+'"><img loading="lazy" src="'+esc(img)+'" alt="'+esc(p.title||'DBH property')+'" onerror="this.onerror=null;this.src=&quot;/dbh-logo.jpg&quot;"><span class="property-badges"><span class="property-category-badge">'+esc(p.category||p.property_type||'Property')+'</span>'+(p.is_verified===true?'<span class="property-verified-badge"><svg viewBox="0 0 24 24"><path d="M12 3 20 6v5.5c0 4.8-3.3 7.8-8 9.5-4.7-1.7-8-4.7-8-9.5V6l8-3Z"/><path d="m8.5 11.8 2.2 2.2 4.8-5"/></svg></span>':'')+'</span><span class="dbh-market-watermark">D BANJUS HOMES NIG LTD</span></a><div class="property-body dbh-market-body"><div class="dbh-market-top"><span class="dbh-market-type">'+esc(p.property_type||p.category||'Property')+'</span><button type="button" class="dbh-market-save '+(saved?'saved':'')+'" data-save-id="'+esc(p.id)+'" aria-pressed="'+(saved?'true':'false')+'" aria-label="'+(saved?'Remove from saved properties':'Save property')+'" title="'+(saved?'Saved — click to remove':'Save property')+'">'+heart+'</button></div><h3 class="property-title dbh-market-title"><a href="'+href+'">'+esc(p.title||'Property')+'</a></h3><div class="property-price dbh-market-price">'+money(p.price,p.currency||'NGN')+'</div><div class="property-meta property-location dbh-market-location"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>'+esc(loc)+'</div><div class="property-provider dbh-market-provider"><span class="provider-avatar">DBH</span><span class="provider-copy"><small>Provider</small><strong>'+esc(p.provider_name||p.agency_name||'D Banjus Homes Nig Ltd')+'</strong></span></div><div class="dbh-market-actions"><a class="btn btn-primary" href="'+href+'">View property</a><a class="btn btn-outline" href="/contact.html?property='+encodeURIComponent(p.slug||p.property_code||p.id)+'">Enquire</a></div></div></article>';
+ return '<article class="property-card dbh-market-card reveal" data-property-id="'+esc(p.id)+'"><a class="property-media dbh-market-media" href="'+href+'"><img loading="lazy" src="'+esc(img)+'" alt="'+esc(p.title||'DBH property')+'" onerror="this.onerror=null;this.src=&quot;/dbh-logo.jpg&quot;"><span class="property-badges"><span class="property-category-badge">'+esc(p.category||p.property_type||'Property')+'</span>'+(p.is_verified===true?'<span class="property-verified-badge"><svg viewBox="0 0 24 24"><path d="M12 3 20 6v5.5c0 4.8-3.3 7.8-8 9.5-4.7-1.7-8-4.7-8-9.5V6l8-3Z"/><path d="m8.5 11.8 2.2 2.2 4.8-5"/></svg></span>':'')+'</span>'+(imageCount>1?'<span class="property-photo-count"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="m5 17 4-4 3 3 2-2 5 4"/></svg>'+imageCount+' photos</span>':'')+'<span class="dbh-market-watermark">D BANJUS HOMES NIG LTD</span></a><div class="property-body dbh-market-body"><div class="dbh-market-top"><span class="dbh-market-type">'+esc(p.property_type||p.category||'Property')+'</span><button type="button" class="dbh-market-save '+(saved?'saved':'')+'" data-save-id="'+esc(p.id)+'" aria-pressed="'+(saved?'true':'false')+'" aria-label="'+(saved?'Remove from saved properties':'Save property')+'" title="'+(saved?'Saved — click to remove':'Save property')+'">'+heart+'</button></div><h3 class="property-title dbh-market-title"><a href="'+href+'">'+esc(p.title||'Property')+'</a></h3><div class="property-price dbh-market-price">'+money(p.price,p.currency||'NGN')+'</div><div class="property-meta property-location dbh-market-location"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>'+esc(loc)+'</div><div class="property-provider dbh-market-provider"><span class="provider-avatar">DBH</span><span class="provider-copy"><small>Provider</small><strong>'+esc(p.provider_name||p.agency_name||'D Banjus Homes Nig Ltd')+'</strong></span></div><div class="dbh-market-actions"><a class="btn btn-primary" href="'+href+'">View property</a><a class="btn btn-outline" href="/contact.html?property='+encodeURIComponent(p.slug||p.property_code||p.id)+'">Enquire</a></div></div></article>';
 }
 
 async function fetchProperties(){
@@ -38,7 +39,7 @@ async function fetchProperties(){
    if(!img.property_id||!img.image_url)return;
    if(img.is_cover===true||covers[img.property_id]===undefined)covers[img.property_id]=img.image_url;
  });
- return properties.map(p=>({...p,og_image_url:p.og_image_url||covers[p.id]||'/dbh-logo.jpg'}));
+ return properties.map(p=>({...p,og_image_url:p.og_image_url||covers[p.id]||'/dbh-logo.jpg',image_count:(Array.isArray(images)?images.filter(img=>String(img.property_id)===String(p.id)).length:0)}));
 }
 let all=[];
 function renderVisibleSaveStates(){
@@ -51,7 +52,7 @@ function renderVisibleSaveStates(){
 function render(rows){
  const box=document.getElementById('property-results'), count=document.getElementById('result-count');
  if(count)count.textContent=rows.length+' '+(rows.length===1?'property':'properties');
- box.innerHTML=rows.length?rows.map(card).join(''):'<div class="panel">No published properties match your search.</div>';
+ box.innerHTML=rows.length?rows.map(card).join(''):'<div class="market-empty"><div><div class="market-empty-icon"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></svg></div><strong>No matching properties</strong><p>Try a different location, property type or price range to see more DBH listings.</p><button type="button" id="clear-property-filters">Clear filters</button></div></div>';
  box.querySelectorAll('.reveal').forEach(x=>x.classList.add('visible'));
 }
 function apply(){
@@ -95,7 +96,7 @@ async function boot(){
   window.addEventListener('dbh-saved-changed',renderVisibleSaveStates);
  }catch(e){
   console.error('DBH properties page:',e);
-  box.innerHTML='<div class="panel"><strong>Properties could not be loaded.</strong><br><small>Please refresh the page. The DBH database response could not be completed.</small></div>';
+  box.innerHTML='<div class="market-error"><div class="market-error-icon"><svg viewBox="0 0 24 24"><path d="M12 3 22 20H2L12 3Z"/><path d="M12 9v5M12 17h.01"/></svg></div><div><strong>Properties could not be loaded</strong><small>Please refresh the page. The DBH property service did not complete the request.</small></div></div>';
   const count=document.getElementById('result-count');if(count)count.textContent='Unable to load properties';
  }
 }
