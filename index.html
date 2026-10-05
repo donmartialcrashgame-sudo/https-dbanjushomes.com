@@ -73,6 +73,13 @@
 
   .property-badges .property-verified-badge>span{display:none!important;width:0!important;height:0!important;overflow:hidden!important;font-size:0!important}
   .property-badges .property-verified-badge svg{display:block!important;flex:0 0 auto!important}
+
+  /* Long-form DBH visual showcase */
+  .dbh-visual-showcase{position:relative;min-height:560px;margin:72px 0 0;overflow:hidden;background:#071f40;color:#fff}
+  .dbh-visual-bg{position:absolute;inset:0}.dbh-visual-bg-slide{position:absolute;inset:0;background-position:center;background-size:cover;opacity:0;transform:scale(1.06);transition:opacity 1.1s ease,transform 7s ease}.dbh-visual-bg-slide.active{opacity:1;transform:scale(1)}.dbh-visual-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,25,52,.9),rgba(3,31,63,.54),rgba(3,31,63,.25))}.dbh-visual-inner{position:relative;z-index:2;min-height:560px;width:min(1180px,calc(100% - 40px));margin:auto;display:flex;align-items:center;justify-content:space-between;gap:35px;padding:70px 0}.dbh-visual-copy{max-width:650px}.dbh-visual-copy .eyebrow{color:#b9dcff}.dbh-visual-copy h2{font-size:clamp(38px,6vw,72px);line-height:.98;letter-spacing:-.05em;margin:12px 0 18px}.dbh-visual-copy p{max-width:610px;color:#dbeaff;line-height:1.8;font-size:15px}.dbh-visual-pills{display:flex;flex-wrap:wrap;gap:9px;margin-top:25px}.dbh-visual-pills span{padding:9px 12px;border:1px solid rgba(255,255,255,.2);border-radius:999px;background:rgba(255,255,255,.08);backdrop-filter:blur(8px);font-size:11px}.dbh-visual-card{width:min(330px,100%);padding:24px;border:1px solid rgba(255,255,255,.18);border-radius:24px;background:rgba(255,255,255,.1);backdrop-filter:blur(15px);box-shadow:0 24px 60px rgba(0,0,0,.2);animation:dbhVisualFloat 5s ease-in-out infinite}.dbh-visual-card strong{display:block;font-size:28px;line-height:1.05}.dbh-visual-card span{display:block;margin-top:10px;color:#dbeaff;font-size:12px;line-height:1.6}.dbh-visual-dots{position:absolute;z-index:3;left:50%;bottom:28px;transform:translateX(-50%);display:flex;gap:8px}.dbh-visual-dots button{width:28px;height:5px;border:0;border-radius:99px;background:rgba(255,255,255,.35);cursor:pointer;padding:0;transition:.25s}.dbh-visual-dots button.active{width:46px;background:#fff}.dbh-photo-mosaic{display:grid;grid-template-columns:1.25fr .75fr;gap:16px;margin-top:18px}.dbh-photo-mosaic-card{position:relative;min-height:300px;border-radius:24px;overflow:hidden;background:#e8f0f8}.dbh-photo-mosaic-card.small{min-height:142px}.dbh-photo-mosaic-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s}.dbh-photo-mosaic-card:hover img{transform:scale(1.045)}.dbh-photo-mosaic-stack{display:grid;gap:16px}.dbh-photo-caption{position:absolute;left:16px;right:16px;bottom:16px;padding:13px 15px;border-radius:15px;background:rgba(5,28,54,.72);backdrop-filter:blur(10px);color:#fff}.dbh-photo-caption strong{display:block;font-size:14px}.dbh-photo-caption span{display:block;margin-top:4px;color:#d8eaff;font-size:10px}.dbh-image-placeholder{height:100%;min-height:142px;background:linear-gradient(135deg,#dcecff,#f7fbff)}
+  @keyframes dbhVisualFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  @media(max-width:800px){.dbh-visual-inner{min-height:610px;padding:55px 0;display:block}.dbh-visual-card{margin-top:28px}.dbh-photo-mosaic{grid-template-columns:1fr}.dbh-photo-mosaic-card{min-height:260px}.dbh-photo-mosaic-card.small{min-height:220px}}
+  @media(prefers-reduced-motion:reduce){.dbh-visual-bg-slide,.dbh-visual-card,.dbh-photo-mosaic-card img{transition:none;animation:none!important}}
 </style>
 </head>
 <body>
@@ -87,10 +94,10 @@
 <main class="with-right-sidebar">
 <section class="hero" id="dbh-hero">
   <div class="hero-background-slider" aria-hidden="true">
-    <div class="hero-slide active" style="background-image:url('https://www.superiteafrica.com/uploads/property/1754279608IMG_0460.JPG')"></div>
-    <div class="hero-slide" style="background-image:url('https://cf.bstatic.com/xdata/images/hotel/max1024x768/755698381.jpg')"></div>
-    <div class="hero-slide" style="background-image:url('https://media.licdn.com/dms/image/v2/D4E12AQG8cpWI6S33kA/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1722870575066?e=2147483647&t=YTtp8daF4nXHCKmtcW-FUWlVn4wn513wp5_QLWTYTmI&v=beta')"></div>
-    <div class="hero-slide" style="background-image:url('https://app-ei-live.ams3.cdn.digitaloceanspaces.com/property/images/2021/08/d3e622f17d998176ff611f3f0cdbfcd3.jpg')"></div>
+    <div class="hero-slide active" style="background-image:url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1800&q=86')"></div>
+    <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=86')"></div>
+    <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1800&q=86')"></div>
+    <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=86')"></div>
   </div>
   <div class="hero-blue-overlay"></div>
   <div class="hero-grid-lines"></div>
@@ -183,6 +190,37 @@
   <div id="popular-locations" class="location-grid"></div>
 </section>
 
+<section class="dbh-visual-showcase" aria-label="DBH property visual showcase">
+  <div class="dbh-visual-bg" aria-hidden="true">
+    <div class="dbh-visual-bg-slide active" style="background-image:url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1800&q=86')"></div>
+    <div class="dbh-visual-bg-slide" style="background-image:url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=86')"></div>
+    <div class="dbh-visual-bg-slide" style="background-image:url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1800&q=86')"></div>
+    <div class="dbh-visual-bg-slide" style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=86')"></div>
+  </div>
+  <div class="dbh-visual-overlay"></div>
+  <div class="dbh-visual-inner">
+    <div class="dbh-visual-copy">
+      <span class="eyebrow">LIVE DBH DISCOVERY</span>
+      <h2>Find a place worth coming home to.</h2>
+      <p>Move through homes, land and commercial opportunities across Nigeria with a marketplace designed around clear property information, location discovery and direct enquiries.</p>
+      <div class="dbh-visual-pills"><span>Verified opportunities</span><span>Homes for sale</span><span>Land for sale</span><span>Commercial spaces</span></div>
+    </div>
+    <div class="dbh-visual-card"><span class="eyebrow">DBH HOMES</span><strong>Dream it.<br>We build it.</strong><span>Browse the latest approved listings and open any property for full details, photos, location and enquiry options.</span><a class="btn btn-primary" style="margin-top:18px" href="/properties.html">Explore the marketplace</a></div>
+  </div>
+  <div class="dbh-visual-dots" aria-label="Visual slides"><button class="active" data-visual-slide="0" aria-label="Show visual 1"></button><button data-visual-slide="1" aria-label="Show visual 2"></button><button data-visual-slide="2" aria-label="Show visual 3"></button><button data-visual-slide="3" aria-label="Show visual 4"></button></div>
+</section>
+
+<section class="section">
+  <div class="section-heading"><div><span class="eyebrow">SEE THE POSSIBILITIES</span><h2>Spaces for different goals.</h2><p>Use the marketplace to discover the kind of opportunity that fits your next move.</p></div></div>
+  <div class="dbh-photo-mosaic">
+    <a class="dbh-photo-mosaic-card" href="/properties.html?type=house"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1800&q=86" loading="lazy" alt="Modern home exterior"><span class="dbh-photo-caption"><strong>Homes & residences</strong><span>Explore homes and residential properties available on DBH.</span></span></a>
+    <div class="dbh-photo-mosaic-stack">
+      <a class="dbh-photo-mosaic-card small" href="/properties.html?type=land"><img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1800&q=86" loading="lazy" alt="Property land and development"><span class="dbh-photo-caption"><strong>Land opportunities</strong><span>Find land by location and property type.</span></span></a>
+      <a class="dbh-photo-mosaic-card small" href="/properties.html?type=commercial"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=86" loading="lazy" alt="Commercial property building"><span class="dbh-photo-caption"><strong>Commercial property</strong><span>Discover spaces for business and investment.</span></span></a>
+    </div>
+  </div>
+</section>
+
 <section class="image-feature-section"><div class="image-feature-main"><img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1400&q=85" alt="Modern living space" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=1400&q=85';"></div><div class="image-feature-copy"><span class="eyebrow">LIVING SPACES</span><h2>Spaces that look as good as they feel.</h2><p>Explore a growing marketplace for homes, land and commercial property across Nigeria.</p><a class="btn btn-primary" href="/properties.html">Explore properties</a></div></section>
 
 <section class="why-section">
@@ -237,6 +275,15 @@
 
 <script>
 setTimeout(function(){var l=document.getElementById('app-loader');if(l){l.classList.add('fade');setTimeout(function(){l.remove()},650)}},3200);
+</script>
+
+<script>
+(function(){
+  const slides=[...document.querySelectorAll('.dbh-visual-bg-slide')],dots=[...document.querySelectorAll('[data-visual-slide]')];if(!slides.length)return;let i=0,t;
+  function show(n){i=(n+slides.length)%slides.length;slides.forEach((s,k)=>s.classList.toggle('active',k===i));dots.forEach((d,k)=>d.classList.toggle('active',k===i));}
+  function start(){clearInterval(t);t=setInterval(()=>show(i+1),6500)}
+  dots.forEach(d=>d.addEventListener('click',()=>{show(Number(d.dataset.visualSlide));start()}));start();
+})();
 </script>
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/home.js?v=20261005-5"></script>
