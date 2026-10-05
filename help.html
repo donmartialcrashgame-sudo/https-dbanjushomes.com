@@ -88,6 +88,58 @@
 @keyframes dbhHelpFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @keyframes dbhHelpOrb{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(-45px,-28px,0) scale(1.12)}}
 @media(prefers-reduced-motion:reduce){.dbh-help-hero *,.dbh-help-section,.dbh-help-eyebrow,.dbh-help-hero:after{animation:none!important;transition:none!important}.dbh-help-card:hover,.dbh-step:hover,.dbh-media-card:hover,.dbh-support-card:hover,.dbh-help-quick a:hover{transform:none}}
+
+/* DBH HELP — animated inner experience */
+.dbh-help-wrap{position:relative;overflow:hidden}
+.dbh-help-wrap:before{content:"";position:absolute;top:180px;left:-180px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(48,145,255,.12),transparent 68%);pointer-events:none;animation:dbhInnerGlow 10s ease-in-out infinite alternate}
+.dbh-help-wrap:after{content:"";position:absolute;right:-220px;top:820px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(11,94,215,.09),transparent 68%);pointer-events:none;animation:dbhInnerGlow 12s ease-in-out infinite alternate-reverse}
+.dbh-help-nav,.dbh-help-section{position:relative;z-index:1}
+.dbh-help-nav{box-shadow:0 10px 28px rgba(9,45,99,.04);border-bottom:1px solid rgba(210,225,240,.8)}
+.dbh-help-nav a{box-shadow:0 4px 14px rgba(9,45,99,.04)}
+.dbh-help-section{padding:8px 0 10px}
+.dbh-help-section-head{padding:22px 24px;border-radius:24px;background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(239,247,255,.78));border:1px solid #dce9f5;box-shadow:0 12px 30px rgba(9,45,99,.045);position:relative;overflow:hidden}
+.dbh-help-section-head:after{content:"";position:absolute;right:-50px;top:-80px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(11,94,215,.13),transparent 70%)}
+.dbh-help-section-head h2{position:relative;z-index:1}
+.dbh-help-section-head .eyebrow{position:relative;z-index:1;display:inline-block;font-size:10px;font-weight:950;letter-spacing:.14em}
+.dbh-help-section-intro{position:relative;z-index:1}
+.dbh-step{position:relative;overflow:hidden}
+.dbh-step:after{content:"";position:absolute;left:0;top:0;width:4px;height:100%;background:linear-gradient(#0b5ed7,#4aa4ff);transform:scaleY(0);transform-origin:top;transition:transform .35s ease}
+.dbh-step:hover:after{transform:scaleY(1)}
+.dbh-step-no{position:relative;z-index:1}
+.dbh-help-card{position:relative;overflow:hidden}
+.dbh-help-card:before{content:"";position:absolute;left:-80px;top:-100px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(42,139,255,.11),transparent 68%);transition:transform .45s ease}
+.dbh-help-card:hover:before{transform:translate(35px,30px)}
+.dbh-help-card h3,.dbh-help-card p,.dbh-help-card .dbh-real-icon,.dbh-help-card .num{position:relative;z-index:1}
+.dbh-media-card{position:relative}
+.dbh-media-card img{transition:transform .7s cubic-bezier(.2,.7,.2,1);filter:saturate(.96)}
+.dbh-media-card:hover img{transform:scale(1.06)}
+.dbh-media-copy{background:linear-gradient(180deg,#fff,#f8fbff)}
+.dbh-callout{position:relative;overflow:hidden;box-shadow:0 15px 38px rgba(9,45,99,.07)}
+.dbh-callout:before{content:"";position:absolute;right:-70px;top:-100px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(11,94,215,.15),transparent 70%);animation:dbhInnerGlow 8s ease-in-out infinite alternate}
+.dbh-callout>*{position:relative;z-index:1}
+.dbh-table-wrap{box-shadow:0 14px 34px rgba(9,45,99,.055)}
+.dbh-table tbody tr{transition:background .2s ease,transform .2s ease}
+.dbh-table tbody tr:hover{background:#f7fbff}
+.dbh-table td:first-child{font-weight:850;color:#294967}
+.dbh-faqs details{overflow:hidden;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+.dbh-faqs details[open]{box-shadow:0 15px 34px rgba(9,45,99,.08);border-color:#c5dcf3}
+.dbh-faqs summary{transition:color .2s ease}
+.dbh-faqs summary:hover{color:#0b5ed7}
+.dbh-faqs details[open] summary{color:#0b5ed7}
+.dbh-support-card{position:relative;overflow:hidden}
+.dbh-support-card:before{content:"";position:absolute;width:160px;height:160px;right:-70px;bottom:-80px;border-radius:50%;background:radial-gradient(circle,rgba(11,94,215,.12),transparent 70%)}
+.dbh-support-card>*{position:relative;z-index:1}
+.dbh-note{box-shadow:0 8px 24px rgba(9,45,99,.035)}
+@keyframes dbhInnerGlow{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(35px,-25px,0) scale(1.12)}}
+@media(max-width:650px){
+ .dbh-help-section-head{padding:19px}
+ .dbh-help-card,.dbh-step,.dbh-support-card{border-radius:18px}
+ .dbh-media-card{border-radius:18px}
+}
+@media(prefers-reduced-motion:reduce){
+ .dbh-help-wrap:before,.dbh-help-wrap:after,.dbh-callout:before{animation:none!important}
+ .dbh-media-card img{transition:none!important}
+}
 </style>
 <script type="application/ld+json">
 {
