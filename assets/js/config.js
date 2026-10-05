@@ -9,6 +9,8 @@ window.DBH_CONFIG={
   accountSecurityUri:'https://cpgajlsyuieeengdnamy.supabase.co/functions/v1/dbh-account-security',
   propertyDocumentsUri:'https://cpgajlsyuieeengdnamy.supabase.co/functions/v1/dbh-property-documents',
   watermarkName:'D Banjus Homes Nig Ltd',
+  adminPhone:'',
+  adminWhatsApp:'',
   watermarkLogoUrl:'',
   firebase:{apiKey:'',authDomain:'',projectId:'',storageBucket:'',messagingSenderId:'',appId:'',vapidKey:''}
 };
