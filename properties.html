@@ -1,55 +1,81 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Properties for Sale | DBH Homes</title><meta name="description" content="Browse approved properties for sale from DBH Homes."><link rel="icon" href="/dbh-logo.jpg"><link rel="manifest" href="/manifest.webmanifest"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="DBH Homes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="stylesheet" href="/assets/css/styles.css"><link rel="stylesheet" href="/assets/css/notifications.css"><link rel="stylesheet" href="/assets/css/consent.css"><style>
-.properties-market{max-width:1320px;margin:0 auto;padding:35px 28px 85px}
-.properties-hero{position:relative;overflow:hidden;border-radius:26px;padding:34px 34px 30px;background:linear-gradient(135deg,#eef6ff,#fff);border:1px solid #dce8f5;box-shadow:0 18px 50px rgba(9,45,99,.08);margin-bottom:22px}
-.properties-hero:after{content:"";position:absolute;right:-90px;top:-130px;width:300px;height:300px;border-radius:50%;background:rgba(11,94,215,.07)}
-.properties-hero-content{position:relative;z-index:1;max-width:820px}
-.properties-hero .eyebrow{color:#0b5ed7}
-.properties-hero h1{margin:8px 0 8px;font-size:clamp(34px,5vw,58px);line-height:1;letter-spacing:-.045em;color:#122e49}
-.properties-hero p{margin:0;color:#6f8298;font-size:14px;line-height:1.75}
-.properties-hero-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
-.properties-chip{display:inline-flex;align-items:center;gap:6px;padding:9px 11px;border-radius:999px;border:1px solid #d8e5f1;background:#fff;color:#42617d;font-size:10px;font-weight:850}
+.properties-market{max-width:1380px;margin:0 auto;padding:38px 30px 90px;position:relative}
+.properties-market:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 10% 15%,rgba(11,94,215,.045),transparent 28%),radial-gradient(circle at 90% 65%,rgba(14,165,233,.035),transparent 30%);z-index:-1}
+.properties-hero{position:relative;overflow:hidden;border-radius:30px;padding:46px 44px 38px;background:linear-gradient(135deg,#f1f7ff 0%,#fff 55%,#f5fbff 100%);border:1px solid #dce8f5;box-shadow:0 22px 60px rgba(9,45,99,.09);margin-bottom:24px;isolation:isolate;animation:heroIn .7s cubic-bezier(.2,.8,.2,1) both}
+.properties-hero:before,.properties-hero:after{content:"";position:absolute;border-radius:50%;pointer-events:none}
+.properties-hero:before{width:390px;height:390px;right:-145px;top:-210px;background:radial-gradient(circle,rgba(11,94,215,.14),rgba(11,94,215,0) 68%);animation:orbFloat 7s ease-in-out infinite}
+.properties-hero:after{width:260px;height:260px;left:-150px;bottom:-185px;background:radial-gradient(circle,rgba(14,165,233,.10),transparent 68%);animation:orbFloat 9s ease-in-out infinite reverse}
+.properties-hero-content{position:relative;z-index:2;max-width:850px}
+.properties-hero .eyebrow{color:#0b5ed7;font-size:10px;font-weight:950;letter-spacing:.16em}
+.properties-hero h1{margin:10px 0 10px;font-size:clamp(36px,5.5vw,62px);line-height:.98;letter-spacing:-.055em;color:#102f4d;animation:riseIn .65s .08s both}
+.properties-hero p{margin:0;color:#6c8198;font-size:14px;line-height:1.8;max-width:760px;animation:riseIn .65s .16s both}
+.properties-hero-tools{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px;animation:riseIn .65s .24s both}
+.properties-chip{display:inline-flex;align-items:center;gap:7px;padding:10px 12px;border-radius:999px;border:1px solid #d8e5f1;background:rgba(255,255,255,.84);backdrop-filter:blur(8px);color:#42617d;font-size:10px;font-weight:850;box-shadow:0 5px 16px rgba(9,45,99,.04);transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.properties-chip:hover{transform:translateY(-2px);border-color:#bcd5ee;box-shadow:0 10px 24px rgba(9,45,99,.08)}
 .properties-chip svg{width:15px;height:15px;fill:none;stroke:#0b5ed7;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.results-layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:20px;align-items:start}
-.filters{position:sticky;top:84px;background:#fff;border:1px solid #dfe7f0;border-radius:20px;padding:18px;box-shadow:0 12px 35px rgba(9,45,99,.06)}
-.filters h2{margin:0 0 14px;font-size:16px;color:#17334f}
+.results-layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:21px;align-items:start}
+.filters{position:sticky;top:84px;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border:1px solid #dfe7f0;border-radius:22px;padding:19px;box-shadow:0 14px 40px rgba(9,45,99,.065);animation:riseIn .65s .15s both}
+.filters h2{margin:0 0 15px;font-size:16px;color:#17334f}
 .filters label{display:grid;gap:6px;margin:0 0 12px;color:#5c728b;font-size:10px;font-weight:850}
-.filters input,.filters select{width:100%;box-sizing:border-box;border:1px solid #dbe5ef;border-radius:11px;background:#fbfdff;padding:10px 11px;color:#26435f;font:inherit;font-size:11px;outline:none}
-.filters input:focus,.filters select:focus{border-color:#0b5ed7;box-shadow:0 0 0 3px rgba(11,94,215,.08)}
-.filters .btn{width:100%;font-size:11px;margin-top:4px}
+.filters input,.filters select{width:100%;box-sizing:border-box;border:1px solid #dbe5ef;border-radius:12px;background:#fbfdff;padding:11px 12px;color:#26435f;font:inherit;font-size:11px;outline:none;transition:border-color .2s,box-shadow .2s,background .2s}
+.filters input:hover,.filters select:hover{background:#fff;border-color:#c9d9e8}
+.filters input:focus,.filters select:focus{border-color:#0b5ed7;box-shadow:0 0 0 4px rgba(11,94,215,.09);background:#fff}
+.filters .btn{width:100%;font-size:11px;margin-top:4px;transition:transform .2s,box-shadow .2s}
+.filters .btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(11,94,215,.18)}
 .results-shell{min-width:0}
-.results-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;padding:11px 13px;background:#fff;border:1px solid #dfe7f0;border-radius:14px;box-shadow:0 8px 24px rgba(9,45,99,.04)}
-#result-count{font-size:11px;color:#698097;font-weight:800}
-#sort-select{border:1px solid #dbe5ef;border-radius:10px;padding:8px 10px;background:#fff;color:#294560;font-size:10px;font-weight:800}
-.dbh-market-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
-.dbh-market-card{border:1px solid #dfe7f0;border-radius:18px;background:#fff;overflow:hidden;box-shadow:0 10px 28px rgba(9,45,99,.06);transition:transform .2s,box-shadow .2s,border-color .2s}
-.dbh-market-card:hover{transform:translateY(-3px);border-color:#c6d9eb;box-shadow:0 18px 42px rgba(9,45,99,.11)}
-.dbh-market-media{position:relative;display:block;aspect-ratio:16/10;background:#eaf1f8;overflow:hidden}
-.dbh-market-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
-.dbh-market-card:hover .dbh-market-media img{transform:scale(1.025)}
-.dbh-market-media:after{content:"";position:absolute;inset:auto 0 0;height:45%;background:linear-gradient(transparent,rgba(8,26,49,.32));pointer-events:none}
-.dbh-market-watermark{position:absolute;left:10px;bottom:9px;z-index:2;padding:5px 7px;border-radius:7px;background:rgba(6,30,59,.72);color:#fff;font-size:8px;font-weight:900;letter-spacing:.04em}
-.dbh-market-media .property-badges{position:absolute;top:10px;left:10px;right:10px;display:flex;gap:6px;flex-wrap:wrap;z-index:3}
-.dbh-market-media .property-category-badge,.dbh-market-media .property-verified-badge{padding:6px 8px;border-radius:999px;font-size:8px;font-weight:950}
-.dbh-market-media .property-category-badge{background:#fff;color:#0b5ed7}.dbh-market-media .property-verified-badge{background:#eaf8ef;color:#18864b}
-.dbh-market-body{padding:15px}
+.results-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px;padding:12px 14px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border:1px solid #dfe7f0;border-radius:15px;box-shadow:0 8px 26px rgba(9,45,99,.045);animation:riseIn .65s .22s both}
+#result-count{font-size:11px;color:#698097;font-weight:850}
+#sort-select{border:1px solid #dbe5ef;border-radius:11px;padding:9px 11px;background:#fff;color:#294560;font-size:10px;font-weight:800;outline:none;cursor:pointer}
+#sort-select:focus{border-color:#0b5ed7;box-shadow:0 0 0 3px rgba(11,94,215,.08)}
+.dbh-market-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.dbh-market-card{position:relative;border:1px solid #dfe7f0;border-radius:20px;background:#fff;overflow:hidden;box-shadow:0 11px 30px rgba(9,45,99,.055);transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s,border-color .28s;animation:cardIn .55s cubic-bezier(.2,.8,.2,1) both}
+.dbh-market-card:hover{transform:translateY(-7px);border-color:#c4d9ee;box-shadow:0 24px 52px rgba(9,45,99,.13)}
+.dbh-market-card:after{content:"";position:absolute;inset:0;border-radius:20px;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.55)}
+.dbh-market-media{position:relative;display:block;aspect-ratio:16/10;background:linear-gradient(135deg,#edf4fa,#dfeaf5);overflow:hidden}
+.dbh-market-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .65s cubic-bezier(.2,.8,.2,1),filter .35s}
+.dbh-market-card:hover .dbh-market-media img{transform:scale(1.065);filter:saturate(1.06)}
+.dbh-market-media:after{content:"";position:absolute;inset:auto 0 0;height:48%;background:linear-gradient(transparent,rgba(8,26,49,.4));pointer-events:none}
+.dbh-market-watermark{position:absolute;left:11px;bottom:10px;z-index:2;padding:6px 8px;border-radius:8px;background:rgba(6,30,59,.72);backdrop-filter:blur(5px);color:#fff;font-size:8px;font-weight:900;letter-spacing:.04em;transition:transform .25s}
+.dbh-market-card:hover .dbh-market-watermark{transform:translateY(-2px)}
+.dbh-market-media .property-badges{position:absolute;top:11px;left:11px;right:11px;display:flex;gap:6px;flex-wrap:wrap;z-index:3}
+.dbh-market-media .property-category-badge,.dbh-market-media .property-verified-badge{padding:7px 9px;border-radius:999px;font-size:8px;font-weight:950;box-shadow:0 5px 15px rgba(0,0,0,.08);backdrop-filter:blur(5px)}
+.dbh-market-media .property-category-badge{background:rgba(255,255,255,.93);color:#0b5ed7}
+.dbh-market-media .property-verified-badge{background:rgba(234,248,239,.95);color:#18864b;display:inline-flex;align-items:center;gap:4px}
+.dbh-market-media .property-verified-badge svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dbh-market-body{padding:16px}
 .dbh-market-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .dbh-market-type{color:#0b5ed7;font-size:8px;font-weight:950;text-transform:uppercase;letter-spacing:.08em}
-.dbh-market-save{width:35px;height:35px;border-radius:50%;border:1px solid #dbe5ef;background:#fff;color:#536d86;display:grid;place-items:center;cursor:pointer;transition:.18s}
+.dbh-market-save{width:37px;height:37px;border-radius:50%;border:1px solid #dbe5ef;background:#fff;color:#536d86;display:grid;place-items:center;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s,color .18s,background .18s}
+.dbh-market-save:hover{transform:scale(1.08);border-color:#efb9c0;color:#dc2626;background:#fff7f7;box-shadow:0 7px 18px rgba(220,38,38,.12)}
+.dbh-market-save:active{transform:scale(.92)}
+.dbh-market-save.saved{border-color:#ef4444;background:#fff1f2;color:#dc2626;animation:heartPop .35s ease}
 .dbh-market-save svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.dbh-market-save:hover{border-color:#efb9c0;color:#dc2626;background:#fff7f7}
-.dbh-market-save.saved{border-color:#ef4444;background:#fff1f2;color:#dc2626}
 .dbh-market-save.saved svg{fill:rgba(239,68,68,.13);stroke:#dc2626}
-.dbh-market-title{margin:8px 0 5px;font-size:17px;line-height:1.25}
-.dbh-market-title a{color:#17334f}
-.dbh-market-price{font-size:18px!important;font-weight:950;color:#0b5ed7;margin-top:8px}
-.dbh-market-location{display:flex;align-items:center;gap:5px;margin-top:7px;color:#798da4;font-size:10px}
-.dbh-market-location svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8}
-.dbh-market-provider{margin-top:13px;padding-top:11px;border-top:1px solid #edf1f6}
-.dbh-market-provider .provider-avatar{width:28px;height:28px;font-size:8px}
+.dbh-market-title{margin:9px 0 5px;font-size:17px;line-height:1.3}
+.dbh-market-title a{color:#17334f;transition:color .18s}
+.dbh-market-title a:hover{color:#0b5ed7}
+.dbh-market-price{font-size:19px!important;font-weight:950;color:#0b5ed7;margin-top:9px}
+.dbh-market-location{display:flex;align-items:flex-start;gap:5px;margin-top:8px;color:#798da4;font-size:10px;line-height:1.45}
+.dbh-market-location svg{width:14px;height:14px;min-width:14px;fill:none;stroke:currentColor;stroke-width:1.8}
+.dbh-market-provider{margin-top:14px;padding-top:12px;border-top:1px solid #edf1f6}
+.dbh-market-provider .provider-avatar{width:29px;height:29px;font-size:8px}
 .dbh-market-provider .provider-copy small{font-size:8px}.dbh-market-provider .provider-copy strong{font-size:10px}
-.dbh-market-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}
-.dbh-market-actions .btn{min-width:0!important;font-size:9px!important;padding:9px 10px!important;text-align:center}
-.property-skeleton{border-radius:18px!important;overflow:hidden}
-@media(max-width:1050px){.results-layout{grid-template-columns:220px minmax(0,1fr)}.dbh-market-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:720px){.properties-market{padding:22px 14px 65px}.results-layout{grid-template-columns:1fr}.filters{position:static}.dbh-market-grid{grid-template-columns:1fr}.properties-hero{padding:25px 21px}.results-bar{align-items:flex-start;flex-direction:column}}
+.dbh-market-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}
+.dbh-market-actions .btn{min-width:0!important;font-size:9px!important;padding:10px!important;text-align:center;transition:transform .18s,box-shadow .18s}
+.dbh-market-actions .btn:hover{transform:translateY(-2px)}
+.property-skeleton{border-radius:20px!important;overflow:hidden!important;background:#fff!important;border:1px solid #e4ebf3!important;box-shadow:0 10px 28px rgba(9,45,99,.04)!important;padding:0!important;min-height:360px}
+.property-skeleton-image{height:210px;background:linear-gradient(110deg,#edf3f8 8%,#f9fbfd 18%,#edf3f8 33%);background-size:200% 100%;animation:shimmer 1.45s linear infinite}
+.property-skeleton-line{height:12px;margin:15px 16px 0;border-radius:8px;background:linear-gradient(110deg,#edf3f8 8%,#f9fbfd 18%,#edf3f8 33%);background-size:200% 100%;animation:shimmer 1.45s linear infinite}
+.property-skeleton-line.wide{width:72%}.property-skeleton-line.short{width:38%;margin-bottom:18px}
+.panel{border-radius:18px!important}
+@keyframes heroIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes riseIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes cardIn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes orbFloat{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(-14px,16px,0)}}
+@keyframes shimmer{to{background-position:-200% 0}}
+@keyframes heartPop{0%{transform:scale(.88)}55%{transform:scale(1.13)}100%{transform:scale(1)}}
+@media(max-width:1120px){.results-layout{grid-template-columns:235px minmax(0,1fr)}.dbh-market-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.properties-market{padding:22px 14px 68px}.properties-hero{padding:30px 22px 27px;border-radius:24px;margin-bottom:18px}.properties-hero h1{font-size:clamp(35px,11vw,48px)}.properties-hero p{font-size:12px;line-height:1.7}.properties-hero-tools{gap:7px;margin-top:18px}.properties-chip{font-size:9px;padding:8px 10px}.results-layout{grid-template-columns:1fr;gap:15px}.filters{position:static;border-radius:18px;padding:16px}.filters h2{font-size:15px}.results-bar{margin-bottom:12px;padding:11px 12px}.dbh-market-grid{grid-template-columns:1fr;gap:14px}.dbh-market-card{border-radius:18px}.dbh-market-media{aspect-ratio:16/10}.dbh-market-body{padding:15px}.dbh-market-title{font-size:18px}.dbh-market-price{font-size:19px!important}.dbh-market-actions .btn{padding:11px 9px!important}.property-skeleton{min-height:340px}}
+@media(max-width:420px){.properties-market{padding-left:11px;padding-right:11px}.properties-hero{padding:27px 18px}.properties-chip{width:100%;justify-content:flex-start}.results-bar{gap:9px}.results-bar #sort-select{width:100%}.dbh-market-actions{gap:7px}.dbh-market-actions .btn{font-size:9px!important}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 </style></head><body><div id="app-loader" class="app-loader"><div class="loader-ring"></div><div class="loader-ring r2"></div><img src="/dbh-logo.jpg" alt="DBH — D Banjus Homes Nig Ltd"><p>Dream it, we build it.</p></div><header class="site-header" aria-label="DBH site navigation"></header><main class="properties-market"><section class="properties-hero"><div class="properties-hero-content"><span class="eyebrow">DBH PROPERTY MARKETPLACE</span><h1>Find your next property.</h1><p>Explore published properties from D Banjus Homes Nig Ltd. Filter by location, property type and price, save your favourites, and open the full verified listing.</p><div class="properties-hero-tools"><span class="properties-chip"><svg viewBox="0 0 24 24"><path d="M12 3 20 6v5.5c0 4.8-3.3 7.8-8 9.5-4.7-1.7-8-4.7-8-9.5V6l8-3Z"/><path d="m8.5 11.8 2.2 2.2 4.8-5"/></svg>DBH verified listings</span><span class="properties-chip"><svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10.2-8.8 10.2S3.2 13.8 3.2 8.8A4.8 4.8 0 0 1 12 6.1a4.8 4.8 0 0 1 8.8 2.7Z"/></svg>Save favourites</span><span class="properties-chip"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>Search by location</span></div></div></section><section class="results-layout"><aside class="filters"><h2>Refine search</h2><form id="property-filters"><label>Property ID<input name="q" placeholder="DBH-XXXXXXXXXX or title"></label><label>Location<input name="location" placeholder="Lagos, Ogun..."></label><label>Property type<select name="type"><option value="">Any type</option></select></label><label>Min price<input name="minPrice" type="number" min="0"></label><label>Max price<input name="maxPrice" type="number" min="0"></label><button class="btn btn-primary" type="submit">Apply filters</button></form></aside><div class="results-shell"><div class="results-bar"><span id="result-count">Loading…</span><select id="sort-select"><option value="newest">Newest</option><option value="price_low">Price: low to high</option><option value="price_high">Price: high to low</option></select></div><div id="property-results" class="property-grid dbh-market-grid"><div class="property-skeleton"></div><div class="property-skeleton"></div><div class="property-skeleton"></div><div class="property-skeleton"></div><div class="property-skeleton"></div><div class="property-skeleton"></div></div></div></section></main><script src="/assets/js/config.js"></script><script src="/assets/js/app.js?v=20261001-10"></script><script src="/assets/js/properties.js?v=20260930-2"></script></body></html>
