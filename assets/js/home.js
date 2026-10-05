@@ -55,7 +55,7 @@ function card(p){
       '<img loading="lazy" src="'+esc(img)+'" alt="'+esc(p.title||'DBH property')+'" onerror="this.onerror=null;this.src=&quot;/dbh-logo.jpg&quot;">'+
       '<span class="property-badges">'+
         '<span class="property-category-badge">'+esc(p.category||p.property_type||'Property')+'</span>'+
-        (verified?'<span class="property-verified-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5.5c0 4.8-3.3 7.8-8 9.5-4.7-1.7-8-4.7-8-9.5V6l8-3Z"></path><path d="m8.5 11.8 2.2 2.2 4.8-5"></path></svg><span>Verified Property</span></span>':'')+
+        (verified?'<span class="property-verified-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5.5c0 4.8-3.3 7.8-8 9.5-4.7-1.7-8-4.7-8-9.5V6l8-3Z"></path><path d="m8.5 11.8 2.2 2.2 4.8-5"></path></svg></span>':'')+
       '</span>'+
     '</a>'+
     '<div class="property-body">'+
