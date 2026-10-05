@@ -58,6 +58,36 @@
 .dbh-real-icon{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#eaf3ff;color:#0b5ed7;margin-bottom:13px}.dbh-real-icon svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.dbh-real-icon.google{background:#fff;border:1px solid #dfe8f2}.dbh-real-icon.google svg{stroke:none;width:27px;height:27px}.dbh-real-icon.verified{background:#ecfdf3;color:#15803d}.dbh-real-icon.verified svg{fill:currentColor;stroke:none}.dbh-help-card.has-icon .num{display:none}.dbh-note{padding:13px 15px;border-left:3px solid #0b5ed7;background:#f7fbff;color:#6f8298;border-radius:8px;font-size:11px;line-height:1.7}
 @media(max-width:950px){.dbh-help-hero-inner{grid-template-columns:1fr}.dbh-help-card-grid{grid-template-columns:1fr 1fr}.dbh-faqs{grid-template-columns:1fr}.dbh-help-bottom{grid-template-columns:1fr}}
 @media(max-width:650px){.dbh-help-hero-inner,.dbh-help-wrap{padding-left:15px;padding-right:15px}.dbh-help-hero-inner{padding-top:46px}.dbh-help-card-grid,.dbh-media-grid{grid-template-columns:1fr}.dbh-step{grid-template-columns:1fr}.dbh-step-no{width:50px;height:50px}.dbh-callout{grid-template-columns:1fr}.dbh-help-quick{grid-template-columns:1fr}.dbh-help-nav{top:62px}}
+
+/* DBH HELP — animated discovery treatment */
+.dbh-help-hero{min-height:500px;background:#061d3e url("https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1800&q=85") center/cover no-repeat;isolation:isolate}
+.dbh-help-hero:before{content:"";position:absolute;inset:0;width:auto;height:auto;border-radius:0;background:linear-gradient(90deg,rgba(3,24,54,.94) 0%,rgba(5,55,112,.78) 48%,rgba(7,76,151,.45) 100%);filter:none;z-index:-1}
+.dbh-help-hero:after{width:520px;height:520px;left:auto;right:-180px;bottom:-270px;background:rgba(62,166,255,.24);filter:blur(25px);animation:dbhHelpOrb 8s ease-in-out infinite alternate}
+.dbh-help-hero-inner{min-height:500px}
+.dbh-help-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border:1px solid rgba(255,255,255,.2);border-radius:999px;background:rgba(255,255,255,.09);backdrop-filter:blur(12px);animation:dbhHelpFloat 4s ease-in-out infinite}
+.dbh-help-hero h1{animation:dbhHelpRise .75s ease both}
+.dbh-help-hero p{animation:dbhHelpRise .75s .12s ease both}
+.dbh-help-actions{animation:dbhHelpRise .75s .22s ease both}
+.dbh-help-quick{animation:dbhHelpRise .75s .3s ease both}
+.dbh-help-quick a{transition:transform .25s ease,background .25s ease,border-color .25s ease;position:relative;overflow:hidden}
+.dbh-help-quick a:before{content:"";position:absolute;inset:-80% 45% auto -35%;height:180%;background:rgba(255,255,255,.13);transform:rotate(20deg);transition:transform .5s ease}
+.dbh-help-quick a:hover{transform:translateY(-5px);background:rgba(255,255,255,.17);border-color:rgba(255,255,255,.35)}
+.dbh-help-quick a:hover:before{transform:translateX(260%) rotate(20deg)}
+.dbh-help-section{animation:dbhHelpSection .7s ease both}
+.dbh-help-card,.dbh-step,.dbh-media-card,.dbh-callout,.dbh-support-card,.dbh-faqs details{transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease}
+.dbh-help-card:hover,.dbh-step:hover,.dbh-media-card:hover,.dbh-support-card:hover{transform:translateY(-5px);box-shadow:0 20px 46px rgba(9,45,99,.11);border-color:#c7dcf2}
+.dbh-real-icon{transition:transform .3s ease,box-shadow .3s ease}
+.dbh-help-card:hover .dbh-real-icon{transform:translateY(-3px) rotate(-3deg);box-shadow:0 9px 22px rgba(11,94,215,.14)}
+.dbh-step-no{box-shadow:0 10px 24px rgba(4,48,107,.18);transition:transform .3s ease}
+.dbh-step:hover .dbh-step-no{transform:scale(1.07) rotate(-3deg)}
+.dbh-help-nav a{transition:transform .2s ease,background .2s ease,color .2s ease}
+.dbh-help-nav a:hover{transform:translateY(-2px);background:#0b5ed7;color:#fff;border-color:#0b5ed7}
+.dbh-faqs details:hover{border-color:#bdd5ee}
+@keyframes dbhHelpRise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes dbhHelpSection{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes dbhHelpFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes dbhHelpOrb{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(-45px,-28px,0) scale(1.12)}}
+@media(prefers-reduced-motion:reduce){.dbh-help-hero *,.dbh-help-section,.dbh-help-eyebrow,.dbh-help-hero:after{animation:none!important;transition:none!important}.dbh-help-card:hover,.dbh-step:hover,.dbh-media-card:hover,.dbh-support-card:hover,.dbh-help-quick a:hover{transform:none}}
 </style>
 <script type="application/ld+json">
 {
