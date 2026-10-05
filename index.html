@@ -40,6 +40,32 @@
   .dbh-home-account-note svg{width:16px;height:16px;flex:none;fill:none;stroke:#0b63ce;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   @media(max-width:1000px){.dbh-home-category-grid{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:700px){.dbh-home-category-section{padding-top:35px}.dbh-home-category-grid{grid-template-columns:1fr}.stats-strip{grid-template-columns:repeat(2,1fr)}.stats-strip>div{padding:18px}.hero-pills{gap:7px}}
+
+  /* DBH home motion refresh */
+  .hero-inner{animation:dbhHomeRise .8s cubic-bezier(.2,.8,.2,1) both}
+  .hero-copy .eyebrow{animation:dbhHomeRise .55s .08s both}
+  .hero-copy h1{animation:dbhHomeRise .7s .15s both}
+  .hero-copy>p{animation:dbhHomeRise .7s .22s both}
+  .hero-pills{animation:dbhHomeRise .7s .3s both}
+  .search-card{animation:dbhHomeCard .75s .2s cubic-bezier(.2,.8,.2,1) both}
+  .hero-orb.orb-one{animation:dbhOrb 7s ease-in-out infinite}
+  .hero-orb.orb-two{animation:dbhOrb 9s ease-in-out infinite reverse}
+  .hero-grid-lines{opacity:.7;animation:dbhGrid 14s linear infinite}
+  .hero-slider-dots button{transition:transform .2s,opacity .2s,background .2s}.hero-slider-dots button:hover{transform:scale(1.25)}
+  .stats-strip>div{animation:dbhHomeRise .6s cubic-bezier(.2,.8,.2,1) both;transition:transform .25s,box-shadow .25s}
+  .stats-strip>div:nth-child(1){animation-delay:.1s}.stats-strip>div:nth-child(2){animation-delay:.16s}.stats-strip>div:nth-child(3){animation-delay:.22s}.stats-strip>div:nth-child(4){animation-delay:.28s}
+  .stats-strip>div:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(9,45,99,.08)}
+  .dbh-home-category-card{animation:dbhHomeCard .55s cubic-bezier(.2,.8,.2,1) both}.dbh-home-category-card:nth-child(1){animation-delay:.08s}.dbh-home-category-card:nth-child(2){animation-delay:.14s}.dbh-home-category-card:nth-child(3){animation-delay:.2s}.dbh-home-category-card:nth-child(4){animation-delay:.26s}
+  .dbh-home-category-card:hover .dbh-home-category-icon{transform:scale(1.08) rotate(-4deg)}.dbh-home-category-icon{transition:transform .25s}
+  .section-heading{animation:dbhHomeRise .65s .08s both}
+  .image-feature-section,.why-section,.process-section,.trust-section,.cta-section{animation:dbhHomeRise .7s .1s both}
+  .process-card{transition:transform .25s,box-shadow .25s,border-color .25s}.process-card:hover{transform:translateY(-5px);box-shadow:0 18px 42px rgba(9,45,99,.1)}
+  @keyframes dbhHomeRise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  @keyframes dbhHomeCard{from{opacity:0;transform:translateY(22px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes dbhOrb{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(22px,-18px,0) scale(1.05)}}
+  @keyframes dbhGrid{from{transform:translateX(0)}to{transform:translateX(35px)}}
+  @media(max-width:700px){.hero-inner{animation-duration:.65s}.search-card{animation-delay:.12s}.stats-strip>div:hover{transform:translateY(-2px)}.dbh-home-category-card:hover{transform:translateY(-3px)}}
+  @media(prefers-reduced-motion:reduce){.hero-inner,.hero-copy .eyebrow,.hero-copy h1,.hero-copy>p,.hero-pills,.search-card,.stats-strip>div,.dbh-home-category-card,.section-heading,.image-feature-section,.why-section,.process-section,.trust-section,.cta-section{animation:none!important}.hero-orb.orb-one,.hero-orb.orb-two,.hero-grid-lines{animation:none!important}.dbh-home-category-icon,.stats-strip>div,.process-card{transition:none!important}}
 </style>
 </head>
 <body>
@@ -206,7 +232,7 @@
 setTimeout(function(){var l=document.getElementById('app-loader');if(l){l.classList.add('fade');setTimeout(function(){l.remove()},650)}},3200);
 </script>
 <script src="/assets/js/config.js"></script>
-<script src="/assets/js/home.js?v=20260930-4"></script>
+<script src="/assets/js/home.js?v=20261005-5"></script>
 <script src="/assets/js/app.js?v=20261001-10"></script>
 </body>
 </html>
