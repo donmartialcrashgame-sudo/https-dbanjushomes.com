@@ -98,7 +98,7 @@
       u.searchParams.set('is_published','eq.true');
       u.searchParams.set('verification_status','eq.verified');
       u.searchParams.set('order','created_at.desc');
-      u.searchParams.set('limit','12');
+      u.searchParams.set('limit','1000');
       const pr=await fetch(u,{headers});
       if(!pr.ok)throw Error('properties '+pr.status);
       const rows=await pr.json();
