@@ -27,8 +27,8 @@ const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
 const ALLOWED_ORIGINS=new Set([
-  'https://dbanjushomes.com',
-  'https://www.dbanjushomes.com',
+  'https://dbanjushomes.online',
+  'https://www.dbanjushomes.online',
   'https://dbanjushomes-com.onrender.com',
   'https://dbanjushomes-auth-xsm3.onrender.com'
 ]);
