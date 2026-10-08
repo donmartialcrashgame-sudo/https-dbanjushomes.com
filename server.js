@@ -328,6 +328,127 @@ app.get('/api/dashboard', requireSession, (req, res) => {
 // Serve the DBH website from this Web Service too.
 // This keeps https://dbanjushomes-auth-xsm3.onrender.com/dashboard.html
 // fully functional while the same repository is also deployed as a Static Site.
+
+/*
+ * Dynamic property social-preview route.
+ * Social crawlers (WhatsApp, Facebook, Telegram, etc.) do not execute
+ * property.html's browser JavaScript, so the property image/title must be
+ * present in the HTML returned by the server.
+ */
+const DBH_SUPABASE_URL =
+  process.env.SUPABASE_URL || 'https://cpgajlsyuieeengdnamy.supabase.co';
+const DBH_SUPABASE_ANON_KEY =
+  process.env.SUPABASE_ANON_KEY ||
+  'sb_publishable_fbcJT-QGKyZg0tDkpbDkOQ_CcQf2ugW';
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function propertyPreviewUrl(req, property) {
+  const base = 'https://dbanjushomes.online/property.html';
+  if (property?.slug) return base + '?slug=' + encodeURIComponent(property.slug);
+  if (property?.property_code) return base + '?id=' + encodeURIComponent(property.property_code);
+  return base + '?id=' + encodeURIComponent(property?.id || '');
+}
+
+async function loadPropertyForPreview(req) {
+  const id = String(req.query?.id || '').trim();
+  const slug = String(req.query?.slug || '').trim();
+  let filter = '';
+
+  if (slug) {
+    filter = 'slug=eq.' + encodeURIComponent(slug);
+  } else if (id) {
+    filter = id.toUpperCase().startsWith('DBH-')
+      ? 'property_code=eq.' + encodeURIComponent(id)
+      : 'id=eq.' + encodeURIComponent(id);
+  } else {
+    return null;
+  }
+
+  const url =
+    DBH_SUPABASE_URL +
+    '/rest/v1/properties?select=id,title,slug,property_code,description,seo_description,og_image_url,is_published,verification_status,property_images(image_url,sort_order)&' +
+    filter +
+    '&is_published=eq.true&limit=1';
+
+  const response = await fetch(url, {
+    headers: {
+      apikey: DBH_SUPABASE_ANON_KEY,
+      Authorization: 'Bearer ' + DBH_SUPABASE_ANON_KEY,
+      Accept: 'application/json'
+    }
+  });
+
+  if (!response.ok) return null;
+  const rows = await response.json();
+  return Array.isArray(rows) ? rows[0] || null : null;
+}
+
+app.get('/property.html', async (req, res, next) => {
+  try {
+    const file = path.join(__dirname, 'property.html');
+    let html = require('fs').readFileSync(file, 'utf8');
+    const property = await loadPropertyForPreview(req);
+
+    if (!property) return res.send(html);
+
+    const images = Array.isArray(property.property_images)
+      ? property.property_images
+          .slice()
+          .sort((a, b) => Number(a.sort_order || 0) - Number(b.sort_order || 0))
+          .map(item => item?.image_url)
+          .filter(Boolean)
+      : [];
+
+    const image = images[0] || property.og_image_url || 'https://dbanjushomes.online/dbh-logo.jpg';
+    const title = property.title
+      ? property.title + ' | DBH — D Banjus Homes Nig Ltd'
+      : 'Property | DBH — D Banjus Homes Nig Ltd';
+    const description = String(
+      property.seo_description || property.description || 'View this property on D Banjus Homes Nig Ltd.'
+    ).replace(/\s+/g, ' ').trim().slice(0, 300);
+    const shareUrl = propertyPreviewUrl(req, property);
+
+    const replaceMeta = (id, attrs) => {
+      const pattern = new RegExp('<meta id="' + id + '"[^>]*>', 'i');
+      html = html.replace(pattern, '<meta id="' + id + '"' + attrs + '>');
+    };
+
+    replaceMeta('meta-description', ' name="description" content="' + escapeHtml(description) + '"');
+    replaceMeta('og-title', ' property="og:title" content="' + escapeHtml(title) + '"');
+    replaceMeta('og-description', ' property="og:description" content="' + escapeHtml(description) + '"');
+    replaceMeta('og-image', ' property="og:image" content="' + escapeHtml(image) + '"');
+
+    html = html.replace(
+      /<link rel="canonical" id="canonical-url" href="[^"]*">/i,
+      '<link rel="canonical" id="canonical-url" href="' + escapeHtml(shareUrl) + '">'
+    );
+
+    const socialTags =
+      '<meta property="og:url" content="' + escapeHtml(shareUrl) + '">' +
+      '<meta property="og:site_name" content="D Banjus Homes Nig Ltd">' +
+      '<meta property="og:image:secure_url" content="' + escapeHtml(image) + '">' +
+      '<meta property="og:image:alt" content="' + escapeHtml(title) + '">' +
+      '<meta name="twitter:card" content="summary_large_image">' +
+      '<meta name="twitter:title" content="' + escapeHtml(title) + '">' +
+      '<meta name="twitter:description" content="' + escapeHtml(description) + '">' +
+      '<meta name="twitter:image" content="' + escapeHtml(image) + '">';
+
+    html = html.replace('</head>', socialTags + '</head>');
+    return res.type('html').send(html);
+  } catch (error) {
+    console.error('DBH property social preview:', error?.message || error);
+    return next();
+  }
+});
+
 app.use(express.static(path.join(__dirname), {
   extensions: ['html'],
   maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0
