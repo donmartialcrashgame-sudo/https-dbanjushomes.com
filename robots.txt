@@ -6,7 +6,7 @@ Disallow: /profile.html
 Disallow: /saved.html
 Disallow: /enquiries.html
 Disallow: /notifications.html
-Sitemap: https://dbanjushomes.com/sitemap.xml
+Sitemap: https://dbanjushomes.online/sitemap.xml
 Disallow: /verify-account.html
 Disallow: /reset-password.html
 Disallow: /auth-callback.html
