@@ -105,6 +105,14 @@
 @keyframes dbhShareFade{from{opacity:0}to{opacity:1}}@keyframes dbhShareUp{from{transform:translateY(18px);opacity:.5}to{transform:translateY(0);opacity:1}}
 @media(max-width:480px){.dbh-share-sheet{padding:10px}.dbh-share-card{padding:18px}.dbh-share-options{grid-template-columns:repeat(2,1fr)}}
 @media(prefers-reduced-motion:reduce){.dbh-share-sheet,.dbh-share-card{animation:none}}
+
+.dbh-share-loading{position:fixed;inset:0;z-index:10050;display:none;align-items:center;justify-content:center;background:rgba(7,25,48,.52);backdrop-filter:blur(9px);padding:20px}
+.dbh-share-loading.open{display:flex;animation:dbhShareFade .16s ease}
+.dbh-share-loading-card{width:min(330px,100%);padding:28px 24px;border-radius:24px;background:rgba(255,255,255,.97);box-shadow:0 30px 90px rgba(0,0,0,.22);text-align:center}
+.dbh-share-spinner{width:52px;height:52px;border:4px solid #dbe9f8;border-top-color:#0b5ed7;border-radius:50%;margin:0 auto 16px;animation:dbhShareSpin .8s linear infinite}
+.dbh-share-loading-card strong{display:block;color:#173653;font-size:17px}.dbh-share-loading-card span{display:block;color:#7a8ca2;font-size:12px;margin-top:6px;line-height:1.5}
+.dbh-share-progress{height:4px;background:#e8eff7;border-radius:99px;overflow:hidden;margin-top:17px}.dbh-share-progress i{display:block;height:100%;width:42%;background:#0b5ed7;border-radius:99px;animation:dbhShareProgress 1.1s ease-in-out infinite}
+@keyframes dbhShareSpin{to{transform:rotate(360deg)}}@keyframes dbhShareProgress{0%{transform:translateX(-120%)}100%{transform:translateX(270%)}}
 </style>
 <link rel="stylesheet" href="/assets/css/consent.css"><style id="dbh-location-fix">.location-panel .detail-map{position:relative;min-height:330px;background:#f2f6fb}.location-panel .detail-map iframe{display:block}.location-fallback{min-height:330px;display:flex;align-items:center;justify-content:center;gap:16px;padding:30px;box-sizing:border-box;text-align:left;background:linear-gradient(135deg,#f7fbff,#eef5fc)}.location-fallback-icon{width:54px;height:54px;border-radius:16px;background:#e6f0ff;color:#0b5ed7;display:grid;place-items:center;flex:none}.location-fallback-icon svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.location-fallback strong,.location-fallback span,.location-fallback a{display:block}.location-fallback strong{font-size:15px;color:#183653}.location-fallback span{font-size:12px;color:#6d8098;line-height:1.6;margin-top:5px}.location-fallback a{display:inline-block;margin-top:10px;color:#0b5ed7;font-size:11px;font-weight:900;text-decoration:none}.location-fallback a:hover{text-decoration:underline}@media(max-width:600px){.location-fallback{min-height:260px;padding:22px;gap:12px}.location-fallback-icon{width:46px;height:46px}.location-fallback strong{font-size:13px}.location-fallback span{font-size:11px}}</style></head>
 <body>
@@ -220,6 +228,24 @@ if(legalList){
  }
 }
 const shareButton=document.getElementById('share-property');
+function showShareLoading(message='Opening share…'){
+  let loader=document.getElementById('dbh-share-loading');
+  if(!loader){
+    loader=document.createElement('div');
+    loader.id='dbh-share-loading';
+    loader.className='dbh-share-loading';
+    loader.innerHTML='<div class="dbh-share-loading-card" role="status" aria-live="polite"><div class="dbh-share-spinner"></div><strong>Preparing your share</strong><span id="dbh-share-loading-text">Opening share…</span><div class="dbh-share-progress"><i></i></div></div>';
+    document.body.appendChild(loader);
+  }
+  loader.querySelector('#dbh-share-loading-text').textContent=message;
+  loader.classList.add('open');
+}
+function hideShareLoading(){
+  const loader=document.getElementById('dbh-share-loading');
+  if(loader) loader.classList.remove('open');
+}
+function wait(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
+
 function openPropertyShare(){
   let sheet=document.getElementById('dbh-share-sheet');
   if(!sheet){
@@ -229,14 +255,13 @@ function openPropertyShare(){
     sheet=document.createElement('div');
     sheet.id='dbh-share-sheet';sheet.className='dbh-share-sheet';
     sheet.innerHTML='<div class="dbh-share-card" role="dialog" aria-modal="true" aria-labelledby="dbh-share-title">'+
-      '<div class="dbh-share-head"><div><h3 id="dbh-share-title">Share property</h3><p>Share this property with someone</p></div><button class="dbh-share-close" type="button" aria-label="Close share menu">'+
-      '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>'+
+      '<div class="dbh-share-head"><div><h3 id="dbh-share-title">Share property</h3><p>Share this property with someone</p></div><button class="dbh-share-close" type="button" aria-label="Close share menu"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>'+
       '<div class="dbh-share-preview"><img src="'+esc(imgs[0]||'/dbh-logo.jpg')+'" alt=""><div><strong>'+esc(p.title||'Property')+'</strong><span>D Banjus Homes Nig Ltd · '+esc(p.property_code||'DBH')+'</span></div></div>'+
       '<div class="dbh-share-options">'+
       '<button type="button" class="dbh-share-option whatsapp" data-share="whatsapp"><svg viewBox="0 0 24 24"><path d="M20 11.5a8.5 8.5 0 0 1-12.9 7.2L4 20l1.3-3A8.5 8.5 0 1 1 20 11.5Z"/><path d="M8.7 8.5c.3-.5.6-.5.9-.5h.5c.2 0 .4.1.5.4l.6 1.4c.1.3.1.5-.1.7l-.5.6c-.1.2-.1.3 0 .5.4.7 1 1.3 1.7 1.7.2.1.4.1.5 0l.7-.7c.2-.2.4-.2.7-.1l1.3.6c.3.1.4.3.4.5v.5c0 .3-.1.6-.5.9-.4.3-1 .5-1.5.4-1.2-.2-2.5-.9-3.6-1.9-1.1-1-1.8-2.3-2-3.5-.1-.5.1-1.1.4-1.5Z"/></svg><span>WhatsApp</span></button>'+
       '<button type="button" class="dbh-share-option facebook" data-share="facebook"><svg viewBox="0 0 24 24"><path d="M14 8h2V5h-2c-2.2 0-4 1.8-4 4v2H8v3h2v5h3v-5h2.5l.5-3H13V9c0-.6.4-1 1-1Z"/></svg><span>Facebook</span></button>'+
       '<button type="button" class="dbh-share-option telegram" data-share="telegram"><svg viewBox="0 0 24 24"><path d="m21 4-3.2 16-6.1-5.2-3.6 3.4.4-5.1L19 6.1 10.8 12l-3.9-1.4L21 4Z"/><path d="m11.7 14.8 2.8-2.5"/></svg><span>Telegram</span></button>'+
-      '<button type="button" class="dbh-share-option copy" data-share="copy"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span>Copy link</span></button>'+
+      '<button type="button" class="dbh-share-option copy" data-share="copy"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0 2 2v8a2 2 0 0 0 2 2h2"/></svg><span>Copy link</span></button>'+
       '</div></div>';
     document.body.appendChild(sheet);
     const close=()=>{sheet.classList.remove('open');document.body.style.overflow='';};
@@ -244,21 +269,33 @@ function openPropertyShare(){
     sheet.addEventListener('click',e=>{if(e.target===sheet)close();});
     sheet.querySelectorAll('[data-share]').forEach(btn=>btn.addEventListener('click',async()=>{
       const type=btn.dataset.share;
+      const loadingMessages={whatsapp:'Opening WhatsApp…',facebook:'Opening Facebook…',telegram:'Opening Telegram…',copy:'Copying property link…'};
+      showShareLoading(loadingMessages[type]||'Preparing your share…');
       try{
+        await wait(350);
         if(type==='whatsapp') window.open('https://wa.me/?text='+encodeURIComponent(shareText+' '+shareUrl),'_blank','noopener');
         if(type==='facebook') window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(shareUrl),'_blank','noopener,width=700,height=600');
         if(type==='telegram') window.open('https://t.me/share/url?url='+encodeURIComponent(shareUrl)+'&text='+encodeURIComponent(shareText),'_blank','noopener');
-        if(type==='copy'){await navigator.clipboard.writeText(shareUrl);dbhToast('Property link copied.');}
-        if(type==='copy' && !navigator.clipboard){throw new Error('Clipboard unavailable');}
+        if(type==='copy'){
+          if(!navigator.clipboard) throw new Error('Clipboard unavailable');
+          await navigator.clipboard.writeText(shareUrl);
+        }
+        await wait(750);
+        hideShareLoading();
+        if(type==='copy') dbhToast('Property link copied.');
         if(type==='whatsapp'||type==='facebook'||type==='telegram') close();
-      }catch(e){console.warn('DBH share option:',e);if(type==='copy')dbhToast('Could not copy the link. Please copy it manually.','error');}
+      }catch(e){
+        console.warn('DBH share option:',e);
+        await wait(500);
+        hideShareLoading();
+        if(type==='copy') dbhToast('Could not copy the link. Please copy it manually.','error');
+      }
     }));
   }
   sheet.classList.add('open');document.body.style.overflow='hidden';
 }
 shareButton?.addEventListener('click',openPropertyShare);
 
-// Native phone share is exposed as a separate option from the main share sheet when supported.
 const nativeShareButton=document.createElement('button');
 nativeShareButton.type='button';nativeShareButton.className='dbh-share-option native-share';nativeShareButton.style.display='none';
 nativeShareButton.innerHTML='<svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="19" r="2"/><path d="m8 11 8-5M8 13l8 5"/></svg><span>More / Phone</span>';
@@ -267,11 +304,17 @@ const shareSheetObserver=new MutationObserver(()=>{
   if(sheet&&options&&!options.querySelector('.native-share')){
     options.appendChild(nativeShareButton);
     nativeShareButton.style.display=navigator.share?'flex':'none';
-    nativeShareButton.onclick=async()=>{try{await navigator.share({title:(p.title||'Property')+' | DBH',text:'View '+(p.title||'this property')+' on DBH — D Banjus Homes Nig Ltd.',url:location.href});}catch(e){if(e?.name!=='AbortError')console.warn('DBH native share:',e)}};
+    nativeShareButton.onclick=async()=>{
+      showShareLoading('Opening your phone share menu…');
+      try{
+        await wait(300);
+        await navigator.share({title:(p.title||'Property')+' | DBH',text:'View '+(p.title||'this property')+' on DBH — D Banjus Homes Nig Ltd.',url:location.href});
+      }catch(e){if(e?.name!=='AbortError')console.warn('DBH native share:',e)}
+      await wait(500);hideShareLoading();
+    };
   }
 });
-shareSheetObserver.observe(document.body,{childList:true});
-const gallery=document.createElement('div');gallery.className='detail-gallery-modal';gallery.id='detail-gallery-modal';gallery.innerHTML=`<div class="gallery-modal-head"><div class="gallery-modal-title"><strong>Property photos</strong><span class="gallery-modal-counter" id="gallery-modal-counter"></span></div><button class="gallery-modal-close" id="gallery-modal-close" type="button" aria-label="Close gallery"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="gallery-modal-stage"><button class="gallery-arrow prev" id="gallery-prev" type="button" aria-label="Previous photo"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button><div class="gallery-modal-image-wrap"><img id="gallery-modal-image" class="gallery-modal-image" alt=""><div class="gallery-watermark"><span>D Banjus Homes Nig Ltd</span></div>${verified?`<div class="gallery-verified">${icon('shield')} Verified Property</div>`:''}</div><button class="gallery-arrow next" id="gallery-next" type="button" aria-label="Next photo"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button></div><div class="gallery-modal-thumbs" id="gallery-modal-thumbs"></div></div>`;
+shareSheetObserver.observe(document.body,{childList:true});const gallery=document.createElement('div');gallery.className='detail-gallery-modal';gallery.id='detail-gallery-modal';gallery.innerHTML=`<div class="gallery-modal-head"><div class="gallery-modal-title"><strong>Property photos</strong><span class="gallery-modal-counter" id="gallery-modal-counter"></span></div><button class="gallery-modal-close" id="gallery-modal-close" type="button" aria-label="Close gallery"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="gallery-modal-stage"><button class="gallery-arrow prev" id="gallery-prev" type="button" aria-label="Previous photo"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button><div class="gallery-modal-image-wrap"><img id="gallery-modal-image" class="gallery-modal-image" alt=""><div class="gallery-watermark"><span>D Banjus Homes Nig Ltd</span></div>${verified?`<div class="gallery-verified">${icon('shield')} Verified Property</div>`:''}</div><button class="gallery-arrow next" id="gallery-next" type="button" aria-label="Next photo"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button></div><div class="gallery-modal-thumbs" id="gallery-modal-thumbs"></div></div>`;
 document.body.appendChild(gallery);
 const galleryImages=imgs;let galleryIndex=0;
 const modalImage=document.getElementById('gallery-modal-image'),modalCounter=document.getElementById('gallery-modal-counter'),modalThumbs=document.getElementById('gallery-modal-thumbs');
