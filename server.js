@@ -412,6 +412,49 @@ async function loadPropertyForPreview(req) {
   return property;
 }
 
+app.get('/api/property-preview-image', async (req, res) => {
+  try {
+    const id = String(req.query?.id || '').trim();
+    const slug = String(req.query?.slug || '').trim();
+    let filter = '';
+
+    if (slug) filter = 'slug=eq.' + encodeURIComponent(slug);
+    else if (id) {
+      filter = id.toUpperCase().startsWith('DBH-')
+        ? 'property_code=eq.' + encodeURIComponent(id)
+        : 'id=eq.' + encodeURIComponent(id);
+    } else return res.status(400).end();
+
+    const propertyResponse = await fetch(
+      DBH_SUPABASE_URL +
+        '/rest/v1/properties?select=id,og_image_url&' +
+        filter +
+        '&is_published=eq.true&limit=1',
+      { headers: { apikey: DBH_SUPABASE_ANON_KEY, Authorization: 'Bearer ' + DBH_SUPABASE_ANON_KEY, Accept: 'application/json' } }
+    );
+    const rows = propertyResponse.ok ? await propertyResponse.json().catch(() => []) : [];
+    const property = Array.isArray(rows) ? rows[0] : null;
+    if (!property?.id) return res.status(404).end();
+
+    const imagesResponse = await fetch(
+      DBH_SUPABASE_URL +
+        '/rest/v1/property_images?select=image_url,sort_order&property_id=eq.' +
+        encodeURIComponent(property.id) +
+        '&order=sort_order.asc&limit=1',
+      { headers: { apikey: DBH_SUPABASE_ANON_KEY, Authorization: 'Bearer ' + DBH_SUPABASE_ANON_KEY, Accept: 'application/json' } }
+    );
+    const images = imagesResponse.ok ? await imagesResponse.json().catch(() => []) : [];
+    const image = images?.[0]?.image_url || property.og_image_url;
+    if (!image) return res.status(404).end();
+
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    return res.redirect(302, image);
+  } catch (error) {
+    console.error('DBH property preview image:', error?.message || error);
+    return res.status(404).end();
+  }
+});
+
 app.get('/property.html', async (req, res, next) => {
   try {
     const file = path.join(__dirname, 'property.html');
@@ -428,7 +471,10 @@ app.get('/property.html', async (req, res, next) => {
           .filter(Boolean)
       : [];
 
-    const image = images[0] || property.og_image_url || 'https://dbanjushomes.online/dbh-logo.jpg';
+    const realImage = images[0] || property.og_image_url || 'https://dbanjushomes.online/dbh-logo.jpg';
+    const image = property.id
+      ? 'https://dbanjushomes.online/api/property-preview-image?id=' + encodeURIComponent(property.property_code || property.id)
+      : realImage;
     const title = property.title
       ? property.title + ' | DBH — D Banjus Homes Nig Ltd'
       : 'Property | DBH — D Banjus Homes Nig Ltd';
