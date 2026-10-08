@@ -374,7 +374,7 @@ async function loadPropertyForPreview(req) {
 
   const url =
     DBH_SUPABASE_URL +
-    '/rest/v1/properties?select=id,title,slug,property_code,description,seo_description,og_image_url,is_published,verification_status&' +
+    '/rest/v1/properties?select=id,title,slug,property_code,description,seo_description,og_image_url,is_published,verification_status,price,currency,property_type,address,city,area,lga,state,bedrooms,bathrooms,land_size,land_size_unit,created_at,updated_at&' +
     filter +
     '&is_published=eq.true&limit=1';
 
@@ -411,6 +411,77 @@ async function loadPropertyForPreview(req) {
     : [];
   return property;
 }
+
+app.get('/sitemap.xml', async (_req, res) => {
+  try {
+    const response = await fetch(
+      DBH_SUPABASE_URL +
+        '/rest/v1/properties?select=slug,property_code,created_at,updated_at&is_published=eq.true&verification_status=eq.verified&order=updated_at.desc',
+      {
+        headers: {
+          apikey: DBH_SUPABASE_ANON_KEY,
+          Authorization: 'Bearer ' + DBH_SUPABASE_ANON_KEY,
+          Accept: 'application/json'
+        }
+      }
+    );
+
+    const rows = response.ok ? await response.json().catch(() => []) : [];
+    const pages = [
+      '/',
+      '/properties.html',
+      '/land.html',
+      '/commercial.html',
+      '/agents.html',
+      '/about.html',
+      '/contact.html',
+      '/help.html',
+      '/privacy-policy.html',
+      '/agreement.html'
+    ];
+
+    const escXml = (value) =>
+      String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+
+    const urls = pages.map((page) => ({
+      loc: 'https://dbanjushomes.online' + page,
+      lastmod: new Date().toISOString()
+    }));
+
+    for (const property of Array.isArray(rows) ? rows : []) {
+      const key = property?.slug || property?.property_code;
+      if (!key) continue;
+      urls.push({
+        loc: 'https://dbanjushomes.online/property.html?' +
+          (property.slug
+            ? 'slug=' + encodeURIComponent(property.slug)
+            : 'id=' + encodeURIComponent(property.property_code)),
+        lastmod: property.updated_at || property.created_at || new Date().toISOString()
+      });
+    }
+
+    const xml =
+      '<?xml version="1.0" encoding="UTF-8"?>' +
+      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
+      urls.map((item) =>
+        '<url><loc>' + escXml(item.loc) + '</loc>' +
+        '<lastmod>' + escXml(new Date(item.lastmod).toISOString()) + '</lastmod>' +
+        '<changefreq>' + (item.loc.includes('/property.html?') ? 'weekly' : 'daily') + '</changefreq>' +
+        '<priority>' + (item.loc.includes('/property.html?') ? '0.9' : '0.7') + '</priority></url>'
+      ).join('') +
+      '</urlset>';
+
+    res.type('application/xml').set('Cache-Control', 'public, max-age=300').send(xml);
+  } catch (error) {
+    console.error('DBH dynamic sitemap:', error?.message || error);
+    return res.sendFile(path.join(__dirname, 'sitemap.xml'));
+  }
+});
 
 app.get('/api/property-preview-image', async (req, res) => {
   try {
@@ -496,6 +567,57 @@ app.get('/property.html', async (req, res, next) => {
     html = html.replace(
       /<link rel="canonical" id="canonical-url" href="[^"]*">/i,
       '<link rel="canonical" id="canonical-url" href="' + escapeHtml(shareUrl) + '">'
+    );
+
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'RealEstateListing',
+      name: property.title || 'Property for sale',
+      url: shareUrl,
+      image: images.length ? images : [realImage],
+      description,
+      identifier: property.property_code || property.id,
+      datePosted: property.created_at || undefined,
+      dateModified: property.updated_at || property.created_at || undefined,
+      provider: {
+        '@type': 'Organization',
+        name: 'D Banjus Homes Nig Ltd',
+        url: 'https://dbanjushomes.online/'
+      },
+      about: {
+        '@type': property.property_type === 'house' ? 'SingleFamilyResidence' : 'Place',
+        name: property.title || 'Property',
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: property.address || '',
+          addressLocality: property.city || property.area || '',
+          addressRegion: property.state || '',
+          addressCountry: 'NG'
+        },
+        numberOfBedrooms: property.bedrooms || undefined,
+        numberOfBathroomsTotal: property.bathrooms || undefined,
+        floorSize: property.land_size ? {
+          '@type': 'QuantitativeValue',
+          value: Number(property.land_size),
+          unitText: property.land_size_unit || 'sqm'
+        } : undefined
+      },
+      offers: property.price != null ? {
+        '@type': 'Offer',
+        url: shareUrl,
+        price: Number(property.price),
+        priceCurrency: property.currency || 'NGN',
+        availability: 'https://schema.org/InStock',
+        itemCondition: 'https://schema.org/NewCondition'
+      } : undefined
+    };
+
+    html = html.replace(/<title>[^<]*<\/title>/i, '<title>' + escapeHtml(title) + '</title>');
+    html = html.replace(
+      /<script id="property-schema" type="application\/ld\+json">[\s\S]*?<\/script>/i,
+      '<script id="property-schema" type="application/ld+json">' +
+        JSON.stringify(schema).replace(/</g, '\\u003c') +
+        '</script>'
     );
 
     const socialTags =
