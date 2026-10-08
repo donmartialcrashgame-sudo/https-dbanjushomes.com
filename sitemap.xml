@@ -1,1 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://dbanjushomes.online/</loc><changefreq>daily</changefreq><priority>1.0</priority></url><url><loc>https://dbanjushomes.online/properties.html</loc></url><url><loc>https://dbanjushomes.online/land.html</loc></url><url><loc>https://dbanjushomes.online/commercial.html</loc></url><url><loc>https://dbanjushomes.online/agents.html</loc></url><url><loc>https://dbanjushomes.online/about.html</loc></url><url><loc>https://dbanjushomes.online/contact.html</loc></url><url><loc>https://dbanjushomes.online/help.html</loc></url><url><loc>https://dbanjushomes.online/privacy-policy.html</loc></url><url><loc>https://dbanjushomes.online/agreement.html</loc></url><url><loc>https://dbanjushomes.online/property.html?slug=4-bedroom-duplex-c6hpx0</loc><lastmod>2026-10-05T08:01:48Z</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url><url><loc>https://dbanjushomes.online/property.html?slug=dbh-demo-luxury-duplex-lekki-verified</loc><lastmod>2026-09-30T16:45:35Z</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url><url><loc>https://dbanjushomes.online/property.html?slug=dbh-demo-modern-residence-lagos</loc><lastmod>2026-09-28T13:23:01Z</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url></urlset>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://dbanjushomes.online/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://dbanjushomes.online/properties.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://dbanjushomes.online/land.html</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://dbanjushomes.online/commercial.html</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://dbanjushomes.online/agents.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://dbanjushomes.online/about.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://dbanjushomes.online/contact.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://dbanjushomes.online/help.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://dbanjushomes.online/privacy-policy.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://dbanjushomes.online/agreement.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+
+  <!-- Current approved properties. The Node server dynamically adds every future verified/published property. -->
+  <url><loc>https://dbanjushomes.online/property.html?slug=4-bedroom-duplex-c6hpx0</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://dbanjushomes.online/property.html?slug=dbh-demo-luxury-duplex-lekki-verified</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://dbanjushomes.online/property.html?slug=dbh-demo-modern-residence-lagos</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+</urlset>
