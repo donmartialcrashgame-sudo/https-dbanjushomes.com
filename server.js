@@ -374,7 +374,7 @@ async function loadPropertyForPreview(req) {
 
   const url =
     DBH_SUPABASE_URL +
-    '/rest/v1/properties?select=id,title,slug,property_code,description,seo_description,og_image_url,is_published,verification_status,property_images(image_url,sort_order)&' +
+    '/rest/v1/properties?select=id,title,slug,property_code,description,seo_description,og_image_url,is_published,verification_status&' +
     filter +
     '&is_published=eq.true&limit=1';
 
@@ -388,7 +388,28 @@ async function loadPropertyForPreview(req) {
 
   if (!response.ok) return null;
   const rows = await response.json();
-  return Array.isArray(rows) ? rows[0] || null : null;
+  const property = Array.isArray(rows) ? rows[0] || null : null;
+  if (!property?.id) return null;
+
+  // Fetch images separately so social previews still work even if the
+  // nested PostgREST relationship is unavailable on the public API.
+  const imagesResponse = await fetch(
+    DBH_SUPABASE_URL +
+      '/rest/v1/property_images?select=image_url,sort_order&property_id=eq.' +
+      encodeURIComponent(property.id) +
+      '&order=sort_order.asc',
+    {
+      headers: {
+        apikey: DBH_SUPABASE_ANON_KEY,
+        Authorization: 'Bearer ' + DBH_SUPABASE_ANON_KEY,
+        Accept: 'application/json'
+      }
+    }
+  );
+  property.property_images = imagesResponse.ok
+    ? await imagesResponse.json().catch(() => [])
+    : [];
+  return property;
 }
 
 app.get('/property.html', async (req, res, next) => {
