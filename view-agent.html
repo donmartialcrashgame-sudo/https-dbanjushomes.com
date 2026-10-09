@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>View Property Agent | D Banjus Homes Nigeria Limited</title>
+<meta name="description" content="View a DBH property agent's profile and verified published property listings.">
+<meta name="theme-color" content="#0b5ed7"><link rel="icon" href="/dbh-logo.jpg">
+<link rel="stylesheet" href="/assets/css/consent.css">
+<style>
+:root{--blue:#0b5ed7;--navy:#082d60;--ink:#173451;--muted:#71839a;--line:#e1eaf4;--bg:#f5f8fc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1180px;margin:0 auto;padding:28px 20px 70px}.back{display:inline-flex;align-items:center;gap:8px;color:#32628f;text-decoration:none;font-weight:750;font-size:12px;margin:5px 0 20px}
+.hero{position:relative;overflow:hidden;border-radius:26px;background:linear-gradient(120deg,#072b5d,#0b58ac 65%,#2488e8);color:white;padding:28px;box-shadow:0 18px 48px #0b4f9e22}
+.hero:after{content:"";position:absolute;right:-80px;top:-140px;width:320px;height:320px;border:1px solid #ffffff26;border-radius:50%;box-shadow:0 0 0 28px #ffffff08,0 0 0 60px #ffffff06;pointer-events:none}
+.identity{display:flex;align-items:center;gap:17px;position:relative;z-index:1}.avatar{width:78px;height:78px;border-radius:22px;background:#fff;padding:4px;object-fit:cover;border:1px solid #ffffff80}.identity h1{margin:0;font-size:clamp(22px,3vw,32px);letter-spacing:-.035em}.identity p{margin:6px 0 0;color:#d6e8fb;font-size:12px}.badge{display:inline-flex;align-items:center;gap:6px;background:#ffffff17;border:1px solid #ffffff35;border-radius:999px;padding:6px 10px;font-size:10px;font-weight:800;margin-top:10px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:24px;position:relative;z-index:1}.stat{padding:13px;border:1px solid #ffffff26;border-radius:14px;background:#ffffff0e}.stat small{display:block;color:#d1e5fb;font-size:10px}.stat strong{display:block;font-size:20px;margin-top:3px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:30px 0 15px}.section-head h2{font-size:21px;margin:0;letter-spacing:-.025em}.section-head p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.listings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}.listing{overflow:hidden;background:white;border:1px solid var(--line);border-radius:18px;box-shadow:0 7px 22px #18395c08;transition:transform .2s,box-shadow .2s}.listing:hover{transform:translateY(-3px);box-shadow:0 15px 30px #18395c12}.cover{display:block;width:100%;height:205px;object-fit:cover;background:#e9f1fa}.listing-body{padding:15px}.price{font-size:18px;font-weight:900;color:#0c5fc4}.listing h3{font-size:14px;margin:7px 0 5px;line-height:1.45}.location{display:flex;align-items:center;gap:6px;color:#74869a;font-size:11px;min-height:20px}.location svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8}.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.tags span{font-size:9px;font-weight:750;color:#315779;background:#f0f5fb;border-radius:7px;padding:5px 7px}.view{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:14px;width:100%;padding:11px;border-radius:11px;background:#0b5ed7;color:white;text-decoration:none;font-weight:800;font-size:11px}.view svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8}.state{background:white;border:1px dashed #cfdae7;border-radius:16px;padding:28px;text-align:center;color:var(--muted);grid-column:1/-1}.state strong{display:block;color:var(--ink);font-size:14px;margin-bottom:5px}.skeleton{height:340px;border-radius:18px;background:linear-gradient(100deg,#edf2f8 30%,#f8fbff 45%,#edf2f8 60%);background-size:200% 100%;animation:shine 1.3s infinite}@keyframes shine{to{background-position:-200% 0}}
+@media(max-width:850px){.listings{grid-template-columns:repeat(2,minmax(0,1fr))}.cover{height:190px}}
+@media(max-width:560px){main{padding:16px 12px 45px}.hero{padding:19px;border-radius:20px}.avatar{width:62px;height:62px;border-radius:17px}.identity{gap:12px}.stats{gap:7px}.stat{padding:10px}.stat strong{font-size:17px}.listings{grid-template-columns:1fr}.cover{height:230px}.section-head h2{font-size:19px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="site-header" aria-label="DBH site navigation"></header>
+<main>
+<a class="back" href="/properties.html"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5m6 6-6-6 6-6"/></svg>Back to properties</a>
+<section class="hero" id="agent-profile"><div class="identity"><img class="avatar" src="/dbh-logo.jpg" alt="Agent profile"><div><h1>Loading agent…</h1><p>Retrieving agent profile and published listings</p></div></div><div class="stats"><div class="stat"><small>Published listings</small><strong>—</strong></div><div class="stat"><small>Location</small><strong>—</strong></div><div class="stat"><small>DBH membership</small><strong>Agent</strong></div></div></section>
+<div class="section-head"><div><h2>Properties from this agent</h2><p>Published listings available on D Banjus Homes Nigeria Limited.</p></div></div>
+<section class="listings" id="agent-listings" aria-live="polite"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></section>
+</main>
+<script src="/assets/js/config.js"></script><script src="/assets/js/app.js?v=20261009-agent1"></script>
+<script>
+(async function(){
+ const c=window.DBH_CONFIG||{},root=document.getElementById('agent-profile'),list=document.getElementById('agent-listings');
+ const params=new URLSearchParams(location.search),agentId=params.get('id'),agentName=params.get('name');
+ const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+ const iconPin='<svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>';
+ async function get(path){const r=await fetch(c.supabaseUrl+'/rest/v1/'+path,{headers:{apikey:c.supabaseAnonKey,Accept:'application/json'}});if(!r.ok)throw Error('Unable to fetch DBH agent listings ('+r.status+').');return r.json();}
+ try{
+   let query='properties?select=*&is_published=eq.true&verification_status=eq.verified&order=created_at.desc&limit=100';
+   if(agentId)query+='&created_by=eq.'+encodeURIComponent(agentId);
+   else if(agentName)query+='&provider_name=eq.'+encodeURIComponent(agentName);
+   else throw Error('No agent was selected.');
+   const rows=await get(query);
+   if(!rows.length){root.innerHTML='<div class="identity"><img class="avatar" src="/dbh-logo.jpg" alt="DBH"><div><h1>Agent listings</h1><p>No published and verified listings were found for this agent.</p></div></div>';list.innerHTML='<div class="state"><strong>No published properties yet</strong>This agent has no listings currently visible to customers.</div>';return;}
+   const first=rows[0],name=String(first.provider_name||agentName||'DBH Property Agent');
+   let profile=null;
+   if(agentId){try{const p=await get('agent_applications?select=*&user_id=eq.'+encodeURIComponent(agentId)+'&limit=1');profile=p?.[0]||null;}catch{}}
+   const location=[profile?.city,profile?.state,profile?.location].filter(Boolean).filter((v,i,a)=>a.findIndex(x=>String(x).toLowerCase()===String(v).toLowerCase())===i).join(', ')||[first.city,first.state].filter(Boolean).join(', ')||'Nigeria';
+   const avatar=profile?.avatar_url||profile?.profile_image_url||profile?.photo_url||'/dbh-logo.jpg';
+   root.innerHTML='<div class="identity"><img class="avatar" src="'+esc(avatar)+'" alt="'+esc(name)+'" onerror="this.src=\'/dbh-logo.jpg\'"><div><h1>'+esc(name)+'</h1><p>DBH property agent · '+esc(location)+'</p><span class="badge"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg> Properties verified for publication</span></div></div><div class="stats"><div class="stat"><small>Published listings</small><strong>'+rows.length+'</strong></div><div class="stat"><small>Location</small><strong>'+esc(location)+'</strong></div><div class="stat"><small>Agent status</small><strong>'+esc(profile?.status||'Active listing')+'</strong></div></div>';
+   document.title=name+' | DBH Property Agent';
+   list.innerHTML=rows.map(p=>{let images=Array.isArray(p.property_images)?p.property_images:[];let image=p.og_image_url||p.image_url||p.featured_image||p.cover_image||images[0]?.image_url||'/dbh-logo.jpg';let price=p.price==null?'Price on request':(p.currency==='USD'?'$':p.currency==='EUR'?'€':'₦')+Number(p.price).toLocaleString('en-NG');let loc=[p.area,p.city,p.lga,p.state].filter(Boolean).filter((v,i,a)=>a.findIndex(x=>String(x).toLowerCase()===String(v).toLowerCase())===i).join(', ')||'Nigeria';return '<article class="listing"><img class="cover" loading="lazy" src="'+esc(image)+'" alt="'+esc(p.title||'Property')+'" onerror="this.src=\'/dbh-logo.jpg\'"><div class="listing-body"><div class="price">'+esc(price)+'</div><h3>'+esc(p.title||'Property listing')+'</h3><div class="location">'+iconPin+esc(loc)+'</div><div class="tags">'+(p.bedrooms?'<span>'+esc(p.bedrooms)+' beds</span>':'')+(p.bathrooms?'<span>'+esc(p.bathrooms)+' baths</span>':'')+'<span>'+esc(p.property_type||'Property')+'</span></div><a class="view" href="/property.html?id='+encodeURIComponent(p.property_code||p.id)+'">View property <svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></div></article>';}).join('');
+ }catch(e){root.innerHTML='<div class="identity"><img class="avatar" src="/dbh-logo.jpg" alt="DBH"><div><h1>Agent profile unavailable</h1><p>'+esc(e.message||'Unable to load this agent right now.')+'</p></div></div>';list.innerHTML='<div class="state"><strong>Could not load agent listings</strong>Please refresh the page and try again.</div>';}
+})();
+</script>
+</body></html>
