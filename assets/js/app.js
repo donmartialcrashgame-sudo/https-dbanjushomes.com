@@ -121,28 +121,42 @@ function setupCustomerCareWidget(){
   const widget=document.createElement('div');
   widget.id='dbh-care-widget';
   widget.className='dbh-care-widget';
-  widget.innerHTML='<span class="dbh-care-label">Message us — we’re online</span>'+
-    '<button type="button" class="dbh-care-launcher" id="dbh-care-launcher" aria-label="Message customer care" aria-expanded="false">'+
+  widget.innerHTML='<span class="dbh-care-label">DBH Customer Care</span>'+
+    '<button type="button" class="dbh-care-launcher" id="dbh-care-launcher" aria-label="Open DBH customer care options" aria-expanded="false">'+
       '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-1a8 8 0 0 1 16 0v1"></path><path d="M4 13h2.5A1.5 1.5 0 0 1 8 14.5V17a1.5 1.5 0 0 1-1.5 1.5H5A1 1 0 0 1 4 17.5z"></path><path d="M20 13h-2.5a1.5 1.5 0 0 0-1.5 1.5V17a1.5 1.5 0 0 0 1.5 1.5H19a1 1 0 0 0 1-1z"></path><path d="M16 20h-2"></path></svg><i class="dbh-care-online-dot" aria-hidden="true"></i>'+
     '</button>'+
-    '<section class="dbh-care-panel" id="dbh-care-panel" aria-label="DBH customer care chat" aria-hidden="true">'+
-      '<div class="dbh-care-head"><div class="dbh-care-avatar"><img src="/dbh-logo.jpg" alt="DBH Customer Care"></div><div class="dbh-care-head-copy"><strong>DBH Customer Care</strong><span class="dbh-care-status"><i></i> <b id="dbh-care-status-text">AI assistant</b></span></div><button type="button" class="dbh-care-close" id="dbh-care-close" aria-label="Close customer care"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"></path></svg></button></div>'+
+    '<section class="dbh-care-panel" id="dbh-care-panel" aria-label="DBH customer care" aria-hidden="true">'+
+      '<div class="dbh-care-head"><div class="dbh-care-avatar"><img src="/dbh-logo.jpg" alt="DBH Customer Care"></div><div class="dbh-care-head-copy"><strong>DBH Customer Care</strong><span class="dbh-care-status"><i></i> <b id="dbh-care-status-text">Choose how we can help</b></span></div><button type="button" class="dbh-care-close" id="dbh-care-close" aria-label="Close customer care"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"></path></svg></button></div>'+
       '<div class="dbh-care-body" id="dbh-care-body">'+
-        '<div class="dbh-care-intro"><div class="dbh-care-mini-avatar"><img src="/dbh-logo.jpg" alt=""></div><div class="dbh-care-bubble"><strong>Hello 👋</strong>Welcome to DBH. I can help with properties, enquiries, verification, listings and using the website.</div></div>'+
-        '<div class="dbh-care-quick"><button type="button" data-care-message="I need help finding a property.">Find a property</button><button type="button" data-care-message="I need help with a property enquiry.">Property enquiry</button><button type="button" data-care-message="I need help verifying a listing.">Verify a listing</button><button type="button" data-care-message="I want to list a property.">List a property</button></div>'+
-        ''+
-        '<p class="dbh-care-note" id="dbh-care-note"></p>'+
-        '<form class="dbh-care-form" id="dbh-care-form"><textarea id="dbh-care-input" maxlength="2000" rows="2" placeholder="Type your message…" aria-label="Your message"></textarea><button class="dbh-care-send" type="submit" aria-label="Send message"><svg viewBox="0 0 24 24"><path d="m21 3-7.5 18-3.5-7L3 10.5z"></path><path d="M21 3 10 14"></path></svg></button></form>'+
+        '<section class="dbh-care-choice-screen" id="dbh-care-choice-screen"><div class="dbh-care-choice-intro"><span class="dbh-care-choice-kicker">WE ARE HERE TO HELP</span><h3>How can we help you today?</h3><p>Choose the best way to reach D Banjus Homes Nigeria Limited.</p></div>'+
+          '<button type="button" class="dbh-care-option" data-care-mode="ai"><span class="dbh-care-option-icon ai"><svg viewBox="0 0 24 24"><path d="M12 3 14.1 9.9 21 12l-6.9 2.1L12 21l-2.1-6.9L3 12l6.9-2.1L12 3Z"></path></svg></span><span class="dbh-care-option-copy"><strong>Chat with AI</strong><small>Get quick answers about properties, accounts and using DBH.</small></span><svg class="dbh-care-option-arrow" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg></button>'+
+          '<button type="button" class="dbh-care-option" data-care-mode="human"><span class="dbh-care-option-icon human"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"></circle><path d="M5 20c.7-4 2.8-6 7-6s6.3 2 7 6"></path><path d="M19 4v4M17 6h4"></path></svg></span><span class="dbh-care-option-copy"><strong>Chat with a human</strong><small>Send a message to our customer-care team for personal help.</small></span><svg class="dbh-care-option-arrow" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg></button>'+
+          '<a class="dbh-care-option" href="mailto:support@dbanjushomes.online?subject=DBH%20Support%20Request"><span class="dbh-care-option-icon email"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m4 7 8 6 8-6"></path></svg></span><span class="dbh-care-option-copy"><strong>Email support</strong><small>Send us an email at support@dbanjushomes.online.</small></span><svg class="dbh-care-option-arrow" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg></a>'+
+          '<a class="dbh-care-option" href="mailto:support@dbanjushomes.online?subject=DBH%20Complaint&amp;body=Hello%20DBH%20Customer%20Care%2C%0A%0AI%20would%20like%20to%20make%20a%20complaint.%0A%0ADetails%3A%0A"><span class="dbh-care-option-icon complaint"><svg viewBox="0 0 24 24"><path d="M12 3 22 20H2L12 3Z"></path><path d="M12 9v5M12 17h.01"></path></svg></span><span class="dbh-care-option-copy"><strong>Make a complaint</strong><small>Report a problem with a listing, service or your account.</small></span><svg class="dbh-care-option-arrow" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg></a>'+
+          '<div class="dbh-care-choice-footer"><span class="dbh-care-secure-dot"></span> DBH Customer Care <span>•</span> We are happy to help</div></section>'+
+        '<section class="dbh-care-chat-screen" id="dbh-care-chat-screen" hidden><button type="button" class="dbh-care-back" id="dbh-care-back"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"></path></svg><span>All support options</span></button>'+
+          '<div class="dbh-care-intro"><div class="dbh-care-mini-avatar"><img src="/dbh-logo.jpg" alt=""></div><div class="dbh-care-bubble"><strong id="dbh-care-welcome-title">Hello 👋</strong><span id="dbh-care-welcome-copy">Welcome to DBH. How can I help you today?</span></div></div>'+
+          '<div class="dbh-care-quick" id="dbh-care-quick"><button type="button" data-care-message="I need help finding a property.">Find a property</button><button type="button" data-care-message="I need help with a property enquiry.">Property enquiry</button><button type="button" data-care-message="I need help verifying a listing.">Verify a listing</button><button type="button" data-care-message="I want to list a property.">List a property</button></div>'+
+          '<p class="dbh-care-note" id="dbh-care-note"></p>'+
+          '<form class="dbh-care-form" id="dbh-care-form"><textarea id="dbh-care-input" maxlength="2000" rows="2" placeholder="Type your message…" aria-label="Your message"></textarea><button class="dbh-care-send" type="submit" aria-label="Send message"><svg viewBox="0 0 24 24"><path d="m21 3-7.5 18-3.5-7L3 10.5z"></path><path d="M21 3 10 14"></path></svg></button></form></section>'+
       '</div>'+
-      '<div class="dbh-care-foot"><span>Powered by DBH AI</span><span>Available 24/7</span></div>'+
+      '<div class="dbh-care-foot"><span>DBH — D Banjus Homes Nigeria Limited</span><span id="dbh-care-foot-status">Customer support</span></div>'+
     '</section>'+
-  '</div>';
+  '</div>'
   document.body.appendChild(widget);
 
   const launcher=document.getElementById('dbh-care-launcher');
   const panel=document.getElementById('dbh-care-panel');
   const close=document.getElementById('dbh-care-close');
   const form=document.getElementById('dbh-care-form');
+  const choiceScreen=document.getElementById('dbh-care-choice-screen');
+  const chatScreen=document.getElementById('dbh-care-chat-screen');
+  const backButton=document.getElementById('dbh-care-back');
+  const welcomeTitle=document.getElementById('dbh-care-welcome-title');
+  const welcomeCopy=document.getElementById('dbh-care-welcome-copy');
+  const quickChoices=document.getElementById('dbh-care-quick');
+  const footStatus=document.getElementById('dbh-care-foot-status');
+  let chatMode='';
   const input=document.getElementById('dbh-care-input');
   const body=document.getElementById('dbh-care-body');
   const note=document.getElementById('dbh-care-note');
@@ -212,6 +226,7 @@ function setupCustomerCareWidget(){
   }
 
   const renderedMessages=new Set();
+  const renderedReplies=new Set();
   async function loadConversation(){
     const t=await resolveToken();
     if(!t)return;
@@ -223,20 +238,39 @@ function setupCustomerCareWidget(){
       messages.forEach(m=>{
         const key=String(m?.id||'');
         if(!key||renderedMessages.has(key))return;
-        if(m?.message)bubble(m.message,true,m.created_at,true);
-        if(m?.agent_reply)bubble(m.agent_reply,false,m.updated_at,false,m?.image_data?{image_data:m.image_data}:null);
-        if(m?.human_reply)bubble(m.human_reply,false,m.updated_at,false);
-        renderedMessages.add(key);
+        if(m?.message&&!renderedMessages.has(key)){bubble(m.message,true,m.created_at,true);renderedMessages.add(key);}
+        const aiKey=key+'|ai|'+String(m?.agent_reply||'');
+        if(m?.agent_reply&&!renderedReplies.has(aiKey)){bubble(m.agent_reply,false,m.updated_at,false,m?.image_data?{image_data:m.image_data}:null);renderedReplies.add(aiKey);}
+        const humanKey=key+'|human|'+String(m?.human_reply||'');
+        if(m?.human_reply&&!renderedReplies.has(humanKey)){bubble(m.human_reply,false,m.updated_at,false);renderedReplies.add(humanKey);}
       });
       scrollBottom();
     }catch{}
   }
 
-  const open=()=>{widget.classList.add('open');launcher.setAttribute('aria-expanded','true');panel.setAttribute('aria-hidden','false');loadConversation();setTimeout(()=>input?.focus(),120);};
+  function chooseMode(mode){
+    chatMode=mode==='human'?'human':'ai';
+    choiceScreen.hidden=true;chatScreen.hidden=false;
+    statusText.textContent=chatMode==='human'?'Human customer care':'AI assistant • Online';
+    footStatus.textContent=chatMode==='human'?'Human support request':'AI support • 24/7';
+    welcomeTitle.textContent=chatMode==='human'?'Chat with DBH Customer Care':'Hello 👋';
+    welcomeCopy.textContent=chatMode==='human'?'Send your message below. Our customer-care team will reply in this conversation.':'I can help with properties, enquiries, verification, listings and using the website.';
+    quickChoices.hidden=chatMode==='human';
+    input.placeholder=chatMode==='human'?'Write a message for our customer-care team…':'Ask DBH AI a question…';
+    note.style.display='none';
+    if(chatMode==='human'){
+      note.textContent='Human support selected. Send your message and it will be added to the DBH customer-care inbox.';
+      note.style.display='block';
+    }
+    loadConversation();
+    setTimeout(()=>input?.focus(),100);
+  }
+  const open=()=>{widget.classList.add('open');launcher.setAttribute('aria-expanded','true');panel.setAttribute('aria-hidden','false');};
   const shut=()=>{widget.classList.remove('open');launcher.setAttribute('aria-expanded','false');launcher.focus({preventScroll:true});panel.setAttribute('aria-hidden','true');};
-
   launcher.addEventListener('click',()=>widget.classList.contains('open')?shut():open());
   close.addEventListener('click',shut);
+  backButton.addEventListener('click',()=>{chatScreen.hidden=true;choiceScreen.hidden=false;chatMode='';statusText.textContent='Choose how we can help';footStatus.textContent='Customer support';});
+  widget.querySelectorAll('[data-care-mode]').forEach(btn=>btn.addEventListener('click',()=>chooseMode(btn.dataset.careMode)));
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&widget.classList.contains('open'))shut()});
   widget.querySelectorAll('[data-care-message]').forEach(btn=>btn.addEventListener('click',()=>{input.value=btn.dataset.careMessage||'';input.focus()}));
 
@@ -259,16 +293,24 @@ function setupCustomerCareWidget(){
     typing(true);
 
     try{
-      const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json',Authorization:'Bearer '+t},body:JSON.stringify({message})});
+      const payload=chatMode==='human'?{action:'human-message',message}:{message};
+      const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json',Authorization:'Bearer '+t},body:JSON.stringify(payload)});
       const data=await r.json().catch(()=>({}));
       if(!r.ok)throw new Error(data?.message||'Your message could not be sent.');
       typing(false);
-      const aiReply=String(data?.message?.agent_reply||'').trim();
-      const aiImage=data?.message?.image_data?{image_data:String(data.message.image_data)}:null;
-      if(aiReply||aiImage)bubble(aiReply||(aiImage?'Here’s the image you requested.':''),false,new Date().toISOString(),false,aiImage);
-      else{
-        note.textContent='Your message was sent, but the AI did not return a reply. Please try again.';
+      if(chatMode==='human'){
+        if(data?.message?.id)renderedMessages.add(String(data.message.id));
+        bubble('Thank you. Your message has been sent to DBH Customer Care. A team member will reply in this conversation.',false,new Date().toISOString());
+        note.textContent='Message sent to the customer-care team. You can return here to see their reply.';
         note.style.display='block';
+      }else{
+        const aiReply=String(data?.message?.agent_reply||'').trim();
+        const aiImage=data?.message?.image_data?{image_data:String(data.message.image_data)}:null;
+        if(aiReply||aiImage)bubble(aiReply||(aiImage?'Here’s the image you requested.':''),false,new Date().toISOString(),false,aiImage);
+        else{
+          note.textContent='Your message was sent, but the AI did not return a reply. Please try again.';
+          note.style.display='block';
+        }
       }
       scrollBottom();
     }catch(err){
@@ -281,7 +323,7 @@ function setupCustomerCareWidget(){
   statusText.textContent='AI assistant • Online';
   loadConversation();
   setInterval(()=>{if(widget.classList.contains('open'))loadConversation()},7000);
-  if(new URLSearchParams(location.search).get('care')==='1')setTimeout(open,650);
+  if(new URLSearchParams(location.search).get('care')==='1')setTimeout(()=>{open();chooseMode('ai')},650);
 }
 function hideLoader(){const l=document.getElementById('app-loader');if(l){l.classList.add('fade');setTimeout(()=>{l.style.display='none'},650)}}
 window.addEventListener('error',hideLoader);
