@@ -38,15 +38,23 @@ main{max-width:1180px;margin:0 auto;padding:28px 20px 70px}.back{display:inline-
  const iconPin='<svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>';
  async function get(path){const r=await fetch(c.supabaseUrl+'/rest/v1/'+path,{headers:{apikey:c.supabaseAnonKey,Accept:'application/json'}});if(!r.ok)throw Error('Unable to fetch DBH agent listings ('+r.status+').');return r.json();}
  try{
-   let query='properties?select=*,property_images(image_url,sort_order)&is_published=eq.true&verification_status=eq.verified&order=created_at.desc&limit=100';
-   if(agentId)query+='&created_by=eq.'+encodeURIComponent(agentId);
-   else if(agentName)query+='&provider_name=eq.'+encodeURIComponent(agentName);
-   else throw Error('No agent was selected.');
-   const rows=await get(query);
-   if(!rows.length){root.innerHTML='<div class="identity"><img class="avatar" src="/dbh-logo.jpg" alt="DBH"><div><h1>Agent listings</h1><p>No published and verified listings were found for this agent.</p></div></div>';list.innerHTML='<div class="state"><strong>No published properties yet</strong>This agent has no listings currently visible to customers.</div>';return;}
-   const first=rows[0],name=String(first.provider_name||agentName||'DBH Property Agent');
-   let profile=null;
-   if(agentId){try{const p=await get('agent_applications?select=*&user_id=eq.'+encodeURIComponent(agentId)+'&limit=1');profile=p?.[0]||null;}catch{}}
+   if(!agentId&&!agentName)throw Error('No agent was selected. Open this page as view-agent.html?id=AGENT_ID.');
+   // Fetch only public, published, verified properties. Match agent IDs against the
+   // common owner/provider fields so links work whether the supplied ID is a user ID
+   // or an agent/application ID.
+   const allRows=await get('properties?select=*,property_images(image_url,sort_order)&is_published=eq.true&verification_status=eq.verified&order=created_at.desc&limit=1000');
+   let profile=null,matchIds=agentId?[String(agentId)]:[];
+   if(agentId){
+     try{const p=await get('agent_applications?select=*&user_id=eq.'+encodeURIComponent(agentId)+'&limit=1');profile=p?.[0]||null;}catch{}
+     if(!profile){try{const p=await get('agent_applications?select=*&id=eq.'+encodeURIComponent(agentId)+'&limit=1');profile=p?.[0]||null;}catch{}}
+     if(profile?.user_id)matchIds.push(String(profile.user_id));
+     if(profile?.id)matchIds.push(String(profile.id));
+   }
+   const rows=agentId
+     ?allRows.filter(p=>['created_by','agent_id','provider_id','user_id','owner_id','agent_user_id'].some(k=>p[k]!=null&&matchIds.includes(String(p[k]))))
+     :allRows.filter(p=>String(p.provider_name||'').trim().toLowerCase()===String(agentName).trim().toLowerCase());
+   if(!rows.length){root.innerHTML='<div class="identity"><img class="avatar" src="/dbh-logo.jpg" alt="DBH"><div><h1>Agent listings</h1><p>Agent ID: '+esc(agentId||agentName)+'</p></div></div>';list.innerHTML='<div class="state"><strong>No published properties found for this agent ID</strong>Check that the property records use this agent’s ID in the owner/provider field and that the listings are published and verified.</div>';return;}
+   const first=rows[0],name=String(profile?.full_name||profile?.name||profile?.business_name||first.provider_name||agentName||'DBH Property Agent');
    const location=[profile?.city,profile?.state,profile?.location].filter(Boolean).filter((v,i,a)=>a.findIndex(x=>String(x).toLowerCase()===String(v).toLowerCase())===i).join(', ')||[first.city,first.state].filter(Boolean).join(', ')||'Nigeria';
    const avatar=profile?.avatar_url||profile?.profile_image_url||profile?.photo_url||'/dbh-logo.jpg';
    root.innerHTML='<div class="identity"><img class="avatar" src="'+esc(avatar)+'" alt="'+esc(name)+'" onerror="this.src=\'/dbh-logo.jpg\'"><div><h1>'+esc(name)+'</h1><p>DBH property agent · '+esc(location)+'</p><span class="badge"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg> Properties verified for publication</span></div></div><div class="stats"><div class="stat"><small>Published listings</small><strong>'+rows.length+'</strong></div><div class="stat"><small>Location</small><strong>'+esc(location)+'</strong></div><div class="stat"><small>Agent status</small><strong>'+esc(profile?.status||'Active listing')+'</strong></div></div>';
