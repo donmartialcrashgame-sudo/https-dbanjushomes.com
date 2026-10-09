@@ -346,3 +346,85 @@
   .dbh-care-quick{margin-left:0}
   .dbh-care-bubble{max-width:calc(100% - 40px)}
 }
+
+
+/* Composer redesign: separate, calm message dock with a clear typing area */
+.dbh-care-chat-screen{
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  height:100%;
+  gap:0;
+}
+.dbh-care-chat-screen .dbh-care-back{flex:0 0 auto;margin:0 0 12px}
+.dbh-care-chat-screen .dbh-care-intro,
+.dbh-care-chat-screen .dbh-care-quick,
+.dbh-care-chat-screen .dbh-care-note{
+  flex:0 0 auto;
+}
+.dbh-care-chat-screen .dbh-care-intro{margin-bottom:12px}
+.dbh-care-chat-screen .dbh-care-quick{margin-bottom:12px}
+.dbh-care-chat-screen .dbh-care-note{margin-bottom:10px}
+.dbh-care-chat-screen #dbh-care-messages{
+  flex:1 1 auto;
+  min-height:70px;
+}
+.dbh-care-chat-screen .dbh-care-form{
+  position:relative;
+  bottom:auto;
+  flex:0 0 auto;
+  display:flex;
+  align-items:flex-end;
+  gap:10px;
+  margin:12px 0 0;
+  padding:10px;
+  border:1px solid #d9e4f1;
+  border-radius:20px;
+  background:#fff;
+  box-shadow:0 5px 18px rgba(14,45,79,.06);
+}
+.dbh-care-chat-screen .dbh-care-form:focus-within{
+  border-color:#a9c9ee;
+  box-shadow:0 0 0 3px rgba(31,112,207,.07);
+}
+.dbh-care-chat-screen .dbh-care-form textarea{
+  display:block;
+  flex:1 1 auto;
+  width:0;
+  min-width:0;
+  min-height:46px;
+  max-height:112px;
+  margin:0;
+  padding:12px 13px;
+  border:1px solid #e7edf5;
+  border-radius:13px;
+  outline:none;
+  resize:none;
+  background:#f7f9fc;
+  color:#193653;
+  font:13px/1.5 Inter,ui-sans-serif,system-ui,sans-serif;
+}
+.dbh-care-chat-screen .dbh-care-form textarea:focus{
+  border-color:#c7d9ee;
+  background:#fff;
+}
+.dbh-care-chat-screen .dbh-care-form textarea::placeholder{color:#899caf}
+.dbh-care-chat-screen .dbh-care-send{
+  width:46px;
+  height:46px;
+  flex:0 0 46px;
+  display:grid;
+  place-items:center;
+  border:0;
+  border-radius:14px;
+  background:#1268ce;
+  color:#fff;
+  box-shadow:0 4px 10px rgba(18,104,206,.18);
+}
+.dbh-care-chat-screen .dbh-care-send:hover{background:#0a58b5}
+.dbh-care-chat-screen .dbh-care-send svg{width:20px;height:20px}
+@media(max-width:560px){
+  .dbh-care-chat-screen .dbh-care-form{gap:8px;padding:8px;border-radius:17px}
+  .dbh-care-chat-screen .dbh-care-form textarea{min-height:44px;padding:11px 12px;font-size:13px}
+  .dbh-care-chat-screen .dbh-care-send{width:44px;height:44px;flex-basis:44px;border-radius:13px}
+}
