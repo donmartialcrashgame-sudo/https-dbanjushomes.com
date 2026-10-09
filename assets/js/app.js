@@ -242,12 +242,29 @@ function setupCustomerCareWidget(){
       const messages=Array.isArray(data.messages)?data.messages:[];
       messages.forEach(m=>{
         const key=String(m?.id||'');
-        if(!key||renderedMessages.has(key))return;
-        if(m?.message&&!renderedMessages.has(key)){bubble(m.message,true,m.created_at,true);renderedMessages.add(key);}
-        const aiKey=key+'|ai|'+String(m?.agent_reply||'');
-        if(m?.agent_reply&&!renderedReplies.has(aiKey)){bubble(m.agent_reply,false,m.updated_at,false,m?.image_data?{image_data:m.image_data}:null);renderedReplies.add(aiKey);}
-        const humanKey=key+'|human|'+String(m?.human_reply||'');
-        if(m?.human_reply&&!renderedReplies.has(humanKey)){bubble(m.human_reply,false,m.updated_at,false);renderedReplies.add(humanKey);}
+        if(!key)return;
+        const type=String(m?.reply_type||'ai').toLowerCase();
+        const isHuman=type==='human'||m?.handover_requested===true||Boolean(m?.human_reply)||Boolean(m?.assigned_agent_email);
+        // Keep human-support conversations completely separate from AI chat history.
+        if(chatMode==='human'&&!isHuman)return;
+        if(chatMode!=='human'&&isHuman)return;
+        if(!renderedMessages.has(key)&&m?.message){
+          bubble(m.message,true,m.created_at,true);
+          renderedMessages.add(key);
+        }
+        if(chatMode==='ai'){
+          const aiKey=key+'|ai|'+String(m?.agent_reply||'');
+          if(m?.agent_reply&&!renderedReplies.has(aiKey)){
+            bubble(m.agent_reply,false,m.updated_at,false,m?.image_data?{image_data:m.image_data}:null);
+            renderedReplies.add(aiKey);
+          }
+        }else if(m?.human_reply){
+          const humanKey=key+'|human|'+String(m.human_reply);
+          if(!renderedReplies.has(humanKey)){
+            bubble('Customer care agent'+(m?.assigned_agent_name?' · '+m.assigned_agent_name:'')+': '+m.human_reply,false,m.updated_at,false);
+            renderedReplies.add(humanKey);
+          }
+        }
       });
       scrollBottom();
     }catch{}
@@ -286,9 +303,10 @@ function setupCustomerCareWidget(){
       const data=await r.json().catch(()=>({}));
       if(!r.ok||data.success===false)throw new Error(data.message||'Your message could not be sent. Please try again.');
       humanIntake.hidden=true;chatScreen.hidden=false;choiceScreen.hidden=true;
-      welcomeTitle.textContent='DBH Customer Care';
-      welcomeCopy.textContent='Your message has been sent. You can continue this conversation here; our team will reply when available.';
+      welcomeTitle.textContent='Human Customer Care';
+      welcomeCopy.textContent='This is your private conversation with the DBH customer-care team. AI replies are kept in the separate AI chat.';
       quickChoices.hidden=true;note.style.display='block';
+      chatMode='human';
       note.textContent='Checking customer-care availability…';
       const availability=await fetch(api+'?action=availability',{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'}).then(x=>x.ok?x.json():null).catch(()=>null);
       humanOnline=!!(availability?.online??availability?.available??availability?.humanOnline);
