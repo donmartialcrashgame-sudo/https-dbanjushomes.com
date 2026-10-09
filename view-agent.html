@@ -2,93 +2,106 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>View Property Agent | D Banjus Homes Nigeria Limited</title>
-<meta name="description" content="View a DBH property agent's profile and verified published property listings.">
+<title>Meet Your Property Agent | DBH</title>
+<meta name="description" content="Discover DBH property agents, their experience, contact details and verified property listings.">
 <meta name="theme-color" content="#0b5ed7"><link rel="icon" href="/dbh-logo.jpg">
-<link rel="stylesheet" href="/assets/css/styles.css?v=20261009-agentprofile3"><link rel="stylesheet" href="/assets/css/consent.css">
+<link rel="stylesheet" href="/assets/css/styles.css?v=20261009-agentprofile4">
+<link rel="stylesheet" href="/assets/css/consent.css">
 <style>
-:root{--blue:#0b5ed7;--navy:#082d60;--ink:#173451;--muted:#71839a;--line:#e1eaf4;--bg:#f5f8fc}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
-main{max-width:1180px;margin:0 auto;padding:28px 20px 70px}.back{display:inline-flex;align-items:center;gap:8px;color:#32628f;text-decoration:none;font-weight:750;font-size:12px;margin:5px 0 20px}
-.hero{position:relative;overflow:hidden;border-radius:26px;background:linear-gradient(120deg,#072b5d,#0b58ac 65%,#2488e8);color:white;padding:28px;box-shadow:0 18px 48px #0b4f9e22}
-.hero:after{content:"";position:absolute;right:-80px;top:-140px;width:320px;height:320px;border:1px solid #ffffff26;border-radius:50%;box-shadow:0 0 0 28px #ffffff08,0 0 0 60px #ffffff06;pointer-events:none}
-.identity{display:flex;align-items:center;gap:20px;position:relative;z-index:1;min-width:0}.avatar{flex:0 0 104px;width:104px;height:104px;border-radius:50%;background:#fff;padding:4px;object-fit:cover;object-position:center;border:3px solid #ffffffd9;box-shadow:0 8px 24px #001b3d45}.identity>div{min-width:0}.identity h1{margin:0;font-size:clamp(24px,3.2vw,36px);line-height:1.15;letter-spacing:-.035em;overflow-wrap:anywhere}.identity p{margin:8px 0 0;color:#d6e8fb;font-size:13px;line-height:1.5}.badge{display:inline-flex;align-items:center;gap:6px;background:#ffffff17;border:1px solid #ffffff35;border-radius:999px;padding:7px 11px;font-size:10px;font-weight:800;margin-top:12px}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:24px;position:relative;z-index:1}.stat{padding:13px;border:1px solid #ffffff26;border-radius:14px;background:#ffffff0e}.stat small{display:block;color:#d1e5fb;font-size:10px}.stat strong{display:block;font-size:20px;margin-top:3px}
-.section-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:30px 0 15px}.section-head h2{font-size:21px;margin:0;letter-spacing:-.025em}.section-head p{margin:4px 0 0;color:var(--muted);font-size:12px}
-.listings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}.listing{overflow:hidden;background:white;border:1px solid var(--line);border-radius:18px;box-shadow:0 7px 22px #18395c08;transition:transform .2s,box-shadow .2s}.listing:hover{transform:translateY(-3px);box-shadow:0 15px 30px #18395c12}.cover{display:block;width:100%;height:205px;object-fit:cover;background:#e9f1fa}.listing-body{padding:15px}.price{font-size:18px;font-weight:900;color:#0c5fc4}.listing h3{font-size:14px;margin:7px 0 5px;line-height:1.45}.location{display:flex;align-items:center;gap:6px;color:#74869a;font-size:11px;min-height:20px}.location svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8}.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.tags span{font-size:9px;font-weight:750;color:#315779;background:#f0f5fb;border-radius:7px;padding:5px 7px}.view{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:14px;width:100%;padding:11px;border-radius:11px;background:#0b5ed7;color:white;text-decoration:none;font-weight:800;font-size:11px}.view svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8}.state{background:white;border:1px dashed #cfdae7;border-radius:16px;padding:28px;text-align:center;color:var(--muted);grid-column:1/-1}.state strong{display:block;color:var(--ink);font-size:14px;margin-bottom:5px}.skeleton{height:340px;border-radius:18px;background:linear-gradient(100deg,#edf2f8 30%,#f8fbff 45%,#edf2f8 60%);background-size:200% 100%;animation:shine 1.3s infinite}@keyframes shine{to{background-position:-200% 0}}
-@media(max-width:850px){.listings{grid-template-columns:repeat(2,minmax(0,1fr))}.cover{height:190px}}
-@media(max-width:560px){main{padding:16px 12px 45px}.hero{padding:19px;border-radius:20px}.avatar{flex-basis:76px;width:76px;height:76px;border-radius:50%}.identity{gap:14px}.stats{gap:7px}.stat{padding:10px}.stat strong{font-size:17px}.listings{grid-template-columns:1fr}.cover{height:230px}.section-head h2{font-size:19px}}
+:root{--dbh-blue:#0b5ed7;--dbh-navy:#082d60;--dbh-ink:#182d45;--dbh-muted:#708198;--dbh-line:#e4ebf3;--dbh-bg:#f4f7fb}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--dbh-bg);color:var(--dbh-ink);font:14px/1.65 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1160px;margin:auto;padding:30px 22px 76px}.back{display:inline-flex;align-items:center;gap:8px;color:#416485;text-decoration:none;font-size:12px;font-weight:800;margin:4px 0 20px}.back svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8}
+.profile-card{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(270px,360px) minmax(0,1fr);gap:34px;padding:30px;background:#fff;border:1px solid #e2eaf4;border-radius:25px;box-shadow:0 18px 50px #12385b0c}
+.profile-card:before{content:"";position:absolute;z-index:-1;right:-120px;top:-170px;width:390px;height:390px;border:1px solid #dce9f8;border-radius:50%;box-shadow:0 0 0 28px #f7faff,0 0 0 60px #fbfdff}
+.photo-wrap{min-width:0}.agent-photo{display:block;width:100%;height:100%;min-height:350px;max-height:455px;object-fit:cover;object-position:center top;border-radius:16px;background:#e8eff8;border:1px solid #e2eaf3}.photo-caption{font-size:10px;color:#8a9aae;margin:10px 2px 0}
+.profile-info{min-width:0;padding:5px 0 0}.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:900;letter-spacing:.16em;color:var(--dbh-blue)}.eyebrow:before{content:"";width:23px;height:2px;background:var(--dbh-blue);border-radius:3px}
+h1{font-size:clamp(30px,4vw,43px);line-height:1.1;letter-spacing:-.045em;color:#142e4b;margin:12px 0 7px;overflow-wrap:anywhere}.role{color:#54708c;font-size:13px;font-weight:750;margin:0 0 16px}.verification{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border-radius:999px;background:#eaf7ef;color:#187246;font-size:10px;font-weight:850;border:1px solid #d1eedb}.verification svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
+.description{margin:20px 0 0;color:#61748a;font-size:12px;line-height:1.9;white-space:pre-line;overflow-wrap:anywhere}.description.empty{font-style:italic;color:#8191a4}
+.detail-heading{font-size:14px;font-weight:900;color:#193a5e;margin:24px 0 11px}.details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.detail{min-width:0;border:1px solid #e5edf5;background:#f9fbfe;border-radius:12px;padding:11px 13px}.detail-label{display:flex;align-items:center;gap:7px;color:#7a8ca1;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.07em}.detail-label svg{width:14px;height:14px;fill:none;stroke:#6f8cab;stroke-width:1.7}.detail-value{display:block;margin-top:4px;color:#213e5d;font-size:12px;font-weight:750;overflow-wrap:anywhere}.socials{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin-top:23px}.social-title{width:100%;font-size:12px;font-weight:900;color:#193a5e;margin-bottom:1px}.social-link{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #e0e8f1;background:#fff;border-radius:11px;color:#3d5b7a;text-decoration:none;transition:transform .18s,background .18s}.social-link:hover{transform:translateY(-2px);background:#eff6ff;color:var(--dbh-blue)}.social-link svg{width:17px;height:17px;fill:currentColor}.contact-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:17px}.contact-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:11px 15px;border-radius:11px;text-decoration:none;font-size:11px;font-weight:900;background:var(--dbh-blue);color:white;box-shadow:0 7px 18px #0b5ed722}.contact-btn.secondary{background:#fff;color:#24527f;border:1px solid #dce7f2;box-shadow:none}.contact-btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8}
+.listing-heading{display:flex;justify-content:space-between;align-items:end;gap:18px;margin:42px 0 17px}.listing-heading h2{font-size:clamp(25px,3vw,32px);letter-spacing:-.04em;color:#173453;margin:0;line-height:1.2}.listing-heading p{font-size:12px;color:var(--dbh-muted);margin:7px 0 0}.count-pill{flex-shrink:0;padding:8px 12px;border:1px solid #dce8f6;border-radius:99px;background:#fff;color:#24527f;font-size:10px;font-weight:900}
+.listings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.listing{overflow:hidden;background:#fff;border:1px solid var(--dbh-line);border-radius:18px;box-shadow:0 9px 28px #163b6008;transition:transform .2s,box-shadow .2s}.listing:hover{transform:translateY(-4px);box-shadow:0 18px 38px #163b6014}.cover{display:block;width:100%;height:218px;object-fit:cover;background:#e8eff8}.listing-body{padding:16px}.price{font-size:19px;font-weight:950;color:#0b5fc4;letter-spacing:-.02em}.listing h3{font-size:14px;color:#1c3856;margin:7px 0 5px;line-height:1.5}.location{display:flex;align-items:center;gap:6px;color:#77899e;font-size:11px;min-height:21px}.location svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;flex-shrink:0}.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.tags span{font-size:9px;font-weight:800;color:#315779;background:#f0f5fb;border-radius:7px;padding:5px 8px}.view{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:15px;width:100%;padding:12px;border-radius:11px;background:var(--dbh-blue);color:white;text-decoration:none;font-weight:900;font-size:11px}.view svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8}
+.state{background:#fff;border:1px dashed #cfdceb;border-radius:16px;padding:28px;text-align:center;color:#72849a;grid-column:1/-1}.state strong{display:block;color:#193a5e;font-size:14px;margin-bottom:5px}.skeleton{height:340px;border-radius:18px;background:linear-gradient(100deg,#edf2f8 30%,#f8fbff 45%,#edf2f8 60%);background-size:200% 100%;animation:shine 1.3s infinite}@keyframes shine{to{background-position:-200% 0}}
+@media(max-width:850px){main{padding:22px 16px 55px}.profile-card{grid-template-columns:minmax(210px,290px) minmax(0,1fr);gap:23px;padding:22px}.agent-photo{min-height:310px}.listings{grid-template-columns:repeat(2,minmax(0,1fr))}.cover{height:200px}}
+@media(max-width:620px){main{padding:15px 12px 42px}.profile-card{grid-template-columns:1fr;gap:20px;padding:16px;border-radius:20px}.photo-wrap{max-width:100%}.agent-photo{height:290px;min-height:0;max-height:350px;object-position:center 28%}.photo-caption{margin-top:7px}.profile-info{padding:0 2px 3px}h1{font-size:31px}.description{margin-top:15px}.details{grid-template-columns:1fr 1fr;gap:8px}.detail{padding:10px}.contact-actions{display:grid;grid-template-columns:1fr 1fr}.contact-btn{padding:10px 8px;text-align:center}.listing-heading{margin-top:32px;align-items:start}.count-pill{margin-top:2px}.listings{grid-template-columns:1fr}.cover{height:230px}}
+@media(max-width:390px){.details{grid-template-columns:1fr}.contact-actions{grid-template-columns:1fr}.agent-photo{height:260px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
-.agent-bio{position:relative;z-index:1;margin-top:18px;padding:14px 16px;border:1px solid #ffffff2b;border-radius:14px;background:#ffffff10;color:#e3efff;font-size:12px;line-height:1.75}.agent-details{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}.agent-detail{min-width:0;padding:12px 14px;border:1px solid #dce7f3;border-radius:13px;background:#fff}.agent-detail span{display:block;color:#7589a0;font-size:10px}.agent-detail strong{display:block;overflow-wrap:anywhere;margin-top:4px;color:#193b60;font-size:12px}.agent-contact{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px;position:relative;z-index:1}.agent-contact a{display:inline-flex;align-items:center;justify-content:center;padding:10px 15px;border-radius:10px;background:#fff;color:#0b5ed7;text-decoration:none;font-size:11px;font-weight:850;border:1px solid #d5e4f6}.agent-contact a:hover{background:#eaf3ff}@media(max-width:700px){.agent-details{grid-template-columns:1fr}.agent-contact a{flex:1}}/* Agent profile visual refresh: clean white card, stronger photo and readable identity */
-.hero{background:#fff!important;color:#173451!important;border:1px solid #e1eaf4!important;box-shadow:0 16px 42px #153b620d!important}
-.hero:after{border-color:#dce9f7!important;box-shadow:0 0 0 28px #f7faff,0 0 0 60px #fbfdff!important}
-.avatar{width:112px!important;height:112px!important;flex:0 0 112px!important;border-radius:50%!important;padding:3px!important;background:#eef5ff!important;border:3px solid #e1edfb!important;box-shadow:0 8px 24px #17487818!important;object-fit:cover!important;object-position:center!important}
-.identity h1{font-size:clamp(25px,3.2vw,36px)!important;line-height:1.15!important;color:#12365c!important;overflow-wrap:anywhere!important}
-.identity p{color:#71839a!important;font-size:13px!important}
-.badge{background:#eaf7ef!important;color:#177245!important;border-color:#ccebd8!important}
-.stat{background:#f7faff!important;border-color:#e0eaf5!important}.stat small{color:#71839a!important}.stat strong{color:#153b62!important;overflow-wrap:anywhere!important}
-.agent-bio{background:#f7faff!important;border-color:#e0eaf5!important;color:#526b86!important}
-@media(max-width:560px){.avatar{width:78px!important;height:78px!important;flex-basis:78px!important}.identity{gap:14px!important}.hero{padding:19px!important}}
 </style>
 </head>
 <body>
 <header class="site-header" aria-label="DBH site navigation"></header>
 <main>
-<a class="back" href="/properties.html"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5m6 6-6-6 6-6"/></svg>Back to properties</a>
-<section class="hero" id="agent-profile"><div class="identity"><img class="avatar" src="/dbh-logo.jpg" alt="Agent profile"><div><h1>Loading agent…</h1><p>Retrieving agent profile and published listings</p></div></div><div class="stats"><div class="stat"><small>Published listings</small><strong>—</strong></div><div class="stat"><small>Location</small><strong>—</strong></div><div class="stat"><small>DBH membership</small><strong>Agent</strong></div></div></section>
-<div class="section-head"><div><h2>Properties from this agent</h2><p>Published listings available on D Banjus Homes Nigeria Limited.</p></div></div>
-<section class="listings" id="agent-listings" aria-live="polite"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></section>
+<a class="back" href="/properties.html"><svg viewBox="0 0 24 24"><path d="M19 12H5m6 6-6-6 6-6"/></svg>Back to properties</a>
+<section class="profile-card" id="agent-profile" aria-live="polite">
+<div class="photo-wrap"><img class="agent-photo" src="/dbh-logo.jpg" alt="Agent profile photo"><div class="photo-caption">D Banjus Homes Nigeria Limited · Agent profile</div></div>
+<div class="profile-info"><span class="eyebrow">MEET YOUR PROPERTY AGENT</span><h1>Loading agent profile…</h1><p class="role">Property professional</p><span class="verification">DBH Agent</span><p class="description">Loading agent biography and professional details…</p><h2 class="detail-heading">Personal Information</h2><div class="details"><div class="detail"><span class="detail-label">Location</span><strong class="detail-value">Loading…</strong></div></div><div class="socials"><span class="social-title">Follow & connect</span></div></div>
+</section>
+<section aria-labelledby="listings-title">
+<div class="listing-heading"><div><h2 id="listings-title">Agent Listings</h2><p>Explore properties published by this agent on DBH.</p></div><span class="count-pill" id="listing-count">Loading…</span></div>
+<div class="listings" id="agent-listings" aria-live="polite"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+</section>
 </main>
-<script src="/assets/js/config.js"></script><script src="/assets/js/app.js?v=20261009-agentprofile3"></script>
+<script src="/assets/js/config.js"></script><script src="/assets/js/app.js?v=20261009-agentprofile4"></script>
 <script>
 (async function(){
- const c=window.DBH_CONFIG||{},root=document.getElementById('agent-profile'),list=document.getElementById('agent-listings');
+ const c=window.DBH_CONFIG||{},root=document.getElementById('agent-profile'),list=document.getElementById('agent-listings'),count=document.getElementById('listing-count');
  const params=new URLSearchParams(location.search),agentId=params.get('id'),agentName=params.get('name');
  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
- const iconPin='<svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>';
- async function get(path){const r=await fetch(c.supabaseUrl+'/rest/v1/'+path,{headers:{apikey:c.supabaseAnonKey,Accept:'application/json'}});if(!r.ok)throw Error('Unable to fetch DBH agent listings ('+r.status+').');return r.json();}
+ const pin='<svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>';
+ const ico=(path)=>'<svg viewBox="0 0 24 24" aria-hidden="true">'+path+'</svg>';
+ async function get(path){const r=await fetch(c.supabaseUrl+'/rest/v1/'+path,{headers:{apikey:c.supabaseAnonKey,Accept:'application/json'}});if(!r.ok)throw Error('Unable to load agent information ('+r.status+').');return r.json();}
+ function getField(obj,keys){for(const k of keys){const v=obj&&obj[k];if(v!==undefined&&v!==null&&String(v).trim()!=='')return v;}return '';}
+ function detail(label,value,icon){if(!value)return '';return '<div class="detail"><span class="detail-label">'+ico(icon)+esc(label)+'</span><strong class="detail-value">'+esc(value)+'</strong></div>';}
+ function social(url,label,path){if(!url)return '';let href=String(url).trim();if(!/^https?:\/\//i.test(href))href='https://'+href;return '<a class="social-link" href="'+esc(href)+'" target="_blank" rel="noopener noreferrer" aria-label="'+esc(label)+'" title="'+esc(label)+'">'+ico(path)+'</a>';}
  try{
-   if(!agentId&&!agentName)throw Error('No agent was selected. Open this page as view-agent.html?id=AGENT_ID.');
-   // Fetch only public, published, verified properties. Match agent IDs against the
-   // common owner/provider fields so links work whether the supplied ID is a user ID
-   // or an agent/application ID.
-   const allRows=[];
-   // Paginate so an agent with older listings is not hidden by the first 1,000 rows.
-   for(let offset=0;offset<10000;offset+=1000){
-     const batch=await get('properties?select=*,property_images(image_url,sort_order)&is_published=eq.true&verification_status=eq.verified&order=created_at.desc&limit=1000&offset='+offset);
-     allRows.push(...batch);
-     if(batch.length<1000)break;
-   }
-   let profile=null,matchIds=agentId?[String(agentId)]:[];
-   if(agentId){
-     try{const p=await get('agent_applications?select=*&user_id=eq.'+encodeURIComponent(agentId)+'&limit=1');profile=p?.[0]||null;}catch{}
-     if(!profile){try{const p=await get('agent_applications?select=*&id=eq.'+encodeURIComponent(agentId)+'&limit=1');profile=p?.[0]||null;}catch{}}
-     if(profile?.user_id)matchIds.push(String(profile.user_id));
-     if(profile?.id)matchIds.push(String(profile.id));
-   }
-   const rows=agentId
-     ?allRows.filter(p=>['created_by','agent_id','provider_id','user_id','owner_id','agent_user_id'].some(k=>p[k]!=null&&matchIds.includes(String(p[k]))))
-     :allRows.filter(p=>String(p.provider_name||'').trim().toLowerCase()===String(agentName).trim().toLowerCase());
-   const first=rows[0]||{}; const personName=[profile?.first_name,profile?.last_name].filter(Boolean).join(' ').trim(); const name=String(profile?.full_name||profile?.display_name||profile?.agent_name||personName||profile?.name||first.provider_name||agentName||'DBH Property Agent');
-   const location=[profile?.city,profile?.state,profile?.location].filter(Boolean).filter((v,i,a)=>a.findIndex(x=>String(x).toLowerCase()===String(v).toLowerCase())===i).join(', ')||[first.city,first.state].filter(Boolean).join(', ')||'Nigeria';
-   const avatar=profile?.avatar_url||profile?.profile_image_url||profile?.profile_photo_url||profile?.photo_url||profile?.profile_photo||profile?.avatar||profile?.photo||'/dbh-logo.jpg';
-   const phone=profile?.whatsapp_number||profile?.phone||profile?.phone_number||profile?.mobile_number||profile?.contact_phone||'';
-   const email=profile?.email||profile?.email_address||'';
-   const whatsapp=String(phone).replace(/\\D/g,'');
-   const bio=profile?.bio||profile?.about||profile?.description||profile?.business_description||'';
-   const business=profile?.business_name||profile?.agency_name||'';
-   const detailItems=[
-     business?'<div class="agent-detail"><span>Agency / business</span><strong>'+esc(business)+'</strong></div>':'',
-     phone?'<div class="agent-detail"><span>Phone / WhatsApp</span><strong>'+esc(phone)+'</strong></div>':'',
-     email?'<div class="agent-detail"><span>Email</span><strong>'+esc(email)+'</strong></div>':'',
-     profile?.address?'<div class="agent-detail"><span>Office address</span><strong>'+esc(profile.address)+'</strong></div>':'',
-     profile?.years_experience?'<div class="agent-detail"><span>Experience</span><strong>'+esc(profile.years_experience)+' years</strong></div>':''
-   ].filter(Boolean).join('');
-   root.innerHTML='<div class="identity"><img class="avatar" src="'+esc(avatar)+'" alt="Profile photo of '+esc(name)+'" onerror="this.onerror=null;this.src=\'/dbh-logo.jpg\'"><div><h1>'+esc(name)+'</h1><p>DBH property agent · '+esc(location)+'</p><span class="badge"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg> Published and verified property listings</span></div></div><div class="stats"><div class="stat"><small>Published listings</small><strong>'+rows.length+'</strong></div><div class="stat"><small>Location</small><strong>'+esc(location)+'</strong></div><div class="stat"><small>Agent status</small><strong>'+esc(profile?.application_status||profile?.status||'Active listings')+'</strong></div></div>'+(bio?'<div class="agent-bio">'+esc(bio)+'</div>':'')+(detailItems?'<div class="agent-details">'+detailItems+'</div>':'')+(phone?'<div class="agent-contact"><a href="tel:'+esc(String(phone).replace(/[^+\\d]/g,''))+'">Call agent</a>'+(whatsapp?'<a target="_blank" rel="noopener noreferrer" href="https://wa.me/'+esc(whatsapp)+'?text='+encodeURIComponent('Hello '+name+', I found your property listings on DBH.')+'">Chat on WhatsApp</a>':'')+(email?'<a href="mailto:'+esc(email)+'">Email agent</a>':'')+'</div>':'');
-   document.title=name+' | DBH Property Agent';
-   if(!rows.length){list.innerHTML='<div class="state"><strong>No published properties yet</strong>This agent profile is available, but there are no published and verified properties to show right now.</div>';return;}
-   list.innerHTML=rows.map(p=>{let images=Array.isArray(p.property_images)?p.property_images.slice().sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)):[];let image=images[0]?.image_url||p.og_image_url||p.image_url||p.featured_image||p.cover_image||'/dbh-logo.jpg';let price=p.price==null?'Price on request':(p.currency==='USD'?'$':p.currency==='EUR'?'€':'₦')+Number(p.price).toLocaleString('en-NG');let loc=[p.area,p.city,p.lga,p.state].filter(Boolean).filter((v,i,a)=>a.findIndex(x=>String(x).toLowerCase()===String(v).toLowerCase())===i).join(', ')||'Nigeria';return '<article class="listing"><img class="cover" loading="lazy" src="'+esc(image)+'" alt="'+esc(p.title||'Property')+'" onerror="this.src=\'/dbh-logo.jpg\'"><div class="listing-body"><div class="price">'+esc(price)+'</div><h3>'+esc(p.title||'Property listing')+'</h3><div class="location">'+iconPin+esc(loc)+'</div><div class="tags">'+(p.bedrooms?'<span>'+esc(p.bedrooms)+' beds</span>':'')+(p.bathrooms?'<span>'+esc(p.bathrooms)+' baths</span>':'')+'<span>'+esc(p.property_type||'Property')+'</span></div><a class="view" href="/property.html?id='+encodeURIComponent(p.property_code||p.id)+'">View property <svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></div></article>';}).join('');
- }catch(e){root.innerHTML='<div class="identity"><img class="avatar" src="/dbh-logo.jpg" alt="DBH"><div><h1>Agent profile unavailable</h1><p>'+esc(e.message||'Unable to load this agent right now.')+'</p></div></div>';list.innerHTML='<div class="state"><strong>Could not load agent listings</strong>Please refresh the page and try again.</div>';}
+  if(!agentId&&!agentName)throw Error('No agent was selected. Please open this page from an agent or property profile.');
+  let profile=null;
+  if(agentId){
+   try{const a=await get('agent_applications?select=*&user_id=eq.'+encodeURIComponent(agentId)+'&limit=1');profile=a[0]||null;}catch(e){}
+   if(!profile){try{const a=await get('agent_applications?select=*&id=eq.'+encodeURIComponent(agentId)+'&limit=1');profile=a[0]||null;}catch(e){}}
+  }
+  const allRows=[];
+  for(let offset=0;offset<10000;offset+=1000){
+   const batch=await get('properties?select=*,property_images(image_url,sort_order)&is_published=eq.true&verification_status=eq.verified&order=created_at.desc&limit=1000&offset='+offset);
+   allRows.push(...batch);if(batch.length<1000)break;
+  }
+  const matchIds=[agentId,profile?.user_id,profile?.id].filter(Boolean).map(String);
+  let rows=agentId?allRows.filter(p=>['created_by','agent_id','provider_id','user_id','owner_id','agent_user_id'].some(k=>p[k]!=null&&matchIds.includes(String(p[k])))):allRows.filter(p=>String(p.provider_name||'').trim().toLowerCase()===String(agentName).trim().toLowerCase());
+  const first=rows[0]||{};
+  const fullName=[getField(profile,['first_name']),getField(profile,['last_name'])].filter(Boolean).join(' ');
+  const name=String(getField(profile,['full_name','display_name','agent_name'])||fullName||getField(profile,['name','business_name'])||getField(first,['provider_name'])||agentName||'DBH Property Agent');
+  const city=getField(profile,['city','town','area']),state=getField(profile,['state','state_name']),location=[city,state].filter(Boolean).join(', ')||getField(profile,['location','office_location','business_address','address'])||[first.city,first.state].filter(Boolean).join(', ')||'Nigeria';
+  const photo=getField(profile,['avatar_url','profile_image_url','profile_photo_url','profile_picture_url','photo_url','profile_photo','profile_picture','avatar','photo','image_url','picture'])||getField(first,['agent_photo','agent_image','provider_photo'])||'/dbh-logo.jpg';
+  const role=getField(profile,['business_type','agent_type','professional_title','designation'])||'Licensed Agent';
+  const bio=getField(profile,['bio','about','description','business_description','professional_description','profile_description'])||getField(first,['agent_bio','provider_bio'])||'This DBH property agent helps clients discover property opportunities. Contact the agent directly for more information about their services and experience.';
+  const business=getField(profile,['business_name','agency_name','company_name']);
+  const phone=getField(profile,['whatsapp_number','phone','phone_number','mobile_number','contact_phone']);
+  const email=getField(profile,['email','email_address'])||'';
+  const address=getField(profile,['address','business_address','office_address','contact_address']);
+  const experience=getField(profile,['years_experience','experience_years','experience']);
+  const license=getField(profile,['license_number','licence_number','professional_license']);
+  const joined=getField(profile,['created_at','approved_at','verified_at']);
+  const formatDate=v=>{if(!v)return '';const d=new Date(v);return Number.isNaN(d.getTime())?'':d.toLocaleDateString('en-NG',{month:'short',year:'numeric'});};
+  const wa=String(phone).replace(/\D/g,'');
+  const facebook=getField(profile,['facebook_url','facebook','facebook_link']);
+  const instagram=getField(profile,['instagram_url','instagram','instagram_link']);
+  const linkedin=getField(profile,['linkedin_url','linkedin','linkedin_link']);
+  const website=getField(profile,['website_url','website','website_link']);
+  const details=[
+   detail('Location',location,'<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>'),
+   detail('Agent / agency',business||role,'<circle cx="12" cy="8" r="3"/><path d="M5 20c.5-4 2.8-6 7-6s6.5 2 7 6"/>'),
+   detail('Experience',experience?String(experience)+(String(experience).toLowerCase().includes('year')?'':' years'):'','<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+   detail('Phone',phone,'<path d="M5 4h4l2 5-3 2a14 14 0 0 0 5 5l2-3 5 2v4c0 1-1 2-2 2C10 21 3 14 3 6c0-1 1-2 2-2Z"/>'),
+   detail('Email',email,'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/>'),
+   detail('Office address',address,'<path d="M3 21h18M5 21V7l7-4 7 4v14M9 10h1m4 0h1m-6 4h1m4 0h1"/>'),
+   detail('License / registration',license,'<path d="M12 3 20 6v5c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-3Z"/><path d="m8 12 3 3 5-6"/>'),
+   detail('With DBH since',formatDate(joined),' <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')
+  ].join('');
+  root.innerHTML='<div class="photo-wrap"><img class="agent-photo" src="'+esc(photo)+'" alt="Profile photo of '+esc(name)+'" onerror="this.onerror=null;this.src=\'/dbh-logo.jpg\'"><div class="photo-caption">D Banjus Homes Nigeria Limited · Agent profile</div></div><div class="profile-info"><span class="eyebrow">MEET YOUR PROPERTY AGENT</span><h1>'+esc(name)+'</h1><p class="role">'+esc(role)+(business&&business!==name?' · '+esc(business):'')+'</p><span class="verification">'+ico('<path d="m5 12 4 4L19 6"/>')+' DBH Agent Profile</span><p class="description '+(!getField(profile,['bio','about','description','business_description','professional_description','profile_description'])?'empty':'')+'">'+esc(bio)+'</p><h2 class="detail-heading">Personal Information</h2><div class="details">'+(details||detail('Location',location,'<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/>'))+'</div><div class="socials"><span class="social-title">Follow & connect</span>'+social(facebook,'Facebook','<path d="M13.5 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5h1.7V3.9c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3V10H7.3v3h2.8v8z"/>')+social(instagram,'Instagram','<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8"/>')+social(linkedin,'LinkedIn','<path d="M5 9H2v12h3zM3.5 3a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6ZM9 9H6v12h3v-6.4c0-3.6 4-3.9 4 0V21h3v-7.5c0-5.8-6.3-5.6-7-2.7z"/>')+social(website,'Website','<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>')+'</div><div class="contact-actions">'+(phone?'<a class="contact-btn" href="tel:'+esc(String(phone).replace(/[^+\d]/g,''))+'">'+ico('<path d="M5 4h4l2 5-3 2a14 14 0 0 0 5 5l2-3 5 2v4c0 1-1 2-2 2C10 21 3 14 3 6c0-1 1-2 2-2Z"/>')+' Call agent</a>':'')+(wa?'<a class="contact-btn secondary" target="_blank" rel="noopener noreferrer" href="https://wa.me/'+esc(wa)+'?text='+encodeURIComponent('Hello '+name+', I found your profile on DBH.')+'">WhatsApp</a>':'')+(email?'<a class="contact-btn secondary" href="mailto:'+esc(email)+'">Email agent</a>':'')+'</div></div>';
+  document.title=name+' | DBH Property Agent';
+  count.textContent=rows.length+' '+(rows.length===1?'PROPERTY':'PROPERTIES');
+  if(!rows.length){list.innerHTML='<div class="state"><strong>No published properties yet</strong>This agent profile is available, but there are no published and verified properties to show right now.</div>';return;}
+  list.innerHTML=rows.map(p=>{const images=Array.isArray(p.property_images)?p.property_images.slice().sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)):[];const image=images[0]?.image_url||p.og_image_url||p.image_url||p.featured_image||p.cover_image||'/dbh-logo.jpg';const price=p.price==null?'Price on request':(p.currency==='USD'?'$':p.currency==='EUR'?'€':'₦')+Number(p.price).toLocaleString('en-NG');const loc=[p.area,p.city,p.lga,p.state].filter(Boolean).filter((v,i,a)=>a.findIndex(x=>String(x).toLowerCase()===String(v).toLowerCase())===i).join(', ')||'Nigeria';return '<article class="listing"><img class="cover" loading="lazy" src="'+esc(image)+'" alt="'+esc(p.title||'Property')+'" onerror="this.onerror=null;this.src=\'/dbh-logo.jpg\'"><div class="listing-body"><div class="price">'+esc(price)+'</div><h3>'+esc(p.title||'Property listing')+'</h3><div class="location">'+pin+esc(loc)+'</div><div class="tags">'+(p.bedrooms?'<span>'+esc(p.bedrooms)+' beds</span>':'')+(p.bathrooms?'<span>'+esc(p.bathrooms)+' baths</span>':'')+'<span>'+esc(p.property_type||'Property')+'</span></div><a class="view" href="/property.html?id='+encodeURIComponent(p.property_code||p.id)+'">View property <svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></div></article>';}).join('');
+ }catch(e){root.innerHTML='<div class="state"><strong>Agent profile unavailable</strong>'+esc(e.message||'Unable to load this agent right now.')+'</div>';count.textContent='PROFILE';list.innerHTML='<div class="state"><strong>Could not load agent listings</strong>Please refresh and try again.</div>';}
 })();
 </script>
 </body></html>
