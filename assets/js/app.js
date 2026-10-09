@@ -212,7 +212,18 @@ function setupCustomerCareWidget(){
     }
     const textWrap=document.createElement('div');textWrap.className='dbh-care-ai-line';
     if(!mine)textWrap.insertAdjacentHTML('beforeend',aiIcon(text));
-    const main=document.createElement('span');main.className='dbh-care-message-text';main.textContent=text||'';
+    const main=document.createElement('div');main.className='dbh-care-message-text';
+    // Render URLs as safe, clickable links while keeping all other text escaped.
+    const parts=String(text||'').split(/(https?:\/\/[^\s<>"']+)/gi);
+    parts.forEach(part=>{
+      if(/^https?:\/\//i.test(part)){
+        const clean=part.replace(/[),.!?;:]+$/,'');
+        const trailing=part.slice(clean.length);
+        let valid=false;try{const u=new URL(clean);valid=u.protocol==='https:'||u.protocol==='http:';}catch{}
+        if(valid){const a=document.createElement('a');a.href=clean;a.target='_blank';a.rel='noopener noreferrer';a.className='dbh-care-message-link';a.textContent=clean;main.appendChild(a);if(trailing)main.appendChild(document.createTextNode(trailing));}
+        else main.appendChild(document.createTextNode(part));
+      }else main.appendChild(document.createTextNode(part));
+    });
     textWrap.appendChild(main);b.appendChild(textWrap);
     const meta=document.createElement('span');meta.className='dbh-care-message-meta';
     meta.textContent=(time?new Date(time).toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'}):new Date().toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'}))+(checks?'  ✓✓':'');
@@ -232,47 +243,57 @@ function setupCustomerCareWidget(){
 
   const renderedMessages=new Set();
   const renderedReplies=new Set();
+  let conversationLoadPromise=null;
   function clearVisibleConversation(){
     chatScreen.querySelectorAll('.dbh-care-row,#dbh-care-typing').forEach(node=>node.remove());
     renderedMessages.clear();
     renderedReplies.clear();
   }
   async function loadConversation(){
-    const t=await resolveToken();
-    if(!t)return;
-    try{
-      const r=await fetch(api,{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'});
-      if(!r.ok)return;
-      const data=await r.json().catch(()=>({}));
-      const messages=Array.isArray(data.messages)?data.messages:[];
-      messages.forEach(m=>{
-        const key=String(m?.id||'');
-        if(!key)return;
-        const type=String(m?.reply_type||'ai').toLowerCase();
-        const isHuman=type==='human'||m?.handover_requested===true||Boolean(m?.human_reply)||Boolean(m?.assigned_agent_email);
-        // Keep human-support conversations completely separate from AI chat history.
-        if(chatMode==='human'&&!isHuman)return;
-        if(chatMode!=='human'&&isHuman)return;
-        if(!renderedMessages.has(key)&&m?.message){
-          bubble(m.message,true,m.created_at,true);
-          renderedMessages.add(key);
-        }
-        if(chatMode==='ai'){
-          const aiKey=key+'|ai|'+String(m?.agent_reply||'');
-          if(m?.agent_reply&&!renderedReplies.has(aiKey)){
-            bubble(m.agent_reply,false,m.updated_at,false,m?.image_data?{image_data:m.image_data}:null);
-            renderedReplies.add(aiKey);
+    if(conversationLoadPromise)return conversationLoadPromise;
+    conversationLoadPromise=(async()=>{
+      const t=await resolveToken();
+      if(!t)return;
+      try{
+        const r=await fetch(api,{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'});
+        if(!r.ok)return;
+        const data=await r.json().catch(()=>({}));
+        const messages=(Array.isArray(data.messages)?data.messages:[]).slice().sort((a,b)=>Date.parse(a?.created_at||0)-Date.parse(b?.created_at||0));
+        // Rebuild the visible thread in timestamp order. This avoids new messages
+        // being inserted ahead of older history or appearing in grouped batches.
+        clearVisibleConversation();
+        messages.forEach(m=>{
+          const key=String(m?.id||'');
+          if(!key)return;
+          const type=String(m?.reply_type||'ai').toLowerCase();
+          const isHuman=type==='human'||m?.handover_requested===true||Boolean(m?.human_reply)||Boolean(m?.assigned_agent_email);
+          if(chatMode==='human'&&!isHuman)return;
+          if(chatMode!=='human'&&isHuman)return;
+          if(m?.message){
+            bubble(m.message,true,m.created_at,false);
+            renderedMessages.add(key);
           }
-        }else if(m?.human_reply){
-          const humanKey=key+'|human|'+String(m.human_reply);
-          if(!renderedReplies.has(humanKey)){
-            bubble('Customer care agent'+(m?.assigned_agent_name?' · '+m.assigned_agent_name:'')+': '+m.human_reply,false,m.updated_at,false);
-            renderedReplies.add(humanKey);
+          if(chatMode==='ai'){
+            const aiReply=String(m?.agent_reply||'').trim();
+            const aiKey=key+'|ai|'+aiReply;
+            if(aiReply&&!renderedReplies.has(aiKey)){
+              bubble(aiReply,false,m.updated_at,false,m?.image_data?{image_data:m.image_data}:null);
+              renderedReplies.add(aiKey);
+            }
+          }else{
+            const reply=String(m?.human_reply||'').trim();
+            const replyKey=key+'|human|'+reply;
+            if(reply&&!renderedReplies.has(replyKey)){
+              const agent=String(m?.assigned_agent_name||'').trim();
+              bubble((agent?agent:'DBH Customer Care')+': '+reply,false,m.updated_at,false);
+              renderedReplies.add(replyKey);
+            }
           }
-        }
-      });
-      scrollBottom();
-    }catch{}
+        });
+        scrollBottom();
+      }catch{}
+    })();
+    try{return await conversationLoadPromise;}finally{conversationLoadPromise=null;}
   }
 
   function showHumanIntake(){
