@@ -291,7 +291,7 @@ function setupCustomerCareWidget(){
     intakeStatus.textContent='';
     setTimeout(()=>{(name.value?email.value?msg:email:name).focus();},100);
     // Ask the existing customer-care service for current staff presence.
-    resolveToken().then(t=>{if(!t)return;fetch(api+'?action=availability',{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{if(!d)return;humanOnline=!!(d.online??d.available??d.humanOnline);intakeStatus.textContent=humanOnline?'Customer care is online. Send your message to start a conversation.':'Customer care is currently offline. You can still send a message and the team will reply when available.';}).catch(()=>{});});
+    resolveToken().then(t=>{if(!t)return;fetch(api+'?action=availability',{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{if(!d)return;humanOnline=!!(d.online??d.available??d.humanOnline);const agents=Array.isArray(d.availableAgents)?d.availableAgents:[];const agentNames=agents.map(a=>String(a?.name||'').trim()).filter(Boolean);intakeStatus.textContent=humanOnline?'Customer care is online'+(agentNames.length?' — available: '+agentNames.join(', '):'')+'. Send your message to start a conversation.':'Customer care is currently offline. You can still send a message and the team will reply when available.';}).catch(()=>{});});
   }
   humanBack.addEventListener('click',()=>{humanIntake.hidden=true;choiceScreen.hidden=false;chatMode='';statusText.textContent='Choose how we can help';footStatus.textContent='Customer support';});
   humanForm.addEventListener('submit',async e=>{
@@ -319,7 +319,9 @@ function setupCustomerCareWidget(){
       humanOnline=!!(availability?.online??availability?.available??availability?.humanOnline);
       statusText.textContent=humanOnline?'Customer care • Online':'Customer care • Offline';
       footStatus.textContent=humanOnline?'Human support • Online':'Message sent • Reply when available';
-      note.textContent=humanOnline?'Customer care is online. A team member can reply here.':'Customer care is currently offline. Your message has been received and the team can reply when available.';
+      const availableAgents=Array.isArray(availability?.availableAgents)?availability.availableAgents:[];
+      const availableNames=availableAgents.map(a=>String(a?.name||'').trim()).filter(Boolean);
+      note.textContent=humanOnline?'Customer care is online'+(availableNames.length?' — available: '+availableNames.join(', '):'')+'. A team member can reply here.':'Customer care is currently offline. Your message has been received and the team can reply when available.';
       input.value='';
       const sentId=String(data?.message?.id||'');
       if(sentId)renderedMessages.add(sentId);
