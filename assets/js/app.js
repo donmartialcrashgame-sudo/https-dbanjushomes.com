@@ -69,8 +69,10 @@ function setupDBHPWA(){
       ['meta[name="apple-mobile-web-app-title"]', 'content', 'DBH Homes']
     ];
     metas.forEach(([sel,attr,val])=>{let m=document.querySelector(sel);if(!m){m=document.createElement('meta');if(sel.includes('theme-color'))m.name='theme-color';else if(sel.includes('mobile-web-app-capable'))m.name='mobile-web-app-capable';else if(sel.includes('apple-mobile-web-app-capable'))m.name='apple-mobile-web-app-capable';else if(sel.includes('status-bar-style'))m.name='apple-mobile-web-app-status-bar-style';else m.name='apple-mobile-web-app-title';document.head.appendChild(m)}m.setAttribute(attr,val)});
-    if('serviceWorker' in navigator){
-      window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(err=>console.warn('DBH service worker:',err)),{once:true});
+    if('serviceWorker' in navigator && window.isSecureContext){
+      window.addEventListener('load',()=>{
+        navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(()=>{});
+      },{once:true});
     }
   }catch(e){console.warn('DBH PWA setup:',e)}
   let deferredPrompt=null;
@@ -843,10 +845,36 @@ function firstValue(obj,keys,fallback=''){for(const k of keys){const v=obj?.[k];
 function isVerified(p){return p?.is_verified===true}
 function renderProperties(el,rows){if(!rows.length){el.innerHTML='<div class="panel">No published properties are available yet.</div>';return}el.innerHTML=rows.map(p=>{const img=firstValue(p,['cover_image','image_url'],Array.isArray(p.images)?p.images[0]:'/dbh-logo.jpg')||'/dbh-logo.jpg';const u='/property.html?id='+encodeURIComponent(p.property_code||p.id);const category=firstValue(p,['category','property_category','property_type','type'],'Property');const provider=firstValue(p,['provider_name','provider','agent_name','agent','company_name','agency_name'],'DBH Homes');const providerVerified=p?.provider_verified===true||p?.provider_is_verified===true||isVerified(p);const verified=isVerified(p);const location=firstValue(p,['location','address','area','city'],'Location available');return '<article class="property-card reveal"><a class="property-media" href="'+u+'"><img loading="lazy" src="'+escapeHtml(img)+'" alt="'+escapeHtml(p.title||'DBH property')+'"><span class="property-badges"><span class="property-category-badge">'+escapeHtml(category)+'</span>'+(verified?'<span class="property-verified-badge">'+icon('shield')+'<span>Verified Property</span></span>':'')+'</span></a><div class="property-body"><h3 class="property-title"><a href="'+u+'">'+escapeHtml(p.title||'Property')+'</a></h3><div class="property-price" data-price="'+escapeHtml(p.price)+'" data-price-currency="'+escapeHtml(p.currency||'NGN')+'">'+formatPrice(p.price,p.currency||'NGN')+'</div><div class="property-meta property-location">'+icon('pin')+'<span>'+escapeHtml(location)+'</span></div><div class="property-provider"><span class="provider-avatar">'+icon('users')+'</span><span class="provider-copy"><small>Provider</small><strong>'+escapeHtml(provider)+'</strong></span>'+(providerVerified?'<span class="provider-verified">'+icon('shield')+'</span>':'')+'</div></div></article>'}).join('');document.querySelectorAll('.reveal').forEach(x=>x.classList.add('visible'))}
 const DBH_CURRENCIES={NGN:{locale:'en-NG'},USD:{locale:'en-US'},EUR:{locale:'de-DE'},CAD:{locale:'en-CA'},GBP:{locale:'en-GB'}};
-DBH.currency=localStorage.getItem('dbh_currency')||'NGN';DBH.rates={NGN:1};
+DBH.currency=localStorage.getItem('dbh_currency')||'NGN';
+DBH.rates={NGN:1};
+try{
+  const cached=JSON.parse(localStorage.getItem('dbh_fx_rates')||'{}');
+  if(cached&&typeof cached==='object'){
+    Object.entries(cached).forEach(([k,v])=>{if(k&&Number.isFinite(Number(v))&&Number(v)>0)DBH.rates[k]=Number(v)});
+  }
+}catch{}
+
 function formatNaira(v){return v===null||v===undefined||v===''?'Price on request':'₦'+Number(v).toLocaleString('en-NG')}
 function formatPrice(v,source='NGN'){if(v===null||v===undefined||v==='')return 'Price on request';const n=Number(v),from=String(source||'NGN').toUpperCase(),to=DBH.currency;if(!Number.isFinite(n))return 'Price on request';const ngn=n/(DBH.rates[from]||1),out=ngn*(to==='NGN'?1:(DBH.rates[to]||1));return new Intl.NumberFormat(DBH_CURRENCIES[to].locale,{style:'currency',currency:to,maximumFractionDigits:to==='NGN'?0:2}).format(out)}
-async function refreshCurrencyRates(){try{const r=await fetch('https://api.frankfurter.dev/v2/rates?base=NGN&quotes=USD,EUR,CAD,GBP');if(!r.ok)return;const data=await r.json();const rates={NGN:1};(Array.isArray(data)?data:[]).forEach(x=>{if(x.quote&&x.rate)rates[x.quote]=Number(x.rate)});if(Object.keys(rates).length>1){DBH.rates=rates;localStorage.setItem('dbh_fx_rates',JSON.stringify(rates));renderCurrencyPrices()}}catch(e){console.warn('DBH FX unavailable',e)}}
+async function refreshCurrencyRates(){
+  try{
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),7000);
+    const r=await fetch('https://api.frankfurter.dev/v2/rates?base=NGN&quotes=USD,EUR,CAD,GBP',{signal:controller.signal,cache:'no-store'});
+    clearTimeout(timer);
+    if(!r.ok)return false;
+    const data=await r.json();
+    const rates={NGN:1};
+    (Array.isArray(data)?data:[]).forEach(x=>{if(x.quote&&Number.isFinite(Number(x.rate))&&Number(x.rate)>0)rates[x.quote]=Number(x.rate)});
+    if(Object.keys(rates).length>1){
+      DBH.rates=rates;
+      localStorage.setItem('dbh_fx_rates',JSON.stringify(rates));
+      renderCurrencyPrices();
+      return true;
+    }
+  }catch{}
+  return false;
+}
 function renderCurrencyPrices(){document.querySelectorAll('[data-price]').forEach(el=>el.textContent=formatPrice(el.dataset.price,el.dataset.priceCurrency||'NGN'));document.querySelectorAll('[data-detail-price]').forEach(el=>el.textContent=formatPrice(el.dataset.detailPrice,el.dataset.detailCurrency||'NGN'))}
 function setupCurrency(){const host=document.getElementById('dbh-header-actions');if(!host||document.getElementById('dbh-currency-select'))return;const wrap=document.createElement('label');wrap.className='dbh-currency-control';wrap.setAttribute('data-tooltip','Currency');wrap.innerHTML='<span class="dbh-currency-symbol">₦</span><select id="dbh-currency-select" aria-label="Currency"><option value="NGN">NGN</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option><option value="CAD">C$ CAD</option><option value="GBP">£ GBP</option></select>';host.insertBefore(wrap,host.firstChild);const select=wrap.querySelector('select');select.value=DBH_CURRENCIES[DBH.currency]?DBH.currency:'NGN';const sync=()=>{const map={NGN:'₦',USD:'$',EUR:'€',CAD:'C$',GBP:'£'};wrap.querySelector('.dbh-currency-symbol').textContent=map[select.value]||'₦';wrap.dataset.tooltip=select.value};sync();select.addEventListener('change',()=>{DBH.currency=select.value;localStorage.setItem('dbh_currency',DBH.currency);sync();renderCurrencyPrices()});refreshCurrencyRates()}
 window.DBH=DBH;DBH.formatPrice=formatPrice
