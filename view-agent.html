@@ -42,7 +42,13 @@ main{max-width:1180px;margin:0 auto;padding:28px 20px 70px}.back{display:inline-
    // Fetch only public, published, verified properties. Match agent IDs against the
    // common owner/provider fields so links work whether the supplied ID is a user ID
    // or an agent/application ID.
-   const allRows=await get('properties?select=*,property_images(image_url,sort_order)&is_published=eq.true&verification_status=eq.verified&order=created_at.desc&limit=1000');
+   const allRows=[];
+   // Paginate so an agent with older listings is not hidden by the first 1,000 rows.
+   for(let offset=0;offset<10000;offset+=1000){
+     const batch=await get('properties?select=*,property_images(image_url,sort_order)&is_published=eq.true&verification_status=eq.verified&order=created_at.desc&limit=1000&offset='+offset);
+     allRows.push(...batch);
+     if(batch.length<1000)break;
+   }
    let profile=null,matchIds=agentId?[String(agentId)]:[];
    if(agentId){
      try{const p=await get('agent_applications?select=*&user_id=eq.'+encodeURIComponent(agentId)+'&limit=1');profile=p?.[0]||null;}catch{}
