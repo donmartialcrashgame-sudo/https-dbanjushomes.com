@@ -26,6 +26,7 @@ h1{font-size:clamp(30px,4vw,43px);line-height:1.1;letter-spacing:-.045em;color:#
 @media(max-width:390px){.details{grid-template-columns:1fr}.contact-actions{grid-template-columns:1fr}.agent-photo{height:260px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 /* Reference-inspired details and always-visible social links */
+.social-link[aria-label^="Instagram"] svg,.social-link[aria-label^="Website"] svg,.social-link[aria-label^="WhatsApp"] svg{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .details{grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid #e6edf5;padding-top:13px}
 .detail{border:0;border-right:1px solid #e5edf5;background:transparent;border-radius:0;padding:0 12px 10px 0;margin:0 12px 0 0}
 .detail:nth-child(3n){border-right:0;margin-right:0}
