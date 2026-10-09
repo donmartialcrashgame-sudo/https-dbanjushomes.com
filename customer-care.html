@@ -7,11 +7,76 @@
 <title>Customer Care | DBH</title>
 <link rel="icon" href="/dbh-logo.jpg">
 <link rel="stylesheet" href="/assets/css/styles.css">
-<link rel="stylesheet" href="/assets/css/customer-care.css?v=20261001-5">
+<link rel="stylesheet" href="/assets/css/customer-care.css?v=20261009-1">
 <style>
 :root{--cc-blue:#0b63ce;--cc-navy:#062e67;--cc-line:#dfe8f2;--cc-bg:#f4f7fb}
 body{margin:0;background:var(--cc-bg);color:#18324f;font-family:inherit}.cc-shell{min-height:100vh;display:grid;grid-template-columns:330px minmax(0,1fr)}.cc-side{background:#fff;border-right:1px solid var(--cc-line);display:flex;flex-direction:column;min-width:0}.cc-side-head{padding:20px;border-bottom:1px solid var(--cc-line)}.cc-brand{display:flex;align-items:center;gap:10px}.cc-brand img{width:40px;height:40px;border-radius:12px;object-fit:cover}.cc-brand strong{display:block;font-size:15px}.cc-brand span{display:block;color:#74879c;font-size:10px;margin-top:2px}.cc-presence{margin-top:15px;padding:12px;border:1px solid #dbe7f2;background:#f8fbff;border-radius:13px;font-size:10px;color:#6c8197}.cc-presence b{color:#0b63ce}.cc-list{overflow:auto;flex:1}.cc-conversation{width:100%;border:0;border-bottom:1px solid #edf1f5;background:#fff;text-align:left;padding:15px 16px;cursor:pointer}.cc-conversation.active{background:#eef6ff}.cc-conversation:hover{background:#f7fbff}.cc-conversation-top{display:flex;justify-content:space-between;gap:8px}.cc-conversation strong{font-size:12px;color:#18324f}.cc-conversation time{font-size:8px;color:#8a9bad}.cc-conversation p{margin:5px 0 7px;color:#71859b;font-size:10px;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cc-pill{display:inline-flex;padding:4px 7px;border-radius:999px;background:#f1f5f8;color:#668099;font-size:8px;font-weight:900}.cc-pill.handoff{background:#fff3dd;color:#9b6900}.cc-empty{padding:30px 18px;color:#7a8da2;font-size:11px;line-height:1.7}.cc-main{min-width:0;display:flex;flex-direction:column}.cc-top{height:72px;background:#fff;border-bottom:1px solid var(--cc-line);display:flex;align-items:center;justify-content:space-between;padding:0 22px;gap:15px}.cc-top h1{font-size:18px;margin:0}.cc-top p{margin:4px 0 0;color:#8090a1;font-size:10px}.cc-actions{display:flex;gap:8px;align-items:center}.cc-main button,.cc-main textarea{font:inherit}.cc-refresh{border:1px solid var(--cc-line);background:#fff;color:#47637e;border-radius:10px;padding:9px 12px;font-size:10px;font-weight:900;cursor:pointer}.cc-logout{border:0;background:#eef6ff;color:#0b63ce;border-radius:10px;padding:9px 12px;font-size:10px;font-weight:900;cursor:pointer}.cc-thread{flex:1;overflow:auto;padding:22px}.cc-thread-empty{height:100%;display:grid;place-items:center;color:#8295a8;font-size:12px}.cc-thread-head{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--cc-line);border-radius:18px;padding:16px;margin-bottom:14px}.cc-avatar{width:42px;height:42px;border-radius:14px;background:#eaf3ff;display:grid;place-items:center;color:#0b63ce;font-weight:950;font-size:12px;overflow:hidden}.cc-avatar img{width:100%;height:100%;object-fit:cover}.cc-thread-head strong{font-size:13px}.cc-thread-head span{display:block;color:#788ca1;font-size:10px;margin-top:4px}.cc-msg{display:flex;margin:8px 0}.cc-msg.customer{justify-content:flex-start}.cc-msg.agent{justify-content:flex-end}.cc-msg-bubble{max-width:min(720px,86%);padding:11px 13px;border-radius:15px;font-size:11px;line-height:1.6;border:1px solid var(--cc-line);background:#fff}.cc-msg.agent .cc-msg-bubble{background:#0b63ce;color:#fff;border-color:#0b63ce;border-radius:15px 15px 5px 15px}.cc-msg.customer .cc-msg-bubble{border-radius:15px 15px 15px 5px}.cc-label{font-size:8px;font-weight:950;text-transform:uppercase;letter-spacing:.08em;opacity:.7;margin-bottom:4px}.cc-text{white-space:pre-wrap}.cc-time{font-size:8px;opacity:.65;margin-top:5px;text-align:right}.cc-reply{position:sticky;bottom:0;background:rgba(244,247,251,.94);backdrop-filter:blur(10px);padding:12px 22px 20px}.cc-reply-box{background:#fff;border:1px solid var(--cc-line);border-radius:16px;padding:10px}.cc-reply textarea{width:100%;min-height:80px;resize:vertical;border:0;outline:0;background:transparent;color:#18324f;font-size:12px;line-height:1.6}.cc-reply-actions{display:flex;justify-content:flex-end;gap:8px;align-items:center}.cc-handoff-note{margin-right:auto;font-size:9px;color:#7b8da0}.cc-send{border:0;background:#0b63ce;color:#fff;border-radius:10px;padding:10px 15px;font-size:10px;font-weight:950;cursor:pointer}.cc-send:disabled{opacity:.55;cursor:wait}.cc-error{padding:12px 14px;background:#fff1f2;border:1px solid #efcfd4;color:#9b3941;border-radius:12px;font-size:10px;margin-bottom:12px}.cc-mobile-menu{display:none}.cc-unread{min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#dc3545;color:#fff;display:inline-grid;place-items:center;font-size:8px;font-weight:950}
 @media(max-width:850px){.cc-shell{grid-template-columns:1fr}.cc-side{position:fixed;inset:0 auto 0 0;width:min(330px,88vw);z-index:24000;transform:translateX(-102%);transition:.2s;box-shadow:20px 0 60px rgba(0,0,0,.16)}body.cc-open .cc-side{transform:none}.cc-mobile-menu{display:inline-grid;place-items:center;border:1px solid var(--cc-line);background:#fff;border-radius:10px;width:38px;height:38px}.cc-top{padding:0 14px}.cc-thread{padding:14px}.cc-reply{padding:10px 14px 14px}.cc-side-backdrop{display:none}body.cc-open .cc-side-backdrop{display:block;position:fixed;inset:0;background:rgba(6,23,45,.3);z-index:23999}}
+
+/* DBH Customer Care inbox refresh */
+body.cc-page{background:radial-gradient(circle at 8% 0,rgba(62,145,239,.09),transparent 28%),#f4f8fd;color:#122e4f}
+.cc-shell{min-height:100vh;grid-template-columns:320px minmax(0,1fr);gap:0}
+.cc-side{background:rgba(255,255,255,.94);border-right:1px solid #dfe9f5;box-shadow:8px 0 30px rgba(10,44,82,.025)}
+.cc-side-head{padding:22px 19px 18px;background:linear-gradient(180deg,#fff,#f8fbff)}
+.cc-brand img{width:44px;height:44px;border-radius:14px;box-shadow:0 5px 15px rgba(8,48,91,.12)}
+.cc-brand strong{font-size:15px;letter-spacing:-.02em;color:#0a2e58}
+.cc-brand span{font-size:10px;letter-spacing:.02em}
+.cc-presence{margin-top:17px;border-radius:14px;padding:13px 14px;background:linear-gradient(135deg,#f1f7ff,#fff);border-color:#dbe8f6;line-height:1.7}
+.cc-list{padding:8px;scrollbar-width:thin;scrollbar-color:#c8d9eb transparent}
+.cc-conversation{position:relative;margin:4px 0;width:100%;border:1px solid transparent;border-radius:14px;padding:14px 12px;background:transparent;transition:background .18s,border-color .18s,transform .18s}
+.cc-conversation.active{background:linear-gradient(135deg,#eaf4ff,#f5faff);border-color:#cfe3f8;box-shadow:0 5px 15px rgba(13,89,165,.055)}
+.cc-conversation:hover{background:#f4f9ff;border-color:#e0edf9;transform:translateY(-1px)}
+.cc-conversation strong{font-size:12px;font-weight:850;color:#143456}
+.cc-conversation p{font-size:10px;line-height:1.55;margin:6px 0 9px}
+.cc-pill{padding:5px 8px;border:1px solid #e2eaf2;background:#f6f9fc;color:#647b92}
+.cc-pill.handoff{border-color:#f3d9a2;background:#fff7e7;color:#966300}
+.cc-main{background:linear-gradient(180deg,rgba(255,255,255,.56),rgba(245,249,254,.8))}
+.cc-top{height:82px;padding:0 clamp(15px,2.4vw,32px);background:rgba(255,255,255,.9);backdrop-filter:blur(14px);border-bottom-color:#e0eaf4;box-shadow:0 4px 18px rgba(12,45,80,.025)}
+.cc-top h1{font-size:19px;letter-spacing:-.025em;color:#0d2d50}
+.cc-top p{font-size:10px}
+.cc-refresh,.cc-logout{border-radius:11px;padding:10px 13px;transition:transform .16s,background .16s}
+.cc-refresh:hover,.cc-logout:hover{transform:translateY(-1px)}
+.cc-refresh{border-color:#d9e5f1;color:#375976}
+.cc-logout{background:#eaf4ff;color:#0b63ce}
+.cc-thread{padding:clamp(14px,2.4vw,32px);scrollbar-width:thin;scrollbar-color:#c8d9eb transparent}
+.cc-thread-head{position:sticky;top:0;z-index:2;margin-bottom:20px;padding:16px 18px;border-radius:18px;border-color:#e0eaf5;box-shadow:0 8px 26px rgba(11,45,82,.045);background:rgba(255,255,255,.94);backdrop-filter:blur(10px)}
+.cc-avatar{width:46px;height:46px;border-radius:15px;box-shadow:0 5px 15px rgba(10,49,90,.08)}
+.cc-thread-head strong{font-size:13px;color:#153758}
+.cc-thread-head span{line-height:1.5}
+.cc-msg{margin:12px 0}
+.cc-msg-bubble{max-width:min(700px,88%);padding:13px 15px;border-radius:17px;font-size:12px;line-height:1.7;box-shadow:0 6px 18px rgba(12,47,83,.045)}
+.cc-msg.agent .cc-msg-bubble{background:linear-gradient(145deg,#0b63ce,#176fd9);box-shadow:0 8px 22px rgba(11,99,206,.15);border-radius:17px 17px 5px 17px}
+.cc-msg.customer .cc-msg-bubble{background:#fff;border-color:#e1eaf3;border-radius:17px 17px 17px 5px}
+.cc-label{font-size:8px;letter-spacing:.1em;margin-bottom:6px}
+.cc-time{margin-top:7px}
+.cc-reply{padding:14px clamp(14px,2.4vw,32px) 22px;background:rgba(244,248,253,.92);backdrop-filter:blur(14px)}
+.cc-reply-box{border-radius:18px;padding:13px 14px;border-color:#dce7f2;box-shadow:0 9px 28px rgba(10,45,82,.06);transition:border-color .18s,box-shadow .18s}
+.cc-reply-box:focus-within{border-color:#9ac6f1;box-shadow:0 0 0 3px rgba(11,99,206,.08),0 9px 28px rgba(10,45,82,.06)}
+.cc-reply textarea{min-height:68px;font-size:12px}
+.cc-send{border-radius:11px;padding:11px 17px;background:linear-gradient(145deg,#0b63ce,#267ff0);box-shadow:0 6px 14px rgba(11,99,206,.16);transition:transform .16s}
+.cc-send:hover:not(:disabled){transform:translateY(-1px)}
+.cc-error{border-radius:13px;line-height:1.6}
+.cc-mobile-menu{border-radius:11px;color:#0b63ce}
+@media(max-width:850px){
+ .cc-shell{grid-template-columns:minmax(0,1fr)}
+ .cc-side{box-shadow:18px 0 50px rgba(8,35,67,.18)}
+ .cc-top{height:74px}
+ .cc-thread{padding:14px}
+ .cc-thread-head{position:relative}
+ .cc-reply{padding:10px 14px max(14px,env(safe-area-inset-bottom))}
+}
+@media(max-width:560px){
+ .cc-top h1{font-size:16px}
+ .cc-top p{max-width:54vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .cc-actions{gap:6px}
+ .cc-refresh,.cc-logout{padding:9px 10px;font-size:9px}
+ .cc-thread-head{padding:13px}
+ .cc-msg-bubble{max-width:94%;padding:11px 12px;font-size:11px}
+ .cc-reply textarea{min-height:60px}
+ .cc-handoff-note{max-width:52%;line-height:1.5}
+}
+@media(prefers-reduced-motion:reduce){.cc-conversation,.cc-refresh,.cc-logout,.cc-send{transition:none!important}}
+
 </style>
 </head>
 <body class="cc-page">
