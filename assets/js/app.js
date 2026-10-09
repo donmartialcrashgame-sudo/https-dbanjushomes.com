@@ -232,6 +232,11 @@ function setupCustomerCareWidget(){
 
   const renderedMessages=new Set();
   const renderedReplies=new Set();
+  function clearVisibleConversation(){
+    chatScreen.querySelectorAll('.dbh-care-row,#dbh-care-typing').forEach(node=>node.remove());
+    renderedMessages.clear();
+    renderedReplies.clear();
+  }
   async function loadConversation(){
     const t=await resolveToken();
     if(!t)return;
@@ -271,6 +276,7 @@ function setupCustomerCareWidget(){
   }
 
   function showHumanIntake(){
+    clearVisibleConversation();
     chatMode='human';
     choiceScreen.hidden=true;chatScreen.hidden=true;humanIntake.hidden=false;
     statusText.textContent='Human support request';
@@ -302,6 +308,7 @@ function setupCustomerCareWidget(){
       const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json',Authorization:'Bearer '+t},body:JSON.stringify({action:'human-message',name,email,message})});
       const data=await r.json().catch(()=>({}));
       if(!r.ok||data.success===false)throw new Error(data.message||'Your message could not be sent. Please try again.');
+      clearVisibleConversation();
       humanIntake.hidden=true;chatScreen.hidden=false;choiceScreen.hidden=true;
       welcomeTitle.textContent='Human Customer Care';
       welcomeCopy.textContent='This is your private conversation with the DBH customer-care team. AI replies are kept in the separate AI chat.';
@@ -324,6 +331,7 @@ function setupCustomerCareWidget(){
   });
   function chooseMode(mode){
     if(mode==='human'){showHumanIntake();return;}
+    clearVisibleConversation();
     chatMode='ai';
     choiceScreen.hidden=true;humanIntake.hidden=true;chatScreen.hidden=false;
     statusText.textContent=chatMode==='human'?'Human customer care':'AI assistant • Online';
@@ -344,7 +352,7 @@ function setupCustomerCareWidget(){
   const shut=()=>{widget.classList.remove('open');launcher.setAttribute('aria-expanded','false');launcher.focus({preventScroll:true});panel.setAttribute('aria-hidden','true');};
   launcher.addEventListener('click',()=>widget.classList.contains('open')?shut():open());
   close.addEventListener('click',shut);
-  backButton.addEventListener('click',()=>{chatScreen.hidden=true;choiceScreen.hidden=false;chatMode='';statusText.textContent='Choose how we can help';footStatus.textContent='Customer support';});
+  backButton.addEventListener('click',()=>{clearVisibleConversation();chatScreen.hidden=true;humanIntake.hidden=true;choiceScreen.hidden=false;chatMode='';statusText.textContent='Choose how we can help';footStatus.textContent='Customer support';});
   widget.querySelectorAll('[data-care-mode]').forEach(btn=>btn.addEventListener('click',()=>chooseMode(btn.dataset.careMode)));
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&widget.classList.contains('open'))shut()});
   widget.querySelectorAll('[data-care-message]').forEach(btn=>btn.addEventListener('click',()=>{input.value=btn.dataset.careMessage||'';input.focus()}));
