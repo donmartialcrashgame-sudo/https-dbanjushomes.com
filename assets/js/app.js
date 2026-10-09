@@ -128,6 +128,7 @@ function setupCustomerCareWidget(){
     '<section class="dbh-care-panel" id="dbh-care-panel" aria-label="DBH customer care" aria-hidden="true">'+
       '<div class="dbh-care-head"><div class="dbh-care-avatar"><img src="/dbh-logo.jpg" alt="DBH Customer Care"></div><div class="dbh-care-head-copy"><strong>DBH Customer Care</strong><span class="dbh-care-status"><i></i> <b id="dbh-care-status-text">Choose how we can help</b></span></div><button type="button" class="dbh-care-close" id="dbh-care-close" aria-label="Close customer care"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"></path></svg></button></div>'+
       '<div class="dbh-care-body" id="dbh-care-body">'+
+        '<section class="dbh-care-human-intake" id="dbh-care-human-intake" hidden><button type="button" class="dbh-care-back" id="dbh-care-human-back"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"></path></svg><span>Back to support options</span></button><div class="dbh-care-intake-heading"><span class="dbh-care-choice-kicker">PERSONAL SUPPORT</span><h3>Message our team</h3><p>Tell us how we can help. Your details will be filled in when available.</p></div><form id="dbh-care-human-form" class="dbh-care-human-form"><label for="dbh-care-human-name">Your name</label><input id="dbh-care-human-name" name="name" autocomplete="name" required maxlength="120" placeholder="Enter your full name"><label for="dbh-care-human-email">Email address</label><input id="dbh-care-human-email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com"><label for="dbh-care-human-message">How can we help?</label><textarea id="dbh-care-human-message" name="message" required maxlength="2000" rows="4" placeholder="Write your message to customer care…"></textarea><button class="dbh-care-human-submit" type="submit"><span>Send message</span><svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"></path></svg></button><p class="dbh-care-intake-status" id="dbh-care-intake-status" aria-live="polite"></p></form></section>'+
         '<section class="dbh-care-choice-screen" id="dbh-care-choice-screen"><div class="dbh-care-choice-intro"><span class="dbh-care-choice-kicker">WE ARE HERE TO HELP</span><h3>How can we help you today?</h3><p>Choose the best way to reach D Banjus Homes Nigeria Limited.</p></div>'+
           '<button type="button" class="dbh-care-option" data-care-mode="ai"><span class="dbh-care-option-icon ai"><svg viewBox="0 0 24 24"><path d="M12 3 14.1 9.9 21 12l-6.9 2.1L12 21l-2.1-6.9L3 12l6.9-2.1L12 3Z"></path></svg></span><span class="dbh-care-option-copy"><strong>Chat with AI</strong><small>Get quick answers about properties, accounts and using DBH.</small></span><svg class="dbh-care-option-arrow" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg></button>'+
           '<button type="button" class="dbh-care-option" data-care-mode="human"><span class="dbh-care-option-icon human"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"></circle><path d="M5 20c.7-4 2.8-6 7-6s6.3 2 7 6"></path><path d="M19 4v4M17 6h4"></path></svg></span><span class="dbh-care-option-copy"><strong>Chat with a human</strong><small>Send a message to our customer-care team for personal help.</small></span><svg class="dbh-care-option-arrow" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg></button>'+
@@ -150,6 +151,10 @@ function setupCustomerCareWidget(){
   const close=document.getElementById('dbh-care-close');
   const form=document.getElementById('dbh-care-form');
   const choiceScreen=document.getElementById('dbh-care-choice-screen');
+  const humanIntake=document.getElementById('dbh-care-human-intake');
+  const humanForm=document.getElementById('dbh-care-human-form');
+  const humanBack=document.getElementById('dbh-care-human-back');
+  const intakeStatus=document.getElementById('dbh-care-intake-status');
   const chatScreen=document.getElementById('dbh-care-chat-screen');
   const backButton=document.getElementById('dbh-care-back');
   const welcomeTitle=document.getElementById('dbh-care-welcome-title');
@@ -248,9 +253,59 @@ function setupCustomerCareWidget(){
     }catch{}
   }
 
+  function showHumanIntake(){
+    chatMode='human';
+    choiceScreen.hidden=true;chatScreen.hidden=true;humanIntake.hidden=false;
+    statusText.textContent='Human support request';
+    footStatus.textContent='Message customer care';
+    const u=sessionUser()||{};
+    const name=document.getElementById('dbh-care-human-name');
+    const email=document.getElementById('dbh-care-human-email');
+    const msg=document.getElementById('dbh-care-human-message');
+    name.value=String(u.full_name||u.name||u.user_metadata?.full_name||u.user_metadata?.name||'').trim();
+    email.value=String(u.email||'').trim();
+    msg.value=String(input.value||'').trim();
+    intakeStatus.textContent='';
+    setTimeout(()=>{(name.value?email.value?msg:email:name).focus();},100);
+    // Ask the existing customer-care service for current staff presence.
+    resolveToken().then(t=>{if(!t)return;fetch(api+'?action=availability',{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{if(!d)return;humanOnline=!!(d.online??d.available??d.humanOnline);intakeStatus.textContent=humanOnline?'Customer care is online. Send your message to start a conversation.':'Customer care is currently offline. You can still send a message and the team will reply when available.';}).catch(()=>{});});
+  }
+  humanBack.addEventListener('click',()=>{humanIntake.hidden=true;choiceScreen.hidden=false;chatMode='';statusText.textContent='Choose how we can help';footStatus.textContent='Customer support';});
+  humanForm.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const name=document.getElementById('dbh-care-human-name').value.trim();
+    const email=document.getElementById('dbh-care-human-email').value.trim();
+    const message=document.getElementById('dbh-care-human-message').value.trim();
+    if(!name||!email||!message)return;
+    const submit=humanForm.querySelector('button[type="submit"]');
+    submit.disabled=true;intakeStatus.textContent='Sending your message…';
+    try{
+      const t=await resolveToken();
+      if(!t)throw new Error('Please sign in to DBH before sending a message to customer care.');
+      const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json',Authorization:'Bearer '+t},body:JSON.stringify({action:'human-message',name,email,message})});
+      const data=await r.json().catch(()=>({}));
+      if(!r.ok||data.success===false)throw new Error(data.message||'Your message could not be sent. Please try again.');
+      humanIntake.hidden=true;chatScreen.hidden=false;choiceScreen.hidden=true;
+      welcomeTitle.textContent='DBH Customer Care';
+      welcomeCopy.textContent='Your message has been sent. You can continue this conversation here; our team will reply when available.';
+      quickChoices.hidden=true;note.style.display='block';
+      note.textContent='Checking customer-care availability…';
+      const availability=await fetch(api+'?action=availability',{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'}).then(x=>x.ok?x.json():null).catch(()=>null);
+      humanOnline=!!(availability?.online??availability?.available??availability?.humanOnline);
+      statusText.textContent=humanOnline?'Customer care • Online':'Customer care • Offline';
+      footStatus.textContent=humanOnline?'Human support • Online':'Message sent • Reply when available';
+      note.textContent=humanOnline?'Customer care is online. A team member can reply here.':'Customer care is currently offline. Your message has been received and the team can reply when available.';
+      input.value='';
+      bubble(message,true,new Date().toISOString(),true);
+      bubble('Thank you, '+name+'. Your message has been sent to DBH Customer Care.',false,new Date().toISOString());
+      await loadConversation();scrollBottom();
+    }catch(err){intakeStatus.textContent=err.message||'Unable to send your message.';}
+    finally{submit.disabled=false;}
+  });
   function chooseMode(mode){
-    chatMode=mode==='human'?'human':'ai';
-    choiceScreen.hidden=true;chatScreen.hidden=false;
+    if(mode==='human'){showHumanIntake();return;}
+    chatMode='ai';
+    choiceScreen.hidden=true;humanIntake.hidden=true;chatScreen.hidden=false;
     statusText.textContent=chatMode==='human'?'Human customer care':'AI assistant • Online';
     footStatus.textContent=chatMode==='human'?'Human support request':'AI support • 24/7';
     welcomeTitle.textContent=chatMode==='human'?'Chat with DBH Customer Care':'Hello 👋';
