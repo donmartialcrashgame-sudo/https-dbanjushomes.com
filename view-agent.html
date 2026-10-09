@@ -53,7 +53,7 @@ h1{font-size:clamp(30px,4vw,43px);line-height:1.1;letter-spacing:-.045em;color:#
 <div class="listings" id="agent-listings" aria-live="polite"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
 </section>
 </main>
-<script src="/assets/js/config.js"></script><script src="/assets/js/app.js?v=20261009-agentprofile5"></script>
+<script src="/assets/js/config.js"></script><script src="/assets/js/app.js?v=20261009-agentprofilemanager2"></script>
 <script>
 (async function(){
  const c=window.DBH_CONFIG||{},root=document.getElementById('agent-profile'),list=document.getElementById('agent-listings'),count=document.getElementById('listing-count');
@@ -89,14 +89,15 @@ h1{font-size:clamp(30px,4vw,43px);line-height:1.1;letter-spacing:-.045em;color:#
   const role=getField(profile,['business_type','agent_type','professional_title','designation'])||'Licensed Agent';
   const bio=getField(profile,['bio','about','description','business_description','professional_description','profile_description'])||getField(first,['agent_bio','provider_bio'])||'This DBH property agent helps clients discover property opportunities. Contact the agent directly for more information about their services and experience.';
   const business=getField(profile,['business_name','agency_name','company_name']);
-  const phone=getField(profile,['whatsapp_number','phone','phone_number','mobile_number','contact_phone']);
+  const phone=getField(profile,['phone','phone_number','mobile_number','contact_phone']);
+  const whatsapp=getField(profile,['whatsapp_number'])||phone;
   const email=getField(profile,['email','email_address'])||'';
   const address=getField(profile,['address','business_address','office_address','contact_address']);
   const experience=getField(profile,['years_experience','experience_years','experience']);
   const license=getField(profile,['license_number','licence_number','professional_license']);
   const joined=getField(profile,['created_at','approved_at','verified_at']);
   const formatDate=v=>{if(!v)return '';const d=new Date(v);return Number.isNaN(d.getTime())?'':d.toLocaleDateString('en-NG',{month:'short',year:'numeric'});};
-  const wa=String(phone).replace(/\D/g,'');
+  const wa=String(whatsapp).replace(/\D/g,'');
   const socialLinks=profile?.social_links&&typeof profile.social_links==='object'?profile.social_links:{};
   const facebook=getField(socialLinks,['facebook'])||getField(profile,['facebook_url','facebook','facebook_link']);
   const instagram=getField(socialLinks,['instagram'])||getField(profile,['instagram_url','instagram','instagram_link']);
@@ -120,6 +121,7 @@ h1{font-size:clamp(30px,4vw,43px);line-height:1.1;letter-spacing:-.045em;color:#
    detail('Agent / agency',business||role,'<circle cx="12" cy="8" r="3"/><path d="M5 20c.5-4 2.8-6 7-6s6.5 2 7 6"/>'),
    detail('Experience',experience?String(experience)+(String(experience).toLowerCase().includes('year')?'':' years'):'','<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
    detail('Phone',phone,'<path d="M5 4h4l2 5-3 2a14 14 0 0 0 5 5l2-3 5 2v4c0 1-1 2-2 2C10 21 3 14 3 6c0-1 1-2 2-2Z"/>'),
+   detail('WhatsApp',whatsapp,'<path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.4L3 20l.9-4.7a8.5 8.5 0 1 1 16.6-3.5Z"/><path d="M8.5 8.2c.2-.5.4-.5.8-.5h.4c.2 0 .4 0 .5.4l.8 1.8c.1.3.1.5-.1.7l-.6.7c-.2.2-.1.4 0 .6.5.9 1.2 1.6 2.1 2.1.2.1.4.2.6 0l.8-.9c.2-.2.4-.2.7-.1l1.7.8c.3.2.4.3.4.5 0 .4-.2 1.2-.7 1.6-.4.4-1 .7-1.7.6-1-.1-2.3-.6-3.6-1.7-1.1-1-2-2.3-2.2-3.3-.2-1 .1-1.8.4-2.3Z"/>'),
    detail('Email',email,'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/>'),
    detail('Office address',address,'<path d="M3 21h18M5 21V7l7-4 7 4v14M9 10h1m4 0h1m-6 4h1m4 0h1"/>'),
    detail('License / registration',license,'<path d="M12 3 20 6v5c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-3Z"/><path d="m8 12 3 3 5-6"/>'),
