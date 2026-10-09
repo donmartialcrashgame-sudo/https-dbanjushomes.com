@@ -314,8 +314,10 @@ function setupCustomerCareWidget(){
       footStatus.textContent=humanOnline?'Human support • Online':'Message sent • Reply when available';
       note.textContent=humanOnline?'Customer care is online. A team member can reply here.':'Customer care is currently offline. Your message has been received and the team can reply when available.';
       input.value='';
-      bubble(message,true,new Date().toISOString(),true);
-      bubble('Thank you, '+name+'. Your message has been sent to DBH Customer Care.',false,new Date().toISOString());
+      const sentId=String(data?.message?.id||'');
+      if(sentId)renderedMessages.add(sentId);
+      bubble(message,true,data?.message?.created_at||new Date().toISOString(),true);
+      if(humanOnline)bubble('Your message is with DBH Customer Care. A team member will reply here.',false,new Date().toISOString());
       await loadConversation();scrollBottom();
     }catch(err){intakeStatus.textContent=err.message||'Unable to send your message.';}
     finally{submit.disabled=false;}
