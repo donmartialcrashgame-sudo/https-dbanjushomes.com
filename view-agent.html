@@ -25,6 +25,18 @@ h1{font-size:clamp(30px,4vw,43px);line-height:1.1;letter-spacing:-.045em;color:#
 @media(max-width:620px){main{padding:15px 12px 42px}.profile-card{grid-template-columns:1fr;gap:20px;padding:16px;border-radius:20px}.photo-wrap{max-width:100%}.agent-photo{height:290px;min-height:0;max-height:350px;object-position:center 28%}.photo-caption{margin-top:7px}.profile-info{padding:0 2px 3px}h1{font-size:31px}.description{margin-top:15px}.details{grid-template-columns:1fr 1fr;gap:8px}.detail{padding:10px}.contact-actions{display:grid;grid-template-columns:1fr 1fr}.contact-btn{padding:10px 8px;text-align:center}.listing-heading{margin-top:32px;align-items:start}.count-pill{margin-top:2px}.listings{grid-template-columns:1fr}.cover{height:230px}}
 @media(max-width:390px){.details{grid-template-columns:1fr}.contact-actions{grid-template-columns:1fr}.agent-photo{height:260px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+/* Reference-inspired details and always-visible social links */
+.details{grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid #e6edf5;padding-top:13px}
+.detail{border:0;border-right:1px solid #e5edf5;background:transparent;border-radius:0;padding:0 12px 10px 0;margin:0 12px 0 0}
+.detail:nth-child(3n){border-right:0;margin-right:0}
+.detail-label{font-size:8px;letter-spacing:.04em}
+.detail-value{font-size:11px;line-height:1.45}
+.socials{gap:8px;margin-top:21px}
+.social-link{width:32px;height:32px;border-radius:50%;padding:0}
+.social-link.disabled{opacity:.3;cursor:not-allowed;background:#f7f9fc;color:#8b9bad;border-style:dashed;box-shadow:none;pointer-events:none}
+.social-link.disabled:hover{transform:none;background:#f7f9fc;color:#8b9bad}
+@media(max-width:850px){.details{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 0}.detail:nth-child(3n){border-right:1px solid #e5edf5;margin-right:12px}.detail:nth-child(2n){border-right:0;margin-right:0}}
+@media(max-width:620px){.details{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 0}.detail{padding:0 8px 8px 0;margin-right:8px}.social-link{width:34px;height:34px}}
 </style>
 </head>
 <body>
@@ -40,7 +52,7 @@ h1{font-size:clamp(30px,4vw,43px);line-height:1.1;letter-spacing:-.045em;color:#
 <div class="listings" id="agent-listings" aria-live="polite"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
 </section>
 </main>
-<script src="/assets/js/config.js"></script><script src="/assets/js/app.js?v=20261009-agentprofile4"></script>
+<script src="/assets/js/config.js"></script><script src="/assets/js/app.js?v=20261009-agentprofile5"></script>
 <script>
 (async function(){
  const c=window.DBH_CONFIG||{},root=document.getElementById('agent-profile'),list=document.getElementById('agent-listings'),count=document.getElementById('listing-count');
@@ -51,13 +63,15 @@ h1{font-size:clamp(30px,4vw,43px);line-height:1.1;letter-spacing:-.045em;color:#
  async function get(path){const r=await fetch(c.supabaseUrl+'/rest/v1/'+path,{headers:{apikey:c.supabaseAnonKey,Accept:'application/json'}});if(!r.ok)throw Error('Unable to load agent information ('+r.status+').');return r.json();}
  function getField(obj,keys){for(const k of keys){const v=obj&&obj[k];if(v!==undefined&&v!==null&&String(v).trim()!=='')return v;}return '';}
  function detail(label,value,icon){if(!value)return '';return '<div class="detail"><span class="detail-label">'+ico(icon)+esc(label)+'</span><strong class="detail-value">'+esc(value)+'</strong></div>';}
- function social(url,label,path){if(!url)return '';let href=String(url).trim();if(!/^https?:\/\//i.test(href))href='https://'+href;return '<a class="social-link" href="'+esc(href)+'" target="_blank" rel="noopener noreferrer" aria-label="'+esc(label)+'" title="'+esc(label)+'">'+ico(path)+'</a>';}
+ function social(url,label,path){let href=String(url||'').trim();const enabled=!!href;if(enabled&&!/^https?:\/\//i.test(href))href='https://'+href;const safeHref=enabled&&/^https?:\/\//i.test(href)?' href="'+esc(href)+'" target="_blank" rel="noopener noreferrer"':' aria-disabled="true" tabindex="-1"';return '<a class="social-link'+(enabled?'':' disabled')+'"'+safeHref+' aria-label="'+esc(label+(enabled?'':' — not added yet'))+'" title="'+esc(enabled?label:label+' not added yet')+'">'+ico(path)+'</a>';}
  try{
   if(!agentId&&!agentName)throw Error('No agent was selected. Please open this page from an agent or property profile.');
   let profile=null;
   if(agentId){
-   try{const a=await get('agent_applications?select=*&user_id=eq.'+encodeURIComponent(agentId)+'&limit=1');profile=a[0]||null;}catch(e){}
-   if(!profile){try{const a=await get('agent_applications?select=*&id=eq.'+encodeURIComponent(agentId)+'&limit=1');profile=a[0]||null;}catch(e){}}
+   try{
+    const res=await fetch(c.supabaseUrl+'/functions/v1/dbh-agent-registration',{method:'POST',headers:{'Content-Type':'application/json','apikey':c.supabaseAnonKey},body:JSON.stringify({action:'get_public_profile',agent_id:agentId})});
+    if(res.ok){const data=await res.json();profile=data.profile||null;}
+   }catch(e){console.warn('Could not load public agent profile:',e);}
   }
   const allRows=[];
   for(let offset=0;offset<10000;offset+=1000){
@@ -82,10 +96,24 @@ h1{font-size:clamp(30px,4vw,43px);line-height:1.1;letter-spacing:-.045em;color:#
   const joined=getField(profile,['created_at','approved_at','verified_at']);
   const formatDate=v=>{if(!v)return '';const d=new Date(v);return Number.isNaN(d.getTime())?'':d.toLocaleDateString('en-NG',{month:'short',year:'numeric'});};
   const wa=String(phone).replace(/\D/g,'');
-  const facebook=getField(profile,['facebook_url','facebook','facebook_link']);
-  const instagram=getField(profile,['instagram_url','instagram','instagram_link']);
-  const linkedin=getField(profile,['linkedin_url','linkedin','linkedin_link']);
-  const website=getField(profile,['website_url','website','website_link']);
+  const socialLinks=profile?.social_links&&typeof profile.social_links==='object'?profile.social_links:{};
+  const facebook=getField(socialLinks,['facebook'])||getField(profile,['facebook_url','facebook','facebook_link']);
+  const instagram=getField(socialLinks,['instagram'])||getField(profile,['instagram_url','instagram','instagram_link']);
+  const xLink=getField(socialLinks,['x','twitter'])||getField(profile,['x_url','twitter_url','twitter','x']);
+  const linkedin=getField(socialLinks,['linkedin'])||getField(profile,['linkedin_url','linkedin','linkedin_link']);
+  const tiktok=getField(socialLinks,['tiktok'])||getField(profile,['tiktok_url','tiktok','tiktok_link']);
+  const youtube=getField(socialLinks,['youtube'])||getField(profile,['youtube_url','youtube','youtube_link']);
+  const website=getField(socialLinks,['website'])||getField(profile,['website_url','website','website_link']);
+  const socialItems=[
+   social(instagram,'Instagram','<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8"/>'),
+   social(facebook,'Facebook','<path d="M13.5 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5h1.7V3.9c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3V10H7.3v3h2.8v8z"/>'),
+   social(xLink,'X / Twitter','<path d="M18.9 3H22l-6.8 7.8L23.2 21h-6.3l-4.9-6.4L6.4 21H3.2l7.3-8.4L2.8 3h6.4l4.4 5.9L18.9 3ZM17.8 19h1.7L8.5 4.9H6.7L17.8 19Z"/>'),
+   social(linkedin,'LinkedIn','<path d="M5 9H2v12h3zM3.5 3a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6ZM9 9H6v12h3v-6.4c0-3.6 4-3.9 4 0V21h3v-7.5c0-5.8-6.3-5.6-7-2.7z"/>'),
+   social(tiktok,'TikTok','<path d="M19 7.5a6.5 6.5 0 0 1-4-2v8.1a5.6 5.6 0 1 1-5.6-5.6c.4 0 .8 0 1.2.1v3a2.8 2.8 0 1 0 1.5 2.5V2.5h3a6.5 6.5 0 0 0 3.9 4.1Z"/>'),
+   social(youtube,'YouTube','<path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.5 12 31 31 0 0 0 23 7.2ZM9.7 15.2V8.8l5.8 3.2-5.8 3.2Z"/>'),
+   social(website,'Website','<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>'),
+   social(wa?'https://wa.me/'+wa:'','WhatsApp','<path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.4L3 20l.9-4.7a8.5 8.5 0 1 1 16.6-3.5Z"/><path d="M8.5 8.2c.2-.5.4-.5.8-.5h.4c.2 0 .4 0 .5.4l.8 1.8c.1.3.1.5-.1.7l-.6.7c-.2.2-.1.4 0 .6.5.9 1.2 1.6 2.1 2.1.2.1.4.2.6 0l.8-.9c.2-.2.4-.2.7-.1l1.7.8c.3.2.4.3.4.5 0 .4-.2 1.2-.7 1.6-.4.4-1 .7-1.7.6-1-.1-2.3-.6-3.6-1.7-1.1-1-2-2.3-2.2-3.3-.2-1 .1-1.8.4-2.3Z"/>')
+  ].join('');
   const details=[
    detail('Location',location,'<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>'),
    detail('Agent / agency',business||role,'<circle cx="12" cy="8" r="3"/><path d="M5 20c.5-4 2.8-6 7-6s6.5 2 7 6"/>'),
@@ -96,7 +124,7 @@ h1{font-size:clamp(30px,4vw,43px);line-height:1.1;letter-spacing:-.045em;color:#
    detail('License / registration',license,'<path d="M12 3 20 6v5c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-3Z"/><path d="m8 12 3 3 5-6"/>'),
    detail('With DBH since',formatDate(joined),' <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')
   ].join('');
-  root.innerHTML='<div class="photo-wrap"><img class="agent-photo" src="'+esc(photo)+'" alt="Profile photo of '+esc(name)+'" onerror="this.onerror=null;this.src=\'/dbh-logo.jpg\'"><div class="photo-caption">D Banjus Homes Nigeria Limited · Agent profile</div></div><div class="profile-info"><span class="eyebrow">MEET YOUR PROPERTY AGENT</span><h1>'+esc(name)+'</h1><p class="role">'+esc(role)+(business&&business!==name?' · '+esc(business):'')+'</p><span class="verification">'+ico('<path d="m5 12 4 4L19 6"/>')+' DBH Agent Profile</span><p class="description '+(!getField(profile,['bio','about','description','business_description','professional_description','profile_description'])?'empty':'')+'">'+esc(bio)+'</p><h2 class="detail-heading">Personal Information</h2><div class="details">'+(details||detail('Location',location,'<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/>'))+'</div><div class="socials"><span class="social-title">Follow & connect</span>'+social(facebook,'Facebook','<path d="M13.5 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5h1.7V3.9c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3V10H7.3v3h2.8v8z"/>')+social(instagram,'Instagram','<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8"/>')+social(linkedin,'LinkedIn','<path d="M5 9H2v12h3zM3.5 3a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6ZM9 9H6v12h3v-6.4c0-3.6 4-3.9 4 0V21h3v-7.5c0-5.8-6.3-5.6-7-2.7z"/>')+social(website,'Website','<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>')+'</div><div class="contact-actions">'+(phone?'<a class="contact-btn" href="tel:'+esc(String(phone).replace(/[^+\d]/g,''))+'">'+ico('<path d="M5 4h4l2 5-3 2a14 14 0 0 0 5 5l2-3 5 2v4c0 1-1 2-2 2C10 21 3 14 3 6c0-1 1-2 2-2Z"/>')+' Call agent</a>':'')+(wa?'<a class="contact-btn secondary" target="_blank" rel="noopener noreferrer" href="https://wa.me/'+esc(wa)+'?text='+encodeURIComponent('Hello '+name+', I found your profile on DBH.')+'">WhatsApp</a>':'')+(email?'<a class="contact-btn secondary" href="mailto:'+esc(email)+'">Email agent</a>':'')+'</div></div>';
+  root.innerHTML='<div class="photo-wrap"><img class="agent-photo" src="'+esc(photo)+'" alt="Profile photo of '+esc(name)+'" onerror="this.onerror=null;this.src=\'/dbh-logo.jpg\'"><div class="photo-caption">D Banjus Homes Nigeria Limited · Agent profile</div></div><div class="profile-info"><span class="eyebrow">MEET YOUR PROPERTY AGENT</span><h1>'+esc(name)+'</h1><p class="role">'+esc(role)+(business&&business!==name?' · '+esc(business):'')+'</p><span class="verification">'+ico('<path d="m5 12 4 4L19 6"/>')+' DBH Agent Profile</span><p class="description '+(!getField(profile,['bio','about','description','business_description','professional_description','profile_description'])?'empty':'')+'">'+esc(bio)+'</p><h2 class="detail-heading">Personal Information</h2><div class="details">'+(details||detail('Location',location,'<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/>'))+'</div><div class="socials"><span class="social-title">Follow & connect</span>'+socialItems+'</div><div class="contact-actions">'+(phone?'<a class="contact-btn" href="tel:'+esc(String(phone).replace(/[^+\d]/g,''))+'">'+ico('<path d="M5 4h4l2 5-3 2a14 14 0 0 0 5 5l2-3 5 2v4c0 1-1 2-2 2C10 21 3 14 3 6c0-1 1-2 2-2Z"/>')+' Call agent</a>':'')+(wa?'<a class="contact-btn secondary" target="_blank" rel="noopener noreferrer" href="https://wa.me/'+esc(wa)+'?text='+encodeURIComponent('Hello '+name+', I found your profile on DBH.')+'">WhatsApp</a>':'')+(email?'<a class="contact-btn secondary" href="mailto:'+esc(email)+'">Email agent</a>':'')+'</div></div>';
   document.title=name+' | DBH Property Agent';
   count.textContent=rows.length+' '+(rows.length===1?'PROPERTY':'PROPERTIES');
   if(!rows.length){list.innerHTML='<div class="state"><strong>No published properties yet</strong>This agent profile is available, but there are no published and verified properties to show right now.</div>';return;}
