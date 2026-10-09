@@ -586,3 +586,23 @@
   .dbh-care-intake-heading h3{font-size:20px}
 }
 @media(prefers-reduced-motion:reduce){.dbh-care-human-intake{animation:none}}
+
+
+/* Readable chat transcript and clickable assistant links */
+.dbh-care-message-bubble{max-width:min(100%,340px);overflow-wrap:anywhere;word-break:normal}
+.dbh-care-message-text{display:block;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}
+.dbh-care-message-link{
+  color:#1268ce;
+  text-decoration:underline;
+  text-decoration-color:rgba(18,104,206,.35);
+  text-underline-offset:3px;
+  font-weight:650;
+  overflow-wrap:anywhere;
+}
+.dbh-care-message-link:hover{color:#084b9b;text-decoration-color:currentColor}
+.dbh-care-message-bubble.mine .dbh-care-message-link{color:#fff;text-decoration-color:rgba(255,255,255,.65)}
+.dbh-care-message-bubble.mine .dbh-care-message-link:hover{color:#eaf4ff}
+.dbh-care-row{width:100%;display:flex;flex:0 0 auto;margin:0 0 12px;align-items:flex-end}
+.dbh-care-row.mine{justify-content:flex-end}
+.dbh-care-row.theirs{justify-content:flex-start}
+.dbh-care-message-bubble{min-width:0}
