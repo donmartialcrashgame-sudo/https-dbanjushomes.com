@@ -112,7 +112,7 @@ function setupDBHPWA(){
 
 function setupCustomerCareWidget(){
   if(document.getElementById('dbh-care-widget'))return;
-  const css='/assets/css/customer-care.css?v=20261009-3';
+  const css='/assets/css/customer-care.css?v=20261009-4';
   if(!document.querySelector('link[data-dbh-customer-care-css]')){
     const link=document.createElement('link');
     link.rel='stylesheet';link.href=css;link.dataset.dbhCustomerCareCss='1';document.head.appendChild(link);
