@@ -5,7 +5,7 @@
 <title>View Property Agent | D Banjus Homes Nigeria Limited</title>
 <meta name="description" content="View a DBH property agent's profile and verified published property listings.">
 <meta name="theme-color" content="#0b5ed7"><link rel="icon" href="/dbh-logo.jpg">
-<link rel="stylesheet" href="/assets/css/styles.css?v=20261009-agentfix"><link rel="stylesheet" href="/assets/css/consent.css">
+<link rel="stylesheet" href="/assets/css/styles.css?v=20261009-agentprofile3"><link rel="stylesheet" href="/assets/css/consent.css">
 <style>
 :root{--blue:#0b5ed7;--navy:#082d60;--ink:#173451;--muted:#71839a;--line:#e1eaf4;--bg:#f5f8fc}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
@@ -19,7 +19,17 @@ main{max-width:1180px;margin:0 auto;padding:28px 20px 70px}.back{display:inline-
 @media(max-width:850px){.listings{grid-template-columns:repeat(2,minmax(0,1fr))}.cover{height:190px}}
 @media(max-width:560px){main{padding:16px 12px 45px}.hero{padding:19px;border-radius:20px}.avatar{flex-basis:76px;width:76px;height:76px;border-radius:50%}.identity{gap:14px}.stats{gap:7px}.stat{padding:10px}.stat strong{font-size:17px}.listings{grid-template-columns:1fr}.cover{height:230px}.section-head h2{font-size:19px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
-.agent-bio{position:relative;z-index:1;margin-top:18px;padding:14px 16px;border:1px solid #ffffff2b;border-radius:14px;background:#ffffff10;color:#e3efff;font-size:12px;line-height:1.75}.agent-details{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}.agent-detail{min-width:0;padding:12px 14px;border:1px solid #dce7f3;border-radius:13px;background:#fff}.agent-detail span{display:block;color:#7589a0;font-size:10px}.agent-detail strong{display:block;overflow-wrap:anywhere;margin-top:4px;color:#193b60;font-size:12px}.agent-contact{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px;position:relative;z-index:1}.agent-contact a{display:inline-flex;align-items:center;justify-content:center;padding:10px 15px;border-radius:10px;background:#fff;color:#0b5ed7;text-decoration:none;font-size:11px;font-weight:850;border:1px solid #d5e4f6}.agent-contact a:hover{background:#eaf3ff}@media(max-width:700px){.agent-details{grid-template-columns:1fr}.agent-contact a{flex:1}}</style>
+.agent-bio{position:relative;z-index:1;margin-top:18px;padding:14px 16px;border:1px solid #ffffff2b;border-radius:14px;background:#ffffff10;color:#e3efff;font-size:12px;line-height:1.75}.agent-details{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}.agent-detail{min-width:0;padding:12px 14px;border:1px solid #dce7f3;border-radius:13px;background:#fff}.agent-detail span{display:block;color:#7589a0;font-size:10px}.agent-detail strong{display:block;overflow-wrap:anywhere;margin-top:4px;color:#193b60;font-size:12px}.agent-contact{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px;position:relative;z-index:1}.agent-contact a{display:inline-flex;align-items:center;justify-content:center;padding:10px 15px;border-radius:10px;background:#fff;color:#0b5ed7;text-decoration:none;font-size:11px;font-weight:850;border:1px solid #d5e4f6}.agent-contact a:hover{background:#eaf3ff}@media(max-width:700px){.agent-details{grid-template-columns:1fr}.agent-contact a{flex:1}}/* Agent profile visual refresh: clean white card, stronger photo and readable identity */
+.hero{background:#fff!important;color:#173451!important;border:1px solid #e1eaf4!important;box-shadow:0 16px 42px #153b620d!important}
+.hero:after{border-color:#dce9f7!important;box-shadow:0 0 0 28px #f7faff,0 0 0 60px #fbfdff!important}
+.avatar{width:112px!important;height:112px!important;flex:0 0 112px!important;border-radius:50%!important;padding:3px!important;background:#eef5ff!important;border:3px solid #e1edfb!important;box-shadow:0 8px 24px #17487818!important;object-fit:cover!important;object-position:center!important}
+.identity h1{font-size:clamp(25px,3.2vw,36px)!important;line-height:1.15!important;color:#12365c!important;overflow-wrap:anywhere!important}
+.identity p{color:#71839a!important;font-size:13px!important}
+.badge{background:#eaf7ef!important;color:#177245!important;border-color:#ccebd8!important}
+.stat{background:#f7faff!important;border-color:#e0eaf5!important}.stat small{color:#71839a!important}.stat strong{color:#153b62!important;overflow-wrap:anywhere!important}
+.agent-bio{background:#f7faff!important;border-color:#e0eaf5!important;color:#526b86!important}
+@media(max-width:560px){.avatar{width:78px!important;height:78px!important;flex-basis:78px!important}.identity{gap:14px!important}.hero{padding:19px!important}}
+</style>
 </head>
 <body>
 <header class="site-header" aria-label="DBH site navigation"></header>
@@ -29,7 +39,7 @@ main{max-width:1180px;margin:0 auto;padding:28px 20px 70px}.back{display:inline-
 <div class="section-head"><div><h2>Properties from this agent</h2><p>Published listings available on D Banjus Homes Nigeria Limited.</p></div></div>
 <section class="listings" id="agent-listings" aria-live="polite"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></section>
 </main>
-<script src="/assets/js/config.js"></script><script src="/assets/js/app.js?v=20261009-agentfix2"></script>
+<script src="/assets/js/config.js"></script><script src="/assets/js/app.js?v=20261009-agentprofile3"></script>
 <script>
 (async function(){
  const c=window.DBH_CONFIG||{},root=document.getElementById('agent-profile'),list=document.getElementById('agent-listings');
