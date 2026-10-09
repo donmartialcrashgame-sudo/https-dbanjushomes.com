@@ -526,6 +526,10 @@ app.get('/api/property-preview-image', async (req, res) => {
   }
 });
 
+app.get(['/properties','/properties/'], (_req, res) => {
+  res.redirect(301, '/properties.html');
+});
+
 app.get('/property.html', async (req, res, next) => {
   try {
     const file = path.join(__dirname, 'property.html');
@@ -636,6 +640,13 @@ app.get('/property.html', async (req, res, next) => {
     console.error('DBH property social preview:', error?.message || error);
     return next();
   }
+});
+
+app.get(['/property/:key','/property/:key/'], (req, res) => {
+  const key=String(req.params.key||'').trim();
+  if(!key)return res.redirect(301,'/properties.html');
+  const target='https://dbanjushomes.online/property.html?slug='+encodeURIComponent(key);
+  res.redirect(301,target);
 });
 
 app.use(express.static(path.join(__dirname), {
