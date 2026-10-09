@@ -512,3 +512,77 @@
     width:40px;height:40px;flex-basis:40px;border-radius:12px;
   }
 }
+
+
+/* Separate human-support intake sheet */
+.dbh-care-human-intake[hidden]{display:none!important}
+.dbh-care-human-intake{
+  display:block;
+  margin:-4px -2px 0;
+  animation:dbhCareIntakeUp .28s cubic-bezier(.2,.75,.2,1) both;
+}
+@keyframes dbhCareIntakeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.dbh-care-intake-heading{padding:5px 4px 15px}
+.dbh-care-intake-heading h3{margin:7px 0;color:#112f52;font-size:21px;letter-spacing:-.03em;line-height:1.2}
+.dbh-care-intake-heading p{margin:0;color:#6d8197;font-size:11px;line-height:1.65}
+.dbh-care-human-form{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  padding:16px;
+  border:1px solid #e0e8f2;
+  border-radius:18px;
+  background:#fff;
+  box-shadow:0 7px 22px rgba(15,48,83,.045);
+}
+.dbh-care-human-form label{
+  margin-top:3px;
+  color:#314c69;
+  font-size:10px;
+  font-weight:800;
+}
+.dbh-care-human-form input,
+.dbh-care-human-form textarea{
+  display:block;
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
+  margin:0 0 4px;
+  padding:11px 12px;
+  border:1px solid #dce5ef;
+  border-radius:11px;
+  outline:none;
+  background:#f8fafd;
+  color:#193653;
+  font:12px/1.5 Inter,ui-sans-serif,system-ui,sans-serif;
+  transition:border-color .16s,background .16s;
+}
+.dbh-care-human-form input{height:42px}
+.dbh-care-human-form textarea{min-height:92px;resize:vertical}
+.dbh-care-human-form input:focus,
+.dbh-care-human-form textarea:focus{border-color:#8bb8e8;background:#fff}
+.dbh-care-human-submit{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  min-height:45px;
+  margin-top:5px;
+  padding:0 15px;
+  border:0;
+  border-radius:12px;
+  background:linear-gradient(135deg,#0b5fc3,#1978df);
+  color:#fff;
+  font:800 12px/1 Inter,ui-sans-serif,system-ui,sans-serif;
+  cursor:pointer;
+  box-shadow:0 6px 15px rgba(11,99,206,.17);
+}
+.dbh-care-human-submit:hover{background:#0a56b2}
+.dbh-care-human-submit:disabled{opacity:.65;cursor:wait}
+.dbh-care-human-submit svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dbh-care-intake-status{min-height:14px;margin:2px 0 0;color:#6a7e94;font-size:10px;line-height:1.5}
+@media(max-width:560px){
+  .dbh-care-human-form{padding:13px;border-radius:15px}
+  .dbh-care-intake-heading h3{font-size:20px}
+}
+@media(prefers-reduced-motion:reduce){.dbh-care-human-intake{animation:none}}
