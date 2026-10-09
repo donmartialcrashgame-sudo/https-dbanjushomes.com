@@ -211,7 +211,7 @@ function setupCustomerCareWidget(){
     textWrap.appendChild(main);b.appendChild(textWrap);
     const meta=document.createElement('span');meta.className='dbh-care-message-meta';
     meta.textContent=(time?new Date(time).toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'}):new Date().toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'}))+(checks?'  ✓✓':'');
-    b.append(meta);row.appendChild(b);body.insertBefore(row,form);
+    b.append(meta);row.appendChild(b);chatScreen.insertBefore(row,form);
     return row;
   }
 
@@ -220,7 +220,7 @@ function setupCustomerCareWidget(){
     if(show&&!el){
       el=document.createElement('div');el.id='dbh-care-typing';el.className='dbh-care-typing';
       el.innerHTML='<div class="dbh-care-typing-bubble"><i></i><i></i><i></i><span>AI is typing…</span></div>';
-      body.insertBefore(el,form);scrollBottom();
+      chatScreen.insertBefore(el,form);scrollBottom();
     }
     if(!show)el?.remove();
   }
