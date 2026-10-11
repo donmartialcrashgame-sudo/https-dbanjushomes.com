@@ -139,7 +139,7 @@ function setupCustomerCareWidget(){
           '<div class="dbh-care-intro"><div class="dbh-care-mini-avatar"><img src="/dbh-logo.jpg" alt=""></div><div class="dbh-care-bubble"><strong id="dbh-care-welcome-title">Hello 👋</strong><span id="dbh-care-welcome-copy">Welcome to DBH. How can I help you today?</span></div></div>'+
           '<div class="dbh-care-quick" id="dbh-care-quick"><button type="button" data-care-message="I need help finding a property.">Find a property</button><button type="button" data-care-message="I need help with a property enquiry.">Property enquiry</button><button type="button" data-care-message="I need help verifying a listing.">Verify a listing</button><button type="button" data-care-message="I want to list a property.">List a property</button></div>'+
           '<p class="dbh-care-note" id="dbh-care-note"></p>'+
-          '<form class="dbh-care-form" id="dbh-care-form"><textarea id="dbh-care-input" maxlength="2000" rows="2" placeholder="Type your message…" aria-label="Your message"></textarea><button class="dbh-care-send" type="submit" aria-label="Send message"><svg viewBox="0 0 24 24"><path d="m21 3-7.5 18-3.5-7L3 10.5z"></path><path d="M21 3 10 14"></path></svg></button></form></section>'+
+          '<form class="dbh-care-form" id="dbh-care-form"><textarea id="dbh-care-input" maxlength="2000" rows="2" placeholder="Ask about properties, verification, payments or using DBH…" aria-label="Message DBH AI"></textarea><button class="dbh-care-send" type="submit" aria-label="Send message"><svg viewBox="0 0 24 24"><path d="m21 3-7.5 18-3.5-7L3 10.5z"></path><path d="M21 3 10 14"></path></svg></button></form></section>'+
       '</div>'+
       '<div class="dbh-care-foot"><span>DBH — D Banjus Homes Nigeria Limited</span><span id="dbh-care-foot-status">Customer support</span></div>'+
     '</section>'+
@@ -374,7 +374,7 @@ function setupCustomerCareWidget(){
     welcomeTitle.textContent=chatMode==='human'?'Chat with DBH Customer Care':'Hello 👋';
     welcomeCopy.textContent=chatMode==='human'?'Send your message below. Our customer-care team will reply in this conversation.':'I can help with properties, enquiries, verification, listings and using the website.';
     quickChoices.hidden=chatMode==='human';
-    input.placeholder=chatMode==='human'?'Write a message for our customer-care team…':'Ask DBH AI a question…';
+    input.placeholder=chatMode==='human'?'Write a message for our customer-care team…':'Ask about properties, verification, payments or using DBH…';
     note.style.display='none';
     if(chatMode==='human'){
       note.textContent='Human support selected. Send your message and it will be added to the DBH customer-care inbox.';
@@ -392,7 +392,18 @@ function setupCustomerCareWidget(){
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&widget.classList.contains('open'))shut()});
   widget.querySelectorAll('[data-care-message]').forEach(btn=>btn.addEventListener('click',()=>{input.value=btn.dataset.careMessage||'';input.focus()}));
 
-  form.addEventListener('submit',async e=>{
+
+  input.addEventListener('input',()=>{
+    input.style.height='auto';
+    input.style.height=Math.min(input.scrollHeight,96)+'px';
+  });
+  input.addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){
+      e.preventDefault();
+      if(!form.querySelector('.dbh-care-send')?.disabled)form.requestSubmit();
+    }
+  });
+\n  form.addEventListener('submit',async e=>{
     e.preventDefault();
     const message=String(input.value||'').trim();
     if(!message)return;
@@ -430,6 +441,7 @@ function setupCustomerCareWidget(){
           note.style.display='block';
         }
       }
+      input.value='';input.style.height='';
       scrollBottom();
     }catch(err){
       typing(false);
