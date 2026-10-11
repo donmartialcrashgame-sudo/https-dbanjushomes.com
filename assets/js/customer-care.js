@@ -8,7 +8,7 @@
     if(!document.querySelector('link[data-dbh-customer-care-css]')){
       const l=document.createElement('link');
       l.rel='stylesheet';
-      l.href='/assets/css/customer-care.css?v=20261011-ai-refresh1';
+      l.href='/assets/css/customer-care.css?v=20261011-chatfix2';
       l.dataset.dbhCustomerCareCss='1';
       document.head.appendChild(l);
     }
@@ -77,6 +77,8 @@
       }catch{return ''}
     }
     const scroll=()=>{body.scrollTop=body.scrollHeight};
+    const clearWelcome=()=>{body.querySelector('.dbh-care-intro')?.remove();body.querySelector('.dbh-care-quick')?.remove()};
+    const normaliseText=s=>String(s||'').trim().replace(/\\s+/g,' ').toLowerCase();
 
     function aiIcon(text){
       const t=String(text||'').toLowerCase();
@@ -125,9 +127,16 @@
         const r=await fetch(api,{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'});
         if(!r.ok)return;
         const d=await r.json().catch(()=>({}));
-        (Array.isArray(d.messages)?d.messages:[]).forEach(m=>{
+        const history=(Array.isArray(d.messages)?d.messages:[]).slice(-12);
+        if(history.length)clearWelcome();
+        let lastAssistant='';
+        history.forEach(m=>{
           if(m?.message)addBubble(m.message,true,m.created_at,true);
-          if(m?.agent_reply)addBubble(m.agent_reply,false,m.updated_at,false,m?.image_data?{image_data:m.image_data}:null);
+          const reply=String(m?.human_reply||m?.agent_reply||'').trim();
+          if(reply&&normaliseText(reply)!==lastAssistant){
+            addBubble(reply,false,m.updated_at,false,m?.image_data?{image_data:m.image_data}:null);
+            lastAssistant=normaliseText(reply);
+          }
         });
         conversationLoaded=true;
         scroll();
@@ -178,6 +187,8 @@
       input.disabled=true;
       note.style.display='none';
 
+      clearWelcome();
+      input.value='';
       const sent=addBubble(message,true,null,true);
       typing(true);
       scroll();
@@ -190,6 +201,7 @@
         });
         const d=await r.json().catch(()=>({}));
         if(!r.ok)throw Error(d?.message||'Your message could not be sent.');
+        input.value='';
         typing(false);
 
         const reply=String(d?.message?.agent_reply||'').trim();
@@ -205,6 +217,7 @@
       }catch(err){
         typing(false);
         sent.querySelector('.dbh-care-message-meta').textContent='Not sent';
+        input.value=message;
         note.style.display='block';
         note.textContent=err.message||'Unable to send your message. Please try again.';
       }finally{
