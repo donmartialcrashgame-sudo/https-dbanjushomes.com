@@ -677,3 +677,9 @@
   .dbh-care-head{padding:11px}
   .dbh-care-quick button{padding:7px 8px}
 }
+
+/* Friendly AI link styling and explicit cache refresh */
+.dbh-care-message-link{display:inline-flex;align-items:center;gap:6px;margin:3px 2px;padding:6px 10px;border-radius:9px;background:#eaf3ff;color:#075cbd!important;text-decoration:none!important;font-weight:800;border:1px solid #d4e6fb;overflow-wrap:anywhere;transition:background .18s,transform .18s}
+.dbh-care-message-link:after{content:"↗";font-size:11px;opacity:.8}
+.dbh-care-message-link:hover{background:#dbeaff;transform:translateY(-1px)}
+.dbh-care-message-link:focus-visible{outline:2px solid #0b63ce;outline-offset:2px}
