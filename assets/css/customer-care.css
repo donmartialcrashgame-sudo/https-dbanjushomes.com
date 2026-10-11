@@ -683,3 +683,12 @@
 .dbh-care-message-link:after{content:"↗";font-size:11px;opacity:.8}
 .dbh-care-message-link:hover{background:#dbeaff;transform:translateY(-1px)}
 .dbh-care-message-link:focus-visible{outline:2px solid #0b63ce;outline-offset:2px}
+
+
+/* DBH AI message composer update: responsive, auto-growing input */
+.dbh-care-chat-screen .dbh-care-form{align-items:center;gap:9px;padding:8px 9px 8px 14px;min-height:56px;border:1px solid #d7e3f0;border-radius:17px;background:#fff;box-shadow:0 5px 18px rgba(18,55,94,.07)}
+.dbh-care-chat-screen .dbh-care-form textarea{flex:1 1 auto;width:100%;min-width:0;min-height:30px;max-height:96px;padding:7px 0;resize:none;overflow-y:auto;overflow-wrap:anywhere;color:#173654;font-size:13px;line-height:1.5}
+.dbh-care-chat-screen .dbh-care-form textarea::placeholder{color:#7f91a6;opacity:1}
+.dbh-care-chat-screen .dbh-care-form textarea:disabled{opacity:.65;cursor:wait}
+.dbh-care-chat-screen .dbh-care-send{flex:0 0 42px;width:42px;height:42px}
+@media(max-width:560px){.dbh-care-chat-screen .dbh-care-form{min-height:52px;padding:6px 7px 6px 12px;gap:7px}.dbh-care-chat-screen .dbh-care-form textarea{min-height:30px;font-size:13px}.dbh-care-chat-screen .dbh-care-send{flex-basis:39px;width:39px;height:39px}}
