@@ -692,3 +692,8 @@
 .dbh-care-chat-screen .dbh-care-form textarea:disabled{opacity:.65;cursor:wait}
 .dbh-care-chat-screen .dbh-care-send{flex:0 0 42px;width:42px;height:42px}
 @media(max-width:560px){.dbh-care-chat-screen .dbh-care-form{min-height:52px;padding:6px 7px 6px 12px;gap:7px}.dbh-care-chat-screen .dbh-care-form textarea{min-height:30px;font-size:13px}.dbh-care-chat-screen .dbh-care-send{flex-basis:39px;width:39px;height:39px}}
+
+/* Recovery override: keep the launcher above sticky headers, drawers, and install prompts. */
+#dbh-care-widget.dbh-care-widget{position:fixed!important;z-index:2147483000!important;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:none;}
+#dbh-care-widget .dbh-care-launcher{display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;}
+#dbh-care-widget.open .dbh-care-panel{pointer-events:auto!important;}
