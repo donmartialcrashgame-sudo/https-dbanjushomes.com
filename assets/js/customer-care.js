@@ -8,7 +8,7 @@
     if(!document.querySelector('link[data-dbh-customer-care-css]')){
       const l=document.createElement('link');
       l.rel='stylesheet';
-      l.href='/assets/css/customer-care.css?v=20261001-5';
+      l.href='/assets/css/customer-care.css?v=20261011-ai-refresh1';
       l.dataset.dbhCustomerCareCss='1';
       document.head.appendChild(l);
     }
@@ -44,7 +44,7 @@
             '</button>'+
           '</form>'+
         '</div>'+
-        '<div class="dbh-care-foot"><span>Powered by DBH AI</span><span>Available 24/7</span></div>'+
+        '<div class="dbh-care-foot"><span>Powered by DBH AI</span><a href="https://dbanjushomes.online/" target="_self" rel="noopener">dbanjushomes.online</a></div>'+
       '</section>';
     document.body.appendChild(widget);
 
