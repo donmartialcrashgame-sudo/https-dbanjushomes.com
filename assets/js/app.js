@@ -112,7 +112,7 @@ function setupDBHPWA(){
 
 function setupCustomerCareWidget(){
   if(document.getElementById('dbh-care-widget'))return;
-  const css='/assets/css/customer-care.css?v=20261009-5';
+  const css='/assets/css/customer-care.css?v=20261011-linklabels3';
   if(!document.querySelector('link[data-dbh-customer-care-css]')){
     const link=document.createElement('link');
     link.rel='stylesheet';link.href=css;link.dataset.dbhCustomerCareCss='1';document.head.appendChild(link);
@@ -213,15 +213,27 @@ function setupCustomerCareWidget(){
     const textWrap=document.createElement('div');textWrap.className='dbh-care-ai-line';
     if(!mine)textWrap.insertAdjacentHTML('beforeend',aiIcon(text));
     const main=document.createElement('div');main.className='dbh-care-message-text';
-    // Render URLs as safe, clickable links while keeping all other text escaped.
+    // Turn raw URLs into friendly text links; never display the full URL to customers.
     const parts=String(text||'').split(/(https?:\/\/[^\s<>"']+)/gi);
     parts.forEach(part=>{
       if(/^https?:\/\//i.test(part)){
         const clean=part.replace(/[),.!?;:]+$/,'');
         const trailing=part.slice(clean.length);
-        let valid=false;try{const u=new URL(clean);valid=u.protocol==='https:'||u.protocol==='http:';}catch{}
-        if(valid){const a=document.createElement('a');a.href=clean;a.target='_blank';a.rel='noopener noreferrer';a.className='dbh-care-message-link';a.textContent=clean;main.appendChild(a);if(trailing)main.appendChild(document.createTextNode(trailing));}
-        else main.appendChild(document.createTextNode(part));
+        let url=null;try{url=new URL(clean);}catch{}
+        if(url&&(url.protocol==='https:'||url.protocol==='http:')){
+          if(/dbanjushomes\.com$/i.test(url.hostname)){url.hostname='dbanjushomes.online';}
+          let label='Open link';
+          const path=url.pathname.toLowerCase();
+          if(/\/help(?:\.html)?\/?$/.test(path))label='Read the DBH Help Guide';
+          else if(/\/contact(?:\.html)?\/?$/.test(path))label='Contact DBH Customer Care';
+          else if(/\/properties(?:\.html)?\/?$/.test(path))label='Browse available properties';
+          else if(/\/our-team(?:\.html)?\/?$/.test(path))label='Meet the DBH Team';
+          else if(url.hostname==='dbanjushomes.online'&&path==='/')label='Visit the official DBH website';
+          else if(url.hostname==='dbanjushomes.online')label='View details on the DBH website';
+          else label='Visit the recommended website';
+          const a=document.createElement('a');a.href=url.href;a.target='_blank';a.rel='noopener noreferrer';a.className='dbh-care-message-link';a.textContent=label;main.appendChild(a);
+          if(trailing)main.appendChild(document.createTextNode(trailing));
+        }else main.appendChild(document.createTextNode(part));
       }else main.appendChild(document.createTextNode(part));
     });
     textWrap.appendChild(main);b.appendChild(textWrap);
