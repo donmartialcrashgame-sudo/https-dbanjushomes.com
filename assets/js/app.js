@@ -112,7 +112,7 @@ function setupDBHPWA(){
 
 function setupCustomerCareWidget(){
   if(document.getElementById('dbh-care-widget'))return;
-  const css='/assets/css/customer-care.css?v=20261011-shellfix1';
+  const css='/assets/css/customer-care.css?v=20261011-shellfix2';
   if(!document.querySelector('link[data-dbh-customer-care-css]')){
     const link=document.createElement('link');
     link.rel='stylesheet';link.href=css;link.dataset.dbhCustomerCareCss='1';document.head.appendChild(link);
@@ -144,7 +144,7 @@ function setupCustomerCareWidget(){
       '<div class="dbh-care-foot"><span>DBH — D Banjus Homes Nigeria Limited</span><span id="dbh-care-foot-status">Customer support</span></div>'+
     '</section>'+
   '</div>'
-  document.body.appendChild(widget);
+  document.body.appendChild(widget);\n  document.getElementById('dbh-care-fallback')?.remove();
 
   const launcher=document.getElementById('dbh-care-launcher');
   const panel=document.getElementById('dbh-care-panel');
