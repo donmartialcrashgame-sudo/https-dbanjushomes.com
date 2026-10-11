@@ -1,4 +1,4 @@
-const CACHE_NAME="dbh-shell-v16";
+const CACHE_NAME="dbh-shell-v17";
 const CORE=[
   "/",
   "/index.html",
@@ -14,10 +14,10 @@ const CORE=[
   "/assets/css/styles.css",
   "/assets/css/notifications.css",
   "/assets/css/consent.css",
-  "/assets/css/pwa.css","/assets/css/customer-care.css?v=20261001-5",
+  "/assets/css/pwa.css","/assets/css/customer-care.css?v=20261011-shellfix1",
   "/assets/js/config.js",
   "/assets/js/properties.js?v=20260930-2",
-  "/assets/js/app.js?v=20261009-1","/assets/js/customer-care.js?v=20261001-3"
+  "/assets/js/app.js?v=20261011-shellfix1","/assets/js/customer-care.js?v=20261011-shellfix1"
 ];
 
 self.addEventListener("install",event=>{
