@@ -497,3 +497,10 @@ img,svg,video,canvas{max-width:100%}
 .btn-primary:after{content:"";position:absolute;top:-60%;left:-35%;width:30%;height:220%;transform:rotate(25deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.32),transparent);animation:dbhButtonShine 4.8s ease-in-out infinite}
 @keyframes dbhButtonShine{0%,62%{left:-40%;opacity:0}70%{opacity:1}86%,100%{left:125%;opacity:0}}
 @media(prefers-reduced-motion:reduce){.btn-primary:after{animation:none!important}}
+
+/* DBH site-wide shell recovery: keep navigation and customer-care controls visible after cache updates. */
+@media (min-width:1081px){html:not(.dbh-authenticated) .dbh-sidebar{display:flex!important;visibility:visible!important;opacity:1!important;}}
+.dbh-sidebar{z-index:2147482000!important;}
+.dbh-care-widget{position:fixed!important;right:max(14px,env(safe-area-inset-right))!important;bottom:max(14px,env(safe-area-inset-bottom))!important;z-index:2147483000!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;}
+.dbh-care-launcher{display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;}
+@media(max-width:650px){.dbh-care-widget{right:14px!important;bottom:14px!important}.dbh-care-launcher{width:58px!important;height:58px!important}}
