@@ -144,7 +144,8 @@ function setupCustomerCareWidget(){
       '<div class="dbh-care-foot"><span>DBH — D Banjus Homes Nigeria Limited</span><span id="dbh-care-foot-status">Customer support</span></div>'+
     '</section>'+
   '</div>'
-  document.body.appendChild(widget);\n  document.getElementById('dbh-care-fallback')?.remove();
+  document.body.appendChild(widget);
+  document.getElementById('dbh-care-fallback')?.remove();
 
   const launcher=document.getElementById('dbh-care-launcher');
   const panel=document.getElementById('dbh-care-panel');
