@@ -606,3 +606,34 @@
 .dbh-care-row.mine{justify-content:flex-end}
 .dbh-care-row.theirs{justify-content:flex-start}
 .dbh-care-message-bubble{min-width:0}
+
+
+/* DBH AI refresh 2026-10-11 — polished glass header, motion and official domain */
+.dbh-care-widget{isolation:isolate}
+.dbh-care-launcher{overflow:visible;animation:dbhCareLauncherIn .55s cubic-bezier(.2,.8,.2,1) both;will-change:transform}
+.dbh-care-launcher:before{content:"";position:absolute;inset:-5px;border:1px solid rgba(55,145,255,.25);border-radius:50%;animation:dbhCareHalo 3s ease-out infinite;pointer-events:none}
+.dbh-care-widget.open .dbh-care-launcher:before{animation:none;opacity:0}
+.dbh-care-label{opacity:1;transform:translateY(0);animation:dbhCareLabelIn .6s .25s both}
+.dbh-care-widget.open .dbh-care-label{opacity:0;transform:translateY(5px)}
+.dbh-care-panel{backdrop-filter:blur(18px);transform:translateY(20px) scale(.96);filter:blur(2px);transition:opacity .28s ease,transform .32s cubic-bezier(.2,.8,.2,1),filter .28s ease}
+.dbh-care-widget.open .dbh-care-panel{filter:blur(0);animation:dbhCarePanelIn .32s cubic-bezier(.2,.8,.2,1) both}
+.dbh-care-head{background:radial-gradient(circle at 92% 8%,rgba(111,190,255,.42),transparent 32%),linear-gradient(120deg,#06234d 0%,#0b55ae 58%,#1680ef 100%)}
+.dbh-care-avatar{transition:transform .3s ease,box-shadow .3s ease}
+.dbh-care-widget.open .dbh-care-avatar{animation:dbhCareAvatarIn .45s .08s both}
+.dbh-care-intro{animation:dbhCareMessageIn .35s .07s both}
+.dbh-care-quick button{animation:dbhCareMessageIn .35s both;animation-delay:calc(var(--care-item,0)*35ms)}
+.dbh-care-quick button:nth-child(1){--care-item:1}.dbh-care-quick button:nth-child(2){--care-item:2}.dbh-care-quick button:nth-child(3){--care-item:3}.dbh-care-quick button:nth-child(4){--care-item:4}
+.dbh-care-message-bubble{animation:dbhCareMessageIn .24s cubic-bezier(.2,.8,.2,1) both}
+.dbh-care-message-bubble.mine{box-shadow:0 6px 17px rgba(11,99,206,.13)}
+.dbh-care-form{background:rgba(255,255,255,.96);backdrop-filter:blur(10px)}
+.dbh-care-send:active{transform:scale(.94)}
+.dbh-care-foot{align-items:center}
+.dbh-care-foot a{font-size:9px;font-weight:850;color:#0b63ce;text-decoration:none;padding:5px 8px;border-radius:8px;background:#edf5ff;transition:background .18s,transform .18s}
+.dbh-care-foot a:hover{background:#dcecff;transform:translateY(-1px)}
+@keyframes dbhCareLauncherIn{from{opacity:0;transform:translateY(12px) scale(.85)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes dbhCareHalo{0%{transform:scale(.92);opacity:.8}75%,100%{transform:scale(1.22);opacity:0}}
+@keyframes dbhCareLabelIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes dbhCareAvatarIn{from{opacity:0;transform:scale(.8) rotate(-8deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes dbhCareMessageIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:560px){.dbh-care-label{display:none}.dbh-care-panel{filter:none}.dbh-care-foot a{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.dbh-care-launcher,.dbh-care-launcher:before,.dbh-care-label,.dbh-care-widget.open .dbh-care-panel,.dbh-care-avatar,.dbh-care-intro,.dbh-care-quick button,.dbh-care-message-bubble{animation:none!important;transition:none!important;filter:none!important}}
