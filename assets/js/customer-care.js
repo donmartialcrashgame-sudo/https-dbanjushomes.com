@@ -78,7 +78,7 @@
     }
     const scroll=()=>{body.scrollTop=body.scrollHeight};
     const clearWelcome=()=>{body.querySelector('.dbh-care-intro')?.remove();body.querySelector('.dbh-care-quick')?.remove()};
-    const normaliseText=s=>String(s||'').trim().replace(/\\s+/g,' ').toLowerCase();
+    const normaliseText=s=>String(s||'').trim().replace(/\s+/g,' ').toLowerCase();
 
     function aiIcon(text){
       const t=String(text||'').toLowerCase();
