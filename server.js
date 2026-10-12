@@ -547,7 +547,7 @@ app.get('/view-agent.html', async (req, res, next) => {
   try {
     const file = path.join(__dirname, 'view-agent.html');
     let html = require('fs').readFileSync(file, 'utf8');
-    const name = String(req.query?.name || '').trim().replace(/\\s+/g, ' ').slice(0, 120);
+    const name = String(req.query?.name || '').trim().replace(/\s+/g, ' ').slice(0, 120);
     if (!name) {
       html = html.replace(/<meta name="robots" content="[^"]*">/i, '<meta name="robots" content="noindex,follow">');
       return res.type('html').send(html);
@@ -577,7 +577,7 @@ app.get('/view-agent.html', async (req, res, next) => {
       : 'View public property-agent information for ' + name + ' on D Banjus Homes Nigeria Limited.';
     const title = name + ' | Property Agent | D Banjus Homes';
 
-    html = html.replace(/<title>[^<]*<\\/title>/i, '<title>' + escapeHtml(title) + '</title>');
+    html = html.replace(/<title>[^<]*<\/title>/i, '<title>' + escapeHtml(title) + '</title>');
     html = html.replace(/<meta name="description" content="[^"]*">/i, '<meta name="description" content="' + escapeHtml(description) + '">');
     html = html.replace(/<meta name="robots" content="[^"]*">/i, '<meta name="robots" content="' + (publicRows.length ? 'index,follow,max-image-preview:large' : 'noindex,follow') + '">');
     html = html.replace(/<link rel="canonical" href="[^"]*">/i, '<link rel="canonical" href="' + escapeHtml(profileUrl) + '">');
