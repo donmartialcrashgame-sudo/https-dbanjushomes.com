@@ -433,6 +433,7 @@ app.get('/sitemap.xml', async (_req, res) => {
       '/land.html',
       '/commercial.html',
       '/agents.html',
+      '/our-team.html',
       '/about.html',
       '/contact.html',
       '/help.html',
