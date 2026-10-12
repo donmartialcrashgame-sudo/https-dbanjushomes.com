@@ -97,7 +97,7 @@ h1{font-size:clamp(30px,4vw,43px);line-height:1.1;letter-spacing:-.045em;color:#
    allRows.push(...batch);if(batch.length<1000)break;
   }
   const matchIds=[agentId,profile?.user_id,profile?.id].filter(Boolean).map(String);
-  let rows=agentId?allRows.filter(p=>['created_by','agent_id','provider_id','user_id','owner_id','agent_user_id'].some(k=>p[k]!=null&&matchIds.includes(String(p[k])))):allRows.filter(p=>String(p.provider_name||'').trim().toLowerCase()===String(agentName).trim().toLowerCase());
+  let rows=agentId?allRows.filter(p=>['created_by','agent_id','provider_id','user_id','owner_id','agent_user_id'].some(k=>p[k]!=null&&matchIds.includes(String(p[k])))):[];if(!rows.length&&agentName)rows=allRows.filter(p=>String(p.provider_name||'').trim().toLowerCase()===String(agentName).trim().toLowerCase());
   const first=rows[0]||{};
   const fullName=[getField(profile,['first_name']),getField(profile,['last_name'])].filter(Boolean).join(' ');
   const name=String(getField(profile,['full_name','display_name','agent_name'])||fullName||getField(profile,['name','business_name'])||getField(first,['provider_name'])||agentName||'DBH Property Agent');
