@@ -376,7 +376,7 @@ async function loadPropertyForPreview(req) {
     DBH_SUPABASE_URL +
     '/rest/v1/properties?select=id,title,slug,property_code,description,seo_description,og_image_url,is_published,verification_status,price,currency,property_type,address,city,area,lga,state,bedrooms,bathrooms,land_size,land_size_unit,created_at,updated_at&' +
     filter +
-    '&is_published=eq.true&limit=1';
+    '&is_published=eq.true&verification_status=eq.verified&limit=1';
 
   const response = await fetch(url, {
     headers: {
@@ -539,6 +539,76 @@ app.get('/api/property-preview-image', async (req, res) => {
   } catch (error) {
     console.error('DBH property preview image:', error?.message || error);
     return res.status(404).end();
+  }
+});
+
+
+app.get('/view-agent.html', async (req, res, next) => {
+  try {
+    const file = path.join(__dirname, 'view-agent.html');
+    let html = require('fs').readFileSync(file, 'utf8');
+    const name = String(req.query?.name || '').trim().replace(/\\s+/g, ' ').slice(0, 120);
+    if (!name) {
+      html = html.replace(/<meta name="robots" content="[^"]*">/i, '<meta name="robots" content="noindex,follow">');
+      return res.type('html').send(html);
+    }
+
+    const params = new URLSearchParams({
+      select: 'title,slug,property_code,provider_name,property_type,city,state,area,updated_at',
+      provider_name: 'eq.' + name,
+      is_published: 'eq.true',
+      verification_status: 'eq.verified',
+      order: 'updated_at.desc',
+      limit: '100'
+    });
+    const response = await fetch(DBH_SUPABASE_URL + '/rest/v1/properties?' + params.toString(), {
+      headers: {
+        apikey: DBH_SUPABASE_ANON_KEY,
+        Authorization: 'Bearer ' + DBH_SUPABASE_ANON_KEY,
+        Accept: 'application/json'
+      }
+    });
+    const rows = response.ok ? await response.json().catch(() => []) : [];
+    const publicRows = Array.isArray(rows) ? rows : [];
+    const profileUrl = 'https://dbanjushomes.online/view-agent.html?name=' + encodeURIComponent(name);
+    const locations = [...new Set(publicRows.map(row => [row.area, row.city, row.state].filter(Boolean).join(', ')).filter(Boolean))].slice(0, 8);
+    const description = publicRows.length
+      ? 'Explore ' + publicRows.length + ' published and verified property listing' + (publicRows.length === 1 ? '' : 's') + ' associated with ' + name + ' on D Banjus Homes in Nigeria' + (locations.length ? ', including ' + locations.join('; ') : '') + '.'
+      : 'View public property-agent information for ' + name + ' on D Banjus Homes Nigeria Limited.';
+    const title = name + ' | Property Agent | D Banjus Homes';
+
+    html = html.replace(/<title>[^<]*<\\/title>/i, '<title>' + escapeHtml(title) + '</title>');
+    html = html.replace(/<meta name="description" content="[^"]*">/i, '<meta name="description" content="' + escapeHtml(description) + '">');
+    html = html.replace(/<meta name="robots" content="[^"]*">/i, '<meta name="robots" content="' + (publicRows.length ? 'index,follow,max-image-preview:large' : 'noindex,follow') + '">');
+    html = html.replace(/<link rel="canonical" href="[^"]*">/i, '<link rel="canonical" href="' + escapeHtml(profileUrl) + '">');
+    if (!/<link rel="canonical"/i.test(html)) {
+      html = html.replace('</head>', '<link rel="canonical" href="' + escapeHtml(profileUrl) + '"></head>');
+    }
+
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'RealEstateAgent',
+      name,
+      url: profileUrl,
+      description,
+      worksFor: { '@type': 'Organization', name: 'D Banjus Homes Nigeria Limited', url: 'https://dbanjushomes.online/' },
+      areaServed: locations.length ? locations.map(location => ({ '@type': 'Place', name: location })) : { '@type': 'Country', name: 'Nigeria' },
+      numberOfEmployees: undefined
+    };
+    const schemaTag = '<script id="dbh-agent-server-schema" type="application/ld+json">' + JSON.stringify(schema).replace(/</g, '\\u003c') + '</script>';
+    html = html.replace('</head>', schemaTag + '</head>');
+
+    const fallback = publicRows.length
+      ? '<noscript><section><h2>Published and verified listings by ' + escapeHtml(name) + '</h2><p>' + escapeHtml(description) + '</p><ul>' + publicRows.map(row => {
+          const key = row.slug ? 'slug=' + encodeURIComponent(row.slug) : 'id=' + encodeURIComponent(row.property_code || '');
+          return '<li><a href="/property.html?' + key + '">' + escapeHtml(row.title || 'Property for sale') + '</a>' + (row.city || row.state ? ' — ' + escapeHtml([row.city, row.state].filter(Boolean).join(', ')) : '') + '</li>';
+        }).join('') + '</ul></section></noscript>'
+      : '<noscript><p>This public agent profile has no currently published and verified listings.</p></noscript>';
+    html = html.replace('<main>', '<main>' + fallback);
+    return res.type('html').send(html);
+  } catch (error) {
+    console.error('DBH agent SEO preview:', error?.message || error);
+    return next();
   }
 });
 
