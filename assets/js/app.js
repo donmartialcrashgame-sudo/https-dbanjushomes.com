@@ -404,7 +404,8 @@ function setupCustomerCareWidget(){
       if(!form.querySelector('.dbh-care-send')?.disabled)form.requestSubmit();
     }
   });
-\n  form.addEventListener('submit',async e=>{
+
+  form.addEventListener('submit',async e=>{
     e.preventDefault();
     const message=String(input.value||'').trim();
     if(!message)return;
