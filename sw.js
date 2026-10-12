@@ -1,10 +1,11 @@
-const CACHE_NAME="dbh-shell-v18";
+const CACHE_NAME="dbh-shell-v19";
 const CORE=[
   "/",
   "/index.html",
   "/properties.html",
   "/land.html",
   "/agents.html",
+  "/agents",
   "/our-team.html",
   "/property.html",
   "/contact.html",
