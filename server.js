@@ -578,8 +578,13 @@ app.get('/view-agent.html', async (req, res, next) => {
     const title = name + ' | Property Agent | D Banjus Homes';
 
     html = html.replace(/<title>[^<]*<\/title>/i, '<title>' + escapeHtml(title) + '</title>');
-    html = html.replace(/<meta name="description" content="[^"]*">/i, '<meta name="description" content="' + escapeHtml(description) + '">');
+    html = html.replace(/<meta id="agent-meta-description" name="description" content="[^"]*">/i, '<meta id="agent-meta-description" name="description" content="' + escapeHtml(description) + '">');
     html = html.replace(/<meta name="robots" content="[^"]*">/i, '<meta name="robots" content="' + (publicRows.length ? 'index,follow,max-image-preview:large' : 'noindex,follow') + '">');
+    html = html.replace(/<meta id="agent-og-title" property="og:title" content="[^"]*">/i, '<meta id="agent-og-title" property="og:title" content="' + escapeHtml(title) + '">');
+    html = html.replace(/<meta id="agent-og-description" property="og:description" content="[^"]*">/i, '<meta id="agent-og-description" property="og:description" content="' + escapeHtml(description) + '">');
+    html = html.replace(/<meta id="agent-og-url" property="og:url" content="[^"]*">/i, '<meta id="agent-og-url" property="og:url" content="' + escapeHtml(profileUrl) + '">');
+    html = html.replace(/<meta id="agent-twitter-title" name="twitter:title" content="[^"]*">/i, '<meta id="agent-twitter-title" name="twitter:title" content="' + escapeHtml(title) + '">');
+    html = html.replace(/<meta id="agent-twitter-description" name="twitter:description" content="[^"]*">/i, '<meta id="agent-twitter-description" name="twitter:description" content="' + escapeHtml(description) + '">');
     html = html.replace(/<link rel="canonical" href="[^"]*">/i, '<link rel="canonical" href="' + escapeHtml(profileUrl) + '">');
     if (!/<link rel="canonical"/i.test(html)) {
       html = html.replace('</head>', '<link rel="canonical" href="' + escapeHtml(profileUrl) + '"></head>');
@@ -595,7 +600,7 @@ app.get('/view-agent.html', async (req, res, next) => {
       areaServed: locations.length ? locations.map(location => ({ '@type': 'Place', name: location })) : { '@type': 'Country', name: 'Nigeria' },
       numberOfEmployees: undefined
     };
-    const schemaTag = '<script id="dbh-agent-server-schema" type="application/ld+json">' + JSON.stringify(schema).replace(/</g, '\\u003c') + '</script>';
+    const schemaTag = '<script id="dbh-agent-profile-schema" type="application/ld+json">' + JSON.stringify(schema).replace(/</g, '\\u003c') + '</script>';
     html = html.replace('</head>', schemaTag + '</head>');
 
     const fallback = publicRows.length
