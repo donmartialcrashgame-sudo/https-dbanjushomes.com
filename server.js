@@ -416,7 +416,7 @@ app.get('/sitemap.xml', async (_req, res) => {
   try {
     const response = await fetch(
       DBH_SUPABASE_URL +
-        '/rest/v1/properties?select=slug,property_code,created_at,updated_at&is_published=eq.true&verification_status=eq.verified&order=updated_at.desc',
+        '/rest/v1/properties?select=slug,property_code,provider_name,created_at,updated_at&is_published=eq.true&verification_status=eq.verified&order=updated_at.desc',
       {
         headers: {
           apikey: DBH_SUPABASE_ANON_KEY,
@@ -454,16 +454,31 @@ app.get('/sitemap.xml', async (_req, res) => {
       lastmod: new Date().toISOString()
     }));
 
+    const agentNames = new Set();
     for (const property of Array.isArray(rows) ? rows : []) {
       const key = property?.slug || property?.property_code;
-      if (!key) continue;
-      urls.push({
-        loc: 'https://dbanjushomes.online/property.html?' +
-          (property.slug
-            ? 'slug=' + encodeURIComponent(property.slug)
-            : 'id=' + encodeURIComponent(property.property_code)),
-        lastmod: property.updated_at || property.created_at || new Date().toISOString()
-      });
+      if (key) {
+        urls.push({
+          loc: 'https://dbanjushomes.online/property.html?' +
+            (property.slug
+              ? 'slug=' + encodeURIComponent(property.slug)
+              : 'id=' + encodeURIComponent(property.property_code)),
+          lastmod: property.updated_at || property.created_at || new Date().toISOString()
+        });
+      }
+
+      // Only list public agent-profile URLs for names attached to published,
+      // verified listings. Never expose private agent-application records here.
+      const providerName = String(property?.provider_name || '').trim();
+      const providerKey = providerName.toLowerCase();
+      const isDbhBrand = /^(d banjus homes( nigeria)?( limited| nig ltd)?|dbh( homes)?)$/.test(providerKey);
+      if (providerName && !isDbhBrand && !agentNames.has(providerKey)) {
+        agentNames.add(providerKey);
+        urls.push({
+          loc: 'https://dbanjushomes.online/view-agent.html?name=' + encodeURIComponent(providerName),
+          lastmod: property.updated_at || property.created_at || new Date().toISOString()
+        });
+      }
     }
 
     const xml =
