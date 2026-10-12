@@ -75,7 +75,7 @@ h1{font-size:clamp(30px,4vw,43px);line-height:1.1;letter-spacing:-.045em;color:#
 (async function(){
  const c=window.DBH_CONFIG||{},root=document.getElementById('agent-profile'),list=document.getElementById('agent-listings'),count=document.getElementById('listing-count');
  const params=new URLSearchParams(location.search),requestedId=(params.get('id')||'').trim(),agentName=(params.get('name')||'').trim();
- const compactMatch=requestedId.match(/^(.*?)\\s+id([a-z0-9]+)$/i),lookupName=agentName||(compactMatch?compactMatch[1].trim():requestedId),agentId=compactMatch?'':requestedId,profileLookupId=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(agentId)?agentId:'';
+ const compactMatch=requestedId.match(/^(.*?)\s+id([a-z0-9]+)$/i),lookupName=agentName||(compactMatch?compactMatch[1].trim():requestedId),agentId=compactMatch?'':requestedId,profileLookupId=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(agentId)?agentId:'';
  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
  const pin='<svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>';
  const ico=(path)=>'<svg viewBox="0 0 24 24" aria-hidden="true">'+path+'</svg>';
