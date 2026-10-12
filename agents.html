@@ -64,7 +64,7 @@ function render(){
 async function load(){
  try{
   if(!cfg.supabaseUrl||!cfg.supabaseAnonKey)throw Error('DBH public configuration is unavailable.');
-  const url=cfg.supabaseUrl+'/rest/v1/properties?select=provider_name,property_type,city,state,area,created_by,agent_id,provider_id,user_id,owner_id,agent_user_id,image_url,featured_image,cover_image,og_image_url,property_images(image_url,sort_order)&is_published=eq.true&verification_status=eq.verified&order=updated_at.desc&limit=1000';
+  const url=cfg.supabaseUrl+'/rest/v1/properties?select=id,provider_name,property_type,city,state,area,created_by,og_image_url,property_images(image_url,sort_order)&is_published=eq.true&verification_status=eq.verified&order=updated_at.desc&limit=1000';
   const res=await fetch(url,{headers:{apikey:cfg.supabaseAnonKey,Accept:'application/json'}});
   if(!res.ok)throw Error('Could not load public listings ('+res.status+').');
   const rows=await res.json(),map=new Map();
