@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Meet Your Property Agent | DBH</title>
-<meta name="description" content="Discover DBH property agents, their experience, contact details and approved property listings."><meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="https://dbanjushomes.online/view-agent.html">
+<meta id="agent-meta-description" name="description" content="Discover DBH property agents and explore their published, verified property listings."><meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="https://dbanjushomes.online/view-agent.html"><meta property="og:type" content="profile"><meta id="agent-og-title" property="og:title" content="Meet Your Property Agent | D Banjus Homes"><meta id="agent-og-description" property="og:description" content="Discover DBH property agents and explore published, verified property listings."><meta id="agent-og-url" property="og:url" content="https://dbanjushomes.online/view-agent.html"><meta property="og:site_name" content="D Banjus Homes"><meta id="agent-og-image" property="og:image" content="https://dbanjushomes.online/dbh-logo.jpg"><meta name="twitter:card" content="summary_large_image"><meta id="agent-twitter-title" name="twitter:title" content="Meet Your Property Agent | D Banjus Homes"><meta id="agent-twitter-description" name="twitter:description" content="Discover DBH property agents and explore published, verified property listings."><meta id="agent-twitter-image" name="twitter:image" content="https://dbanjushomes.online/dbh-logo.jpg">
 <meta name="theme-color" content="#0b5ed7"><link rel="icon" href="/dbh-logo.jpg">
 <link rel="stylesheet" href="/assets/css/styles.css?v=20261009-agentprofile4">
 <link rel="stylesheet" href="/assets/css/consent.css">
@@ -88,6 +88,9 @@ h1{font-size:clamp(30px,4vw,43px);line-height:1.1;letter-spacing:-.045em;color:#
   document.title=name+' | Property Agent | D Banjus Homes';
   const descriptionMeta=document.querySelector('meta[name="description"]');
   if(descriptionMeta)descriptionMeta.content='View '+name+' on D Banjus Homes. Explore published and verified property listings, location information and public agent profile details.';
+  const setMeta=(id,value)=>{const el=document.getElementById(id);if(el)el.content=value;};
+  setMeta('agent-og-title',name+' | Property Agent | D Banjus Homes');setMeta('agent-og-description',descriptionMeta?.content||'');setMeta('agent-og-url',profileUrl);setMeta('agent-og-image',photoPlaceholder());setMeta('agent-twitter-title',name+' | Property Agent | D Banjus Homes');setMeta('agent-twitter-description',descriptionMeta?.content||'');
+  function photoPlaceholder(){return 'https://dbanjushomes.online/dbh-logo.jpg';}
   let canonicalMeta=document.querySelector('link[rel="canonical"]');
   if(!canonicalMeta){canonicalMeta=document.createElement('link');canonicalMeta.rel='canonical';document.head.appendChild(canonicalMeta);}
   canonicalMeta.href=profileUrl;
