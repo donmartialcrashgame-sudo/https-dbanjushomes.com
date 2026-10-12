@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Meet Your Property Agent | DBH</title>
-<meta name="description" content="Discover DBH property agents, their experience, contact details and verified property listings.">
+<meta name="description" content="Discover DBH property agents, their experience, contact details and approved property listings."><meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="https://dbanjushomes.online/view-agent.html">
 <meta name="theme-color" content="#0b5ed7"><link rel="icon" href="/dbh-logo.jpg">
 <link rel="stylesheet" href="/assets/css/styles.css?v=20261009-agentprofile4">
 <link rel="stylesheet" href="/assets/css/consent.css">
@@ -84,6 +84,16 @@ h1{font-size:clamp(30px,4vw,43px);line-height:1.1;letter-spacing:-.045em;color:#
   const first=rows[0]||{};
   const fullName=[getField(profile,['first_name']),getField(profile,['last_name'])].filter(Boolean).join(' ');
   const name=String(getField(profile,['full_name','display_name','agent_name'])||fullName||getField(profile,['name','business_name'])||getField(first,['provider_name'])||agentName||'DBH Property Agent');
+  const profileUrl=location.origin+location.pathname+(agentId?'?id='+encodeURIComponent(agentId):'?name='+encodeURIComponent(agentName||name));
+  document.title=name+' | Property Agent | D Banjus Homes';
+  const descriptionMeta=document.querySelector('meta[name="description"]');
+  if(descriptionMeta)descriptionMeta.content='View '+name+' on D Banjus Homes. Explore published and verified property listings, location information and public agent profile details.';
+  let canonicalMeta=document.querySelector('link[rel="canonical"]');
+  if(!canonicalMeta){canonicalMeta=document.createElement('link');canonicalMeta.rel='canonical';document.head.appendChild(canonicalMeta);}
+  canonicalMeta.href=profileUrl;
+  let profileSchema=document.getElementById('dbh-agent-profile-schema');
+  if(!profileSchema){profileSchema=document.createElement('script');profileSchema.type='application/ld+json';profileSchema.id='dbh-agent-profile-schema';document.head.appendChild(profileSchema);}
+  profileSchema.textContent=JSON.stringify({'@context':'https://schema.org','@type':'RealEstateAgent','name':name,'url':profileUrl,'description':'Property agent profile and published listings on D Banjus Homes Nigeria Limited.','areaServed':location,'worksFor':{'@type':'Organization','name':'D Banjus Homes Nigeria Limited','url':'https://dbanjushomes.online/'}});
   const city=getField(profile,['city','town','area']),state=getField(profile,['state','state_name']),location=[city,state].filter(Boolean).join(', ')||getField(profile,['location','office_location','business_address','address'])||[first.city,first.state].filter(Boolean).join(', ')||'Nigeria';
   const photo=getField(profile,['avatar_url','profile_image_url','profile_photo_url','profile_picture_url','photo_url','profile_photo','profile_picture','avatar','photo','image_url','picture'])||getField(first,['agent_photo','agent_image','provider_photo'])||'/dbh-logo.jpg';
   const role=getField(profile,['business_type','agent_type','professional_title','designation'])||'Licensed Agent';
