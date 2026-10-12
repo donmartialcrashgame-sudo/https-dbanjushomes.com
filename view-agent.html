@@ -5,7 +5,7 @@
 <title>Meet Your Property Agent | DBH</title>
 <meta id="agent-meta-description" name="description" content="Discover DBH property agents and explore their published, verified property listings."><meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="https://dbanjushomes.online/view-agent.html"><meta property="og:type" content="profile"><meta id="agent-og-title" property="og:title" content="Meet Your Property Agent | D Banjus Homes"><meta id="agent-og-description" property="og:description" content="Discover DBH property agents and explore published, verified property listings."><meta id="agent-og-url" property="og:url" content="https://dbanjushomes.online/view-agent.html"><meta property="og:site_name" content="D Banjus Homes"><meta id="agent-og-image" property="og:image" content="https://dbanjushomes.online/dbh-logo.jpg"><meta name="twitter:card" content="summary_large_image"><meta id="agent-twitter-title" name="twitter:title" content="Meet Your Property Agent | D Banjus Homes"><meta id="agent-twitter-description" name="twitter:description" content="Discover DBH property agents and explore published, verified property listings."><meta id="agent-twitter-image" name="twitter:image" content="https://dbanjushomes.online/dbh-logo.jpg">
 <meta name="theme-color" content="#0b5ed7"><link rel="icon" href="/dbh-logo.jpg">
-<link rel="stylesheet" href="/assets/css/styles.css?v=20261009-agentprofile4">
+<link rel="stylesheet" href="/assets/css/styles.css?v=20261012-agentprofile-motion">
 <link rel="stylesheet" href="/assets/css/consent.css">
 <style>
 :root{--dbh-blue:#0b5ed7;--dbh-navy:#082d60;--dbh-ink:#182d45;--dbh-muted:#708198;--dbh-line:#e4ebf3;--dbh-bg:#f4f7fb}
@@ -38,6 +38,23 @@ h1{font-size:clamp(30px,4vw,43px);line-height:1.1;letter-spacing:-.045em;color:#
 .social-link.disabled:hover{transform:none;background:#f7f9fc;color:#8b9bad}
 @media(max-width:850px){.details{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 0}.detail:nth-child(3n){border-right:1px solid #e5edf5;margin-right:12px}.detail:nth-child(2n){border-right:0;margin-right:0}}
 @media(max-width:620px){.details{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 0}.detail{padding:0 8px 8px 0;margin-right:8px}.social-link{width:34px;height:34px}}
+/* Polished agent profile motion */
+.profile-card{animation:profileEnter .65s cubic-bezier(.2,.75,.25,1) both}
+.agent-photo{transition:transform .65s ease,filter .4s;box-shadow:0 12px 32px #082d6010}
+.photo-wrap{overflow:hidden;border-radius:17px}
+.photo-wrap:hover .agent-photo{transform:scale(1.025);filter:saturate(1.06)}
+.profile-info>.eyebrow{animation:profileEnter .55s .08s both}
+.profile-info h1{animation:profileEnter .55s .12s both}
+.verification{box-shadow:0 5px 15px #18724610}
+.detail{transition:background .2s,transform .2s}
+.detail:hover{background:#f0f6fd;transform:translateY(-2px)}
+.contact-btn{transition:transform .2s,box-shadow .2s}
+.contact-btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px #0b5ed729}
+.listing{animation:profileEnter .55s ease both}
+.listing:nth-child(2){animation-delay:.07s}.listing:nth-child(3){animation-delay:.14s}
+.cover{transition:transform .5s ease}.listing:hover .cover{transform:scale(1.035)}
+@keyframes profileEnter{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.profile-card,.profile-info>.eyebrow,.profile-info h1,.listing{animation:none!important}.agent-photo,.detail,.contact-btn,.cover{transition:none!important}}
 </style>
 </head>
 <body>
