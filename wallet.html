@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b63ce">
+<title>My Wallet | DBH — D Banjus Homes Nig Ltd</title>
+<meta name="description" content="Manage your DBH customer wallet and view secure wallet transactions.">
+<link rel="icon" href="/dbh-logo.jpg"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/assets/css/styles.css"><link rel="stylesheet" href="/assets/css/consent.css">
+<style>
+.wallet-page{width:min(1080px,calc(100% - 32px));margin:0 auto;padding:32px 0 76px;color:#17314f}
+.wallet-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:22px}.wallet-eyebrow{font-size:10px;font-weight:900;letter-spacing:.18em;color:#0b63ce}.wallet-head h1{font-size:clamp(30px,4vw,44px);letter-spacing:-.04em;margin:7px 0}.wallet-head p{color:#71839a;margin:0;line-height:1.6;font-size:13px}
+.wallet-card{position:relative;overflow:hidden;background:linear-gradient(130deg,#062e67,#0b63ce 65%,#3c9aff);border-radius:26px;padding:28px;color:white;box-shadow:0 22px 55px rgba(6,46,103,.19);min-height:220px}.wallet-card:after{content:"";position:absolute;width:290px;height:290px;border:1px solid #ffffff25;border-radius:50%;right:-65px;top:-125px;box-shadow:0 0 0 32px #ffffff09,0 0 0 66px #ffffff06;pointer-events:none}.wallet-card-top{position:relative;z-index:1;display:flex;justify-content:space-between;gap:15px;align-items:center}.wallet-brand{font-size:11px;font-weight:900;letter-spacing:.15em;color:#dcecff}.wallet-chip{width:43px;height:32px;border-radius:8px;background:linear-gradient(135deg,#e4f1ff,#8fc2ff);opacity:.95}.wallet-label{position:relative;z-index:1;color:#dcecff;font-size:12px;margin-top:26px}.wallet-balance{position:relative;z-index:1;font-size:clamp(31px,5vw,45px);font-weight:950;letter-spacing:-.04em;margin:7px 0 22px}.wallet-card-bottom{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:11px;color:#dcecff}.wallet-status{border:1px solid #ffffff55;background:#ffffff18;border-radius:999px;padding:7px 10px;font-weight:800}
+.wallet-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin-top:18px}.wallet-panel{background:#fff;border:1px solid #dfe8f2;border-radius:21px;padding:22px;box-shadow:0 12px 34px #092d6309}.wallet-panel h2{font-size:18px;margin:0 0 7px}.wallet-panel>p{font-size:12px;color:#71839a;line-height:1.65;margin:0 0 18px}.wallet-form{display:grid;gap:12px}.wallet-form label{font-size:11px;font-weight:900;color:#526d8b}.wallet-form input{width:100%;box-sizing:border-box;border:1px solid #d4e0ed;border-radius:12px;padding:13px 14px;font:inherit;outline:none}.wallet-form input:focus{border-color:#0b63ce;box-shadow:0 0 0 3px #0b63ce16}.wallet-btn{border:0;border-radius:12px;padding:13px 17px;background:#0b63ce;color:white;font-weight:900;font-size:12px;cursor:pointer;box-shadow:0 8px 20px #0b63ce24}.wallet-btn:disabled{opacity:.6;cursor:wait}.wallet-note{background:#f1f7ff;border:1px solid #d9e9fb;border-radius:12px;padding:12px;font-size:11px;color:#506b89;line-height:1.6;margin-top:14px}.wallet-message{display:none;padding:12px;border-radius:12px;margin-top:12px;font-size:12px;line-height:1.5}.wallet-message.show{display:block}.wallet-message.error{background:#fff1f1;color:#a32e2e;border:1px solid #ffd7d7}.wallet-message.success{background:#effbf3;color:#187344;border:1px solid #ccefd8}
+.wallet-transactions{margin-top:20px}.wallet-transactions-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.wallet-transactions-head h2{font-size:20px;margin:0}.wallet-refresh{border:1px solid #d8e4f1;background:#fff;color:#0b63ce;border-radius:10px;padding:9px 12px;font-size:11px;font-weight:900;cursor:pointer}.wallet-table-wrap{overflow:auto;border:1px solid #e0e8f1;border-radius:16px;background:#fff}.wallet-table{width:100%;border-collapse:collapse;min-width:620px}.wallet-table th,.wallet-table td{text-align:left;padding:14px 16px;border-bottom:1px solid #edf1f6;font-size:12px}.wallet-table th{background:#f7faff;color:#6d8199;text-transform:uppercase;font-size:9px;letter-spacing:.08em}.wallet-table tr:last-child td{border-bottom:0}.wallet-tx-title{font-weight:850;color:#1a3554}.wallet-tx-ref{font-size:10px;color:#8a9aad;margin-top:4px}.wallet-amount.credit{color:#18864b;font-weight:900}.wallet-amount.debit{color:#bd4343;font-weight:900}.wallet-pill{display:inline-flex;border-radius:999px;padding:5px 8px;background:#f2f5f9;color:#61758d;font-size:9px;font-weight:900;text-transform:capitalize}.wallet-pill.posted{background:#eaf9ef;color:#168047}.wallet-pill.pending{background:#fff6df;color:#926300}.wallet-empty{padding:26px;text-align:center;color:#71839a;font-size:12px}.wallet-loader{display:inline-block;width:14px;height:14px;border:2px solid #dbe8f7;border-top-color:#0b63ce;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:7px}@keyframes spin{to{transform:rotate(360deg)}}@media(max-width:760px){.wallet-layout{grid-template-columns:1fr}.wallet-head{align-items:flex-start;flex-direction:column}.wallet-card{padding:22px;min-height:210px}.wallet-panel{padding:18px}}@media(prefers-reduced-motion:reduce){.wallet-loader{animation:none}}
+</style>
+</head>
+<body>
+<header class="site-header" aria-label="DBH site navigation"></header>
+<main class="wallet-page">
+ <div class="wallet-head"><div><div class="wallet-eyebrow">MY DBH ACCOUNT</div><h1>My wallet</h1><p>Fund your DBH wallet securely and keep track of every transaction.</p></div><a class="btn btn-secondary" href="/dashboard.html">← Back to dashboard</a></div>
+ <section class="wallet-card" aria-label="Wallet balance">
+  <div class="wallet-card-top"><div class="wallet-brand">D BANJUS HOMES · CUSTOMER WALLET</div><div class="wallet-chip" aria-hidden="true"></div></div>
+  <div class="wallet-label">Available balance</div><div class="wallet-balance" id="wallet-balance">₦—</div>
+  <div class="wallet-card-bottom"><span id="wallet-owner">Your DBH account</span><span class="wallet-status" id="wallet-status">Checking wallet…</span></div>
+ </section>
+ <div class="wallet-layout">
+  <section class="wallet-panel"><h2>Add money to wallet</h2><p>Choose an amount and continue to Flutterwave's secure checkout. Your balance updates only after the payment is verified by DBH.</p>
+   <form class="wallet-form" id="fund-form"><label for="fund-amount">Amount (NGN)</label><input id="fund-amount" name="amount" type="number" min="1000" max="10000000" step="0.01" placeholder="e.g. 5000" required><button class="wallet-btn" id="fund-button" type="submit">Continue to secure payment</button></form>
+   <div class="wallet-message" id="wallet-message" role="status" aria-live="polite"></div>
+   <div class="wallet-note"><strong>Security note:</strong> Never share your password or payment verification code. DBH does not credit wallet funds based on screenshots or browser redirects.</div>
+  </section>
+  <section class="wallet-panel"><h2>Wallet information</h2><p>Your wallet balance is held in Nigerian naira (NGN). Successful deposits are recorded in your transaction history.</p>
+   <div class="wallet-note"><strong>How funding works</strong><br>1. Enter at least ₦1,000.<br>2. Complete payment on Flutterwave.<br>3. DBH verifies the transaction securely.<br>4. Your wallet balance and receipt history update.</div>
+   <div class="wallet-note">If a payment succeeds but the balance does not update, refresh the wallet after a short wait and contact DBH support with the payment reference.</div>
+  </section>
+ </div>
+ <section class="wallet-transactions"><div class="wallet-transactions-head"><h2>Transaction history</h2><button class="wallet-refresh" id="wallet-refresh" type="button">Refresh history</button></div>
+  <div class="wallet-table-wrap"><table class="wallet-table"><thead><tr><th>Transaction</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead><tbody id="wallet-transactions"><tr><td colspan="4"><div class="wallet-empty"><span class="wallet-loader"></span>Loading your wallet…</div></td></tr></tbody></table></div>
+ </section>
+</main>
+<script src="/assets/js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/js/app.js?v=20261013-wallet1"></script>
+<script>
+(function(){
+ const endpoint=window.DBH_CONFIG.supabaseUrl+'/functions/v1/dbh-customer-wallet';
+ const $=id=>document.getElementById(id);
+ const money=n=>new Intl.NumberFormat('en-NG',{style:'currency',currency:'NGN',maximumFractionDigits:2}).format(Number(n)||0);
+ let client=null, token='';
+ function message(text,type){const el=$('wallet-message');el.textContent=text;el.className='wallet-message show '+type}
+ function sessionToken(){
+  try{const s=typeof getLocalSession==='function'?getLocalSession():null;const candidates=[s,s?.session,s?.data?.session,s?.user?.session];for(const x of candidates){if(x?.access_token)return x.access_token}}
+  catch(e){}
+  return '';
+ }
+ async function getToken(){
+  if(!client)client=window.supabase.createClient(window.DBH_CONFIG.supabaseUrl,window.DBH_CONFIG.supabaseAnonKey);
+  const {data}=await client.auth.getSession();
+  token=data?.session?.access_token||sessionToken();
+  if(!token)throw new Error('Please sign in to your DBH customer account before opening your wallet.');
+  return token;
+ }
+ async function call(action,extra={}){
+  const access=await getToken();
+  const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+access,'apikey':window.DBH_CONFIG.supabaseAnonKey},body:JSON.stringify({action,...extra})});
+  const data=await r.json().catch(()=>({}));
+  if(!r.ok||data.error)throw new Error(data.error||'The wallet request could not be completed.');
+  return data;
+ }
+ function renderTransactions(rows){
+  const body=$('wallet-transactions');
+  if(!rows?.length){body.innerHTML='<tr><td colspan="4"><div class="wallet-empty">No transactions yet. Your deposits will appear here.</div></td></tr>';return}
+  body.innerHTML=rows.map(t=>{
+   const title=({deposit:'Wallet deposit',purchase:'Property payment',refund:'Refund',withdrawal:'Withdrawal',adjustment:'Wallet adjustment'})[t.transaction_type]||'Wallet transaction';
+   const date=t.created_at?new Date(t.created_at).toLocaleString('en-NG',{dateStyle:'medium',timeStyle:'short'}):'—';
+   const amount=(t.direction==='debit'?'−':'+')+money(t.amount);
+   return '<tr><td><div class="wallet-tx-title">'+title+'</div><div class="wallet-tx-ref">Ref: '+String(t.reference||'—').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</div></td><td>'+date+'</td><td class="wallet-amount '+(t.direction==='debit'?'debit':'credit')+'">'+amount+'</td><td><span class="wallet-pill '+t.status+'">'+t.status+'</span></td></tr>';
+  }).join('');
+ }
+ async function load(){
+  $('wallet-refresh').disabled=true;
+  try{
+   const d=await call('status');
+   $('wallet-balance').textContent=money(d.wallet?.available_balance);
+   $('wallet-status').textContent=d.wallet?.status==='active'?'Active wallet':'Wallet unavailable';
+   $('wallet-owner').textContent='NGN · Secure customer wallet';
+   renderTransactions(d.transactions);
+   if(new URLSearchParams(location.search).get('payment')==='return')message('Payment return received. Your balance reflects only payments verified by Flutterwave. Refresh in a moment if the deposit is still pending.','success');
+  }catch(e){
+   $('wallet-balance').textContent='Unavailable';$('wallet-status').textContent='Sign-in required';
+   $('wallet-transactions').innerHTML='<tr><td colspan="4"><div class="wallet-empty">'+e.message.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))+'</div></td></tr>';
+   if(!new URLSearchParams(location.search).has('payment'))message(e.message,'error');
+  }finally{$('wallet-refresh').disabled=false}
+ }
+ $('fund-form').addEventListener('submit',async e=>{
+  e.preventDefault();const button=$('fund-button');const amount=Number($('fund-amount').value);
+  if(!Number.isFinite(amount)||amount<1000||amount>10000000){message('Enter an amount from ₦1,000 to ₦10,000,000.','error');return}
+  button.disabled=true;button.textContent='Preparing secure checkout…';
+  try{const d=await call('initiate_deposit',{amount});if(!d.payment_link)throw new Error('Flutterwave did not return a checkout link.');location.assign(d.payment_link)}
+  catch(err){message(err.message,'error');button.disabled=false;button.textContent='Continue to secure payment'}
+ });
+ $('wallet-refresh').addEventListener('click',load);
+ load();
+})();
+</script>
+</body></html>
