@@ -134,14 +134,25 @@ async function loadVirtualAccount(){
  }catch(e){}
 }
 $('virtual-account-form').addEventListener('submit',async e=>{
- e.preventDefault();const btn=$('account-button');btn.disabled=true;btn.textContent='Creating secure account…';
+ e.preventDefault();
+ const btn=$('account-button'),status=$('account-message');
+ const show=(text,type)=>{status.textContent=text;status.className='wallet-message show '+type};
+ btn.disabled=true;btn.innerHTML='<span class="wallet-loader"></span> Generating account…';
+ status.textContent='';status.className='wallet-message';
  try{
-  const id=$('identity-number').value.trim(),type=$('identity-type').value;
-  if(!/^\\d{11}$/.test(id))throw new Error('Enter an 11-digit BVN or NIN.');
-  const d=await call('create_virtual_account',{[type]:id,phone:$('account-phone').value.trim()});
-  $('virtual-account-details').innerHTML='<strong>Account number:</strong> '+d.account.account_number+'<br><strong>Bank:</strong> '+d.account.bank_name+'<br><strong>Account name:</strong> '+d.account.account_name+'<br><strong>Status:</strong> '+d.account.status;
-  $('virtual-account-form').style.display='none';message('Your permanent bank account is ready. Transfer money to it to fund your DBH wallet.','success');
- }catch(err){message(err.message,'error');btn.disabled=false;btn.textContent='Generate account number'}
+  const id=$('identity-number').value.trim(),type=$('identity-type').value,phone=$('account-phone').value.trim();
+  if(!/^\d{11}$/.test(id))throw new Error('Enter an 11-digit BVN or NIN.');
+  if(phone.replace(/\D/g,'').length<10)throw new Error('Enter a valid phone number.');
+  show('Securely submitting your details to Flutterwave. Please wait…','success');
+  const d=await call('create_virtual_account',{[type]:id,phone});
+  if(!d?.account?.account_number)throw new Error('No account number was returned. Please contact DBH support before retrying.');
+  $('virtual-account-details').innerHTML='<strong>Account number:</strong> '+String(d.account.account_number)+'<br><strong>Bank:</strong> '+String(d.account.bank_name||'—')+'<br><strong>Account name:</strong> '+String(d.account.account_name||'—')+'<br><strong>Status:</strong> '+String(d.account.status||'pending');
+  $('virtual-account-form').style.display='none';
+  show('Your permanent bank account is ready. Transfer money to it to fund your DBH wallet.','success');
+ }catch(err){
+  show(err?.message||'Account generation failed. Please try again.','error');
+  btn.disabled=false;btn.textContent='Generate account number';
+ }
 });
 loadVirtualAccount();
 })(); 
