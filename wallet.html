@@ -65,16 +65,15 @@ async function recoverDbhToken(){try{const base=(window.DBH_CONFIG?.apiBaseUrl||
  async function getToken(){
   if(!client)client=window.supabase.createClient(window.DBH_CONFIG.supabaseUrl,window.DBH_CONFIG.supabaseAnonKey);
   const {data}=await client.auth.getSession().catch(()=>({data:{session:null}}));
-  token=(typeof getAccessToken==='function'?getAccessToken():'')||data?.session?.access_token||sessionToken();
-  if(!token)token=await recoverDbhToken();
-  if(!token)throw new Error('We could not restore your existing DBH session. Open the dashboard in this same browser, then return here.');
+  token=data?.session?.access_token||'';
+  if(!token)throw new Error('Your active customer sign-in is not available to the wallet. Return to the customer dashboard and confirm that you are still signed in.');
   return token;
  }
  async function call(action,extra={}){
   const access=await getToken();
   const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+access,'apikey':window.DBH_CONFIG.supabaseAnonKey},body:JSON.stringify({action,...extra})});
   const data=await r.json().catch(()=>({}));
-  if(r.status===401){token=await recoverDbhToken();if(token){const rr=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token,'apikey':window.DBH_CONFIG.supabaseAnonKey},body:JSON.stringify({action,...extra})});const dd=await rr.json().catch(()=>({}));if(rr.ok&&!dd.error)return dd;throw new Error(dd.error||'DBH restored your session, but the wallet service rejected it.')}}
+  if(r.status===401)throw new Error(data.error||'Your customer session was rejected by Supabase. Refresh the customer dashboard and try again.');
   if(!r.ok||data.error)throw new Error(data.error||'The wallet request could not be completed.');
   return data;
  }
