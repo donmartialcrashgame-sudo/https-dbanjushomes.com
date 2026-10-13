@@ -56,14 +56,14 @@
  let client=null, token='';
  function message(text,type){const el=$('wallet-message');el.textContent=text;el.className='wallet-message show '+type}
  function sessionToken(){
-  try{const s=typeof getLocalSession==='function'?getLocalSession():null;const candidates=[s,s?.session,s?.data?.session,s?.user?.session];for(const x of candidates){if(x?.access_token)return x.access_token}}
+  try{const s=typeof getLocalSession==='function'?getLocalSession():null;const candidates=[s,s?.session,s?.data?.session,s?.user?.session,s?.data,s?.user];for(const x of candidates){if(x?.sessionToken||x?.access_token||x?.accessToken||x?.session?.access_token)return x?.sessionToken||x?.access_token||x?.accessToken||x?.session?.access_token}}
   catch(e){}
   return '';
  }
  async function getToken(){
   if(!client)client=window.supabase.createClient(window.DBH_CONFIG.supabaseUrl,window.DBH_CONFIG.supabaseAnonKey);
-  const {data}=await client.auth.getSession();
-  token=data?.session?.access_token||sessionToken();
+  const {data}=await client.auth.getSession().catch(()=>({data:{session:null}}));
+  token=(typeof getAccessToken==='function'?getAccessToken():'')||data?.session?.access_token||sessionToken();
   if(!token)throw new Error('Please sign in to your DBH customer account before opening your wallet.');
   return token;
  }
