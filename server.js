@@ -307,6 +307,62 @@ app.post('/api/auth/logout', (req, res) => {
   res.json({ success: true });
 });
 
+// Secure server-side proxy for Flutterwave bill-option lookups. The browser never receives the secret key.
+app.post('/api/flutterwave/bill-options', requireSession, async (req, res) => {
+  const origin = String(req.headers.origin || '');
+  if (origin && !ALLOWED_ORIGINS.has(origin)) {
+    return res.status(403).json({ success: false, error: 'origin_not_allowed' });
+  }
+  const session = req.dbhSession;
+  if (!session?.sub || !session?.email) {
+    return res.status(401).json({ success: false, error: 'unauthenticated' });
+  }
+  if (rateLimit('flw-bill-options:' + session.sub, 40, 5 * 60 * 1000)) {
+    return res.status(429).json({ success: false, error: 'too_many_requests', message: 'Please wait before trying again.' });
+  }
+  const key = process.env.FLW_LIVE_SECRET_KEY || process.env.FLW_SECRET_KEY;
+  if (!key) {
+    return res.status(503).json({ success: false, error: 'flutterwave_not_configured', message: 'Flutterwave bill options are not configured on the DBH server.' });
+  }
+  const action = String(req.body?.action || '');
+  let endpoint = '/top-bill-categories?country=NG';
+  if (action === 'billers') {
+    const category = String(req.body?.category || '').trim().slice(0, 80);
+    if (!category) return res.status(400).json({ success: false, error: 'Select a bill category.' });
+    endpoint = '/bills/' + encodeURIComponent(category) + '/billers?country=NG';
+  } else if (action === 'bill_items') {
+    const code = String(req.body?.biller_code || '').trim().slice(0, 80);
+    if (!code) return res.status(400).json({ success: false, error: 'Select a provider.' });
+    endpoint = '/billers/' + encodeURIComponent(code) + '/items';
+  } else if (action !== 'bill_categories') {
+    return res.status(400).json({ success: false, error: 'Unsupported bill-options action.' });
+  }
+  try {
+    const upstream = await fetch('https://api.flutterwave.com/v3' + endpoint, {
+      method: 'GET',
+      headers: { Authorization: 'Bearer ' + key, Accept: 'application/json' },
+      signal: AbortSignal.timeout(12000)
+    });
+    const payload = await upstream.json().catch(() => ({}));
+    if (!upstream.ok || String(payload?.status || '').toLowerCase() !== 'success') {
+      console.error('DBH Flutterwave bill-options rejected', JSON.stringify({
+        action, httpStatus: upstream.status,
+        providerMessage: String(payload?.message || 'No provider message').slice(0, 240)
+      }));
+      return res.status(502).json({
+        success: false,
+        error: 'flutterwave_bill_options_rejected',
+        provider_status: upstream.status,
+        message: String(payload?.message || 'Flutterwave rejected the bill-options request.').slice(0, 240)
+      });
+    }
+    return res.json({ success: true, data: payload.data || [] });
+  } catch (error) {
+    console.error('DBH Flutterwave bill-options network error:', error?.message || error);
+    return res.status(502).json({ success: false, error: 'flutterwave_unreachable', message: 'The DBH server could not reach Flutterwave. Please try again.' });
+  }
+});
+
 app.get('/api/dashboard', requireSession, (req, res) => {
   const user = publicUser(req.dbhSession);
 
