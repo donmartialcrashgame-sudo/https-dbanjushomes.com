@@ -63,10 +63,15 @@ async function recoverDbhToken(){try{const base=(window.DBH_CONFIG?.apiBaseUrl||
   return '';
  }
  async function getToken(){
+  // Prefer a real Supabase Auth JWT when one exists.
   if(!client)client=window.supabase.createClient(window.DBH_CONFIG.supabaseUrl,window.DBH_CONFIG.supabaseAnonKey);
   const {data}=await client.auth.getSession().catch(()=>({data:{session:null}}));
   token=data?.session?.access_token||'';
-  if(!token)throw new Error('Your active customer sign-in is not available to the wallet. Return to the customer dashboard and confirm that you are still signed in.');
+  // DBH's existing customer dashboard may instead use the Render-validated DBH session.
+  // The wallet Edge Function verifies that token with the auth service before using its identity.
+  if(!token)token=sessionToken();
+  if(!token)token=await recoverDbhToken();
+  if(!token)throw new Error('Your DBH sign-in could not be verified. Return to the customer dashboard, sign in again, then reopen My Wallet.');
   return token;
  }
  async function call(action,extra={}){
