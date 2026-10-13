@@ -32,6 +32,9 @@
   </section>
   <section class="wallet-panel"><h2>Wallet information</h2><p>Your wallet balance is held in Nigerian naira (NGN). Successful deposits are recorded in your transaction history.</p>
    <div class="wallet-note"><strong>How funding works</strong><br>1. Enter at least ₦1,000.<br>2. Complete payment on Flutterwave.<br>3. DBH verifies the transaction securely.<br>4. Your wallet balance and receipt history update.</div>
+   <div class="wallet-note"><strong>Transaction alerts</strong><br>Enable device notifications to receive a DBH alert when a deposit is confirmed, even when this page is closed.</div>
+   <button class="wallet-btn" id="wallet-enable-alerts" type="button">Enable transaction alerts</button>
+   <div class="wallet-message" id="wallet-alert-message" role="status" aria-live="polite"></div>
    <div class="wallet-note">If a payment succeeds but the balance does not update, refresh the wallet after a short wait and contact DBH support with the payment reference.</div>
   </section>
  </div>
@@ -101,6 +104,19 @@
   catch(err){message(err.message,'error');button.disabled=false;button.textContent='Continue to secure payment'}
  });
  $('wallet-refresh').addEventListener('click',load);
+ $('wallet-enable-alerts').addEventListener('click',async()=>{
+  const button=$('wallet-enable-alerts'),status=$('wallet-alert-message');
+  button.disabled=true;button.textContent='Enabling alerts…';
+  try{
+   if(!('Notification' in window)||!('serviceWorker' in navigator)||!('PushManager' in window))throw new Error('This browser does not support background push notifications. Try installing DBH on a supported browser or device.');
+   if(Notification.permission==='denied')throw new Error('Notifications are blocked by your browser. Enable notifications for dbanjushomes.online in your browser settings, then try again.');
+   if(typeof window.DBHPrepareNotifications!=='function')throw new Error('The DBH notification service is still loading. Refresh this page and try again.');
+   const ok=await window.DBHPrepareNotifications();
+   if(!ok)throw new Error('Notifications were not enabled. Allow notification permission when your browser asks.');
+   status.textContent='Transaction alerts are enabled on this device. Keep browser notifications allowed to receive alerts when DBH is closed.';
+   status.className='wallet-message show success';button.textContent='Alerts enabled';
+  }catch(err){status.textContent=err.message||'Could not enable notifications.';status.className='wallet-message show error';button.disabled=false;button.textContent='Try enabling alerts again'}
+ });
  load();
 })();
 </script>
