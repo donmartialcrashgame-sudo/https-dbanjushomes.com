@@ -19,6 +19,7 @@
 <header class="site-header" aria-label="DBH site navigation"></header>
 <main class="wallet-page">
  <div class="wallet-head"><div><div class="wallet-eyebrow">MY DBH ACCOUNT</div><h1>My wallet</h1><p>Manage your balance, dedicated bank account and wallet transactions. Airtime, data, bill payments and withdrawals each have their own page.</p></div><a class="btn btn-secondary" href="/dashboard.html">← Back to dashboard</a></div>
+<nav class="service-shortcuts" style="display:flex;gap:10px;flex-wrap:wrap;margin:0 0 20px"><a href="/wallet.html">Wallet</a><a href="/buy-airtime.html">Buy Airtime</a><a href="/buy-data.html">Buy Data</a><a href="/pay-bills.html">Utility Bills</a><a href="/withdraw.html">Withdraw</a></nav>
  <section class="wallet-card" aria-label="Wallet balance">
   <div class="wallet-card-top"><div class="wallet-brand">D BANJUS HOMES · CUSTOMER WALLET</div><div class="wallet-chip" aria-hidden="true"></div></div>
   <div class="wallet-label">Available balance</div><div class="wallet-balance" id="wallet-balance">₦—</div>
@@ -45,7 +46,7 @@
 </main>
 <script src="/assets/js/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/assets/js/app.js?v=20261013-wallet1"></script>
+<script src="/assets/js/app.js?v=20261013-wallet2"></script>
 <script>
 (function(){
  const endpoint=window.DBH_CONFIG.supabaseUrl+'/functions/v1/dbh-customer-wallet';
@@ -62,7 +63,7 @@
   if(!client)client=window.supabase.createClient(window.DBH_CONFIG.supabaseUrl,window.DBH_CONFIG.supabaseAnonKey);
   const {data}=await client.auth.getSession().catch(()=>({data:{session:null}}));
   token=(typeof getAccessToken==='function'?getAccessToken():'')||data?.session?.access_token||sessionToken();
-  if(!token)throw new Error('Please sign in to your DBH customer account before opening your wallet.');
+  if(!token)throw new Error('Your DBH session could not be found on this page. Refresh once to restore your existing session.');
   return token;
  }
  async function call(action,extra={}){
