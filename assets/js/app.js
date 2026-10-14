@@ -990,7 +990,8 @@ async function loadData(){
     }
   }
 
-  if(featured)renderProperties(featured,rows.filter(p=>p.is_featured).slice(0,6));
+  // Homepage catalogue is owned by assets/js/home.js. Do not overwrite it here
+  // with the older featured-only subset; this module still renders property-results on the listings page.
   if(results){
     if(count)count.textContent=rows.length+' '+(rows.length===1?'property':'properties');
     renderProperties(results,rows);
