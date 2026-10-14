@@ -19,12 +19,31 @@ function money(v,c){
 }
 
 async function getRows(){
-  const c=window.DBH_CONFIG||{};
-  if(!c.supabaseUrl||!c.supabaseAnonKey)throw Error('Supabase configuration missing');
-  const url=c.supabaseUrl+'/rest/v1/properties?select=*&is_published=eq.true&order=created_at.desc';
-  const r=await fetch(url,{headers:{Accept:'application/json',apikey:c.supabaseAnonKey}});
-  if(!r.ok)throw Error('Supabase HTTP '+r.status+': '+await r.text());
-  return await r.json();
+  const config=window.DBH_CONFIG||{};
+  if(!config.supabaseUrl||!config.supabaseAnonKey)throw Error('Supabase configuration missing');
+
+  // PostgREST can cap a response at its configured row limit. Fetch in
+  // ordered pages so larger catalogues do not silently stop at the first page.
+  const pageSize=500;
+  const all=[];
+  for(let start=0; ; start+=pageSize){
+    const url=config.supabaseUrl+'/rest/v1/properties?select=*&is_published=eq.true&order=created_at.desc,id.desc';
+    const response=await fetch(url,{
+      headers:{
+        Accept:'application/json',
+        apikey:config.supabaseAnonKey,
+        Range:start+'-'+(start+pageSize-1),
+        'Range-Unit':'items'
+      },
+      cache:'no-store'
+    });
+    if(!response.ok)throw Error('Supabase HTTP '+response.status+': '+await response.text());
+    const page=await response.json();
+    if(!Array.isArray(page))throw Error('Invalid property response');
+    all.push(...page);
+    if(page.length<pageSize)break;
+  }
+  return all;
 }
 
 function propertyType(p){
@@ -186,12 +205,11 @@ async function boot(){
     setupSearch(rows);
     syncTabsFromUrl();
 
-    const featured=rows.filter(p=>p.is_featured===true).slice(0,6);
-    const show=featured.length?featured:rows.slice(0,6);
-
-    box.innerHTML=show.length
-      ?show.map(card).join('')
-      :'<div class="panel"><strong>No published properties yet.</strong><br><small>New DBH listings will appear here when they are approved.</small></div>';
+    // Show the complete published catalogue on the customer homepage.
+    // Unpublished properties stay hidden until the admin publishes them.
+    box.innerHTML=rows.length
+      ?rows.map(card).join('')
+      :'<div class="panel"><strong>No published properties yet.</strong><br><small>New DBH listings will appear here after approval, payment confirmation and publication.</small></div>';
 
     box.querySelectorAll('.reveal').forEach(x=>x.classList.add('visible'));
 
