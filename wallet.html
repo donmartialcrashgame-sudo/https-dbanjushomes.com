@@ -28,24 +28,17 @@
   <div class="wallet-card-bottom"><span id="wallet-owner">Your DBH account</span><span class="wallet-status" id="wallet-status">Checking wallet…</span></div>
  </section>
  <div class="wallet-layout">
-  <section class="wallet-panel" id="virtual-account-panel"><h2>Dedicated bank account</h2><p>Generate your dedicated account once. After it is created, your account details will appear here for easy copying and future transfers.</p>
-   <form id="virtual-account-form" class="wallet-form">
-    <div id="account-input-fields">
-     <label for="account-phone">Phone number</label><input id="account-phone" type="tel" required placeholder="e.g. 08012345678">
-     <label for="identity-number">BVN or NIN (11 digits)</label><input id="identity-number" inputmode="numeric" minlength="11" maxlength="11" required>
-     <select id="identity-type" aria-label="Identity type"><option value="bvn">BVN</option><option value="nin">NIN</option></select>
-    </div>
-    <div id="virtual-account-details" class="wallet-note">No dedicated account created yet.</div>
-    <button class="wallet-btn" id="account-button">Generate account number</button>
-   </form><div id="account-message" class="wallet-message"></div>
+  <section class="wallet-panel"><h2>Add money to wallet</h2><p>Transfer money to your dedicated bank account below. DBH credits your wallet after your deposit is confirmed.</p>
+   <div class="wallet-message" id="wallet-message" role="status" aria-live="polite"></div>
    <div class="wallet-note"><strong>Security note:</strong> Never share your password or payment verification code. DBH does not credit wallet funds based on screenshots or browser redirects.</div>
   </section>
   <section class="wallet-panel"><h2>Wallet information</h2><p>Your wallet balance is held in Nigerian naira (NGN). Successful deposits are recorded in your transaction history.</p>
-   <div class="wallet-note"><strong>How funding works</strong><br>1. Generate your dedicated bank account.<br>2. Transfer money from your banking app.<br>3. Your payment is confirmed securely.<br>4. Your wallet balance and transaction history update.</div>
+   <div class="wallet-note"><strong>How funding works</strong><br>1. Generate your dedicated bank account in the section below.<br>2. Transfer money from your banking app.<br>3. Your payment is confirmed securely.<br>4. Your wallet balance and transaction history update.</div>
    <div class="wallet-note"><strong>Transaction alerts</strong><br>Device notifications are managed by DBH on this device. Once enabled, transaction alerts can arrive even when the page is closed.</div>
    <div class="wallet-note">If a payment succeeds but the balance does not update, refresh the wallet after a short wait and contact DBH support with the payment reference.</div>
   </section>
  </div>
+<section class="wallet-panel" id="virtual-account-panel" style="margin-top:18px"><h2>Dedicated bank account</h2><p>Generate your dedicated account once. After it is created, your account details will appear here for easy copying and future transfers.</p><form id="virtual-account-form" class="wallet-form"><div id="account-input-fields"><label for="account-phone">Phone number</label><input id="account-phone" type="tel" required placeholder="e.g. 08012345678"><label for="identity-number">BVN or NIN (11 digits)</label><input id="identity-number" inputmode="numeric" minlength="11" maxlength="11" required><select id="identity-type" aria-label="Identity type"><option value="bvn">BVN</option><option value="nin">NIN</option></select></div><div id="virtual-account-details" class="wallet-note">No dedicated account created yet.</div><button class="wallet-btn" id="account-button">Generate account number</button></form><div id="account-message" class="wallet-message"></div></section>
  <section class="wallet-transactions"><div class="wallet-transactions-head"><h2>Transaction history</h2><button class="wallet-refresh" id="wallet-refresh" type="button">Refresh history</button></div>
   <div class="wallet-table-wrap"><table class="wallet-table"><thead><tr><th>Transaction</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead><tbody id="wallet-transactions"><tr><td colspan="4"><div class="wallet-empty"><span class="wallet-loader"></span>Loading your wallet…</div></td></tr></tbody></table></div>
  </section>
