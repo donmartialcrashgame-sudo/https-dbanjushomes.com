@@ -9,7 +9,7 @@ const steps=[
  {target:'.dbh-home-category-grid',title:'Browse by category',text:'Use these shortcuts to browse homes, land, commercial properties or submit a property for review.'},
  {target:'#featured-properties',title:'Explore published listings',text:'Property cards appear here after DBH has approved, confirmed payment for and published a listing. Select a card to view its details.'},
  {target:'#popular-locations',title:'Explore by location',text:'Choose a location to find listings in that area.'},
- {target:'#mobile-menu-button',title:'Your DBH sidebar',text:'This is the final lesson. Open the menu to see your navigation, account links, saved properties, support and display preferences.',sidebar:true}
+ {target:'#dbh-sidebar',title:'Your DBH sidebar',text:'This is the final lesson. Open the menu to see your navigation, account links, saved properties, support and display preferences.',sidebar:true}
 ];
 let index=0,overlay,spot,tip,finishing=false;
 function $ (s){return document.querySelector(s)}
