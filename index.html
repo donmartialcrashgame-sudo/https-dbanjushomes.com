@@ -1,6 +1,19 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script>
+/* Route Supabase password-recovery sessions away from the homepage and into the reset form. */
+(function(){
+  try {
+    var hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+    if (hash.get("type") === "recovery" && hash.get("access_token")) {
+      window.location.replace("/account-recovery.html" + window.location.hash);
+    }
+  } catch (e) {
+    console.warn("Could not route password recovery link.", e);
+  }
+})();
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>D Banjus Homes | Properties for Sale in Nigeria</title>
