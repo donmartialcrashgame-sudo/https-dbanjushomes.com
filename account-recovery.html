@@ -1,27 +1,73 @@
-<!doctype html><html lang="en"><head><meta name="robots" content="noindex,nofollow,noarchive"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Private account recovery | DBH</title><link rel="icon" href="/dbh-logo.jpg"><link rel="stylesheet" href="/assets/css/styles.css"><style>.recovery-box{max-width:520px;margin:0 auto}.security-question{padding:15px;border:1px solid #dce8f5;background:#f7fbff;border-radius:13px;font-weight:750;line-height:1.5;margin-bottom:16px}.hidden{display:none!important}.recovery-note{font-size:12px;color:#71839a;line-height:1.6}.security-setup{border-top:1px solid #e6edf5;margin-top:18px;padding-top:18px}</style></head><body class="auth-page"><main class="auth-shell"><section class="auth-visual"><a class="auth-brand" href="/"><img src="/dbh-logo.jpg" alt="DBH"><span><strong>DBH</strong><small>D Banjus Homes Nig Ltd</small></span></a><span class="eyebrow">PRIVATE ACCOUNT RECOVERY</span><h1>Securely recover your DBH account.</h1><p>Your recovery link opens this private page. If you have configured a security question, DBH will ask you to verify it before allowing the password to be changed.</p></section><section class="auth-card recovery-box"><div class="auth-card-head"><span class="eyebrow">ACCOUNT SECURITY</span><h1>Verify your identity</h1><p class="auth-subtitle" id="intro">Checking your recovery session…</p></div><div id="question-area" class="hidden"><div id="question" class="security-question"></div><label class="auth-field"><span>Security answer</span><input id="security-answer" type="password" autocomplete="off" required></label><button id="verify-security" class="btn btn-primary auth-submit" type="button">Verify security answer</button></div><div id="setup-area" class="hidden"><div class="security-setup"><h3>Set your security question</h3><p class="recovery-note">You do not have a security question yet. Set one now so future password resets can include this extra check.</p><label class="auth-field"><span>Security question</span><select id="security-question"><option value="">Choose a question</option><option>What was the name of your first school?</option><option>What city were you born in?</option><option>What was your childhood nickname?</option><option>What was the name of your first pet?</option><option>What was your favourite subject in school?</option></select></label><label class="auth-field"><span>Answer</span><input id="security-answer-new" type="text" autocomplete="off"></label><button id="save-security" class="btn btn-primary auth-submit" type="button">Save and continue</button></div></div><div id="password-area" class="hidden"><div class="security-setup"><h3>Create a new password</h3><p class="recovery-note">Use at least 8 characters and do not reuse a password from another service.</p><form id="reset-password-form" class="auth-form"><label class="auth-field"><span>New password</span><input name="password" type="password" minlength="8" autocomplete="new-password" required></label><label class="auth-field"><span>Confirm password</span><input name="confirmPassword" type="password" minlength="8" autocomplete="new-password" required></label><button class="btn btn-primary auth-submit" type="submit">Update password</button><p id="auth-message" class="form-message" aria-live="polite"></p></form></div></div><p id="status" class="form-message" aria-live="polite"></p><p class="auth-bottom"><a href="/login.html">Return to sign in</a></p></section></main><script src="/assets/js/config.js"></script><script src="/assets/js/app.js?v=20261002-15"></script><script type="module" src="/assets/js/auth.js?v=20261002-15"></script><script type="module">
-const C=window.DBH_CONFIG||{};
-// Recovery emails return the Supabase recovery session in the URL hash. Capture it
-// here before the module version of auth.js can run, otherwise this page can race
-// and redirect to login before the session reaches localStorage.
-(function captureRecoveryHash(){
-  try{
-    const hash=new URLSearchParams(location.hash.replace(/^#/,''));
-    const access_token=hash.get('access_token'),refresh_token=hash.get('refresh_token');
-    if(!access_token)return;
-    localStorage.setItem('dbh_session',JSON.stringify({
-      access_token,refresh_token,
-      expires_in:Number(hash.get('expires_in')||0),
-      token_type:hash.get('token_type')||'bearer',
-      type:hash.get('type')||'recovery'
-    }));
-    history.replaceState({},document.title,location.pathname+location.search);
-  }catch(error){console.warn('DBH recovery session capture failed:',error)}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="googlebot" content="noindex,nofollow,noarchive">
+<meta name="theme-color" content="#0b63ce"><title>Reset password | DBH</title>
+<link rel="icon" href="/dbh-logo.jpg"><link rel="stylesheet" href="/assets/css/styles.css">
+<style>
+.recovery-box{max-width:520px;margin:0 auto}.recovery-note{font-size:12px;color:#71839a;line-height:1.65}.recovery-status{padding:12px 14px;border-radius:12px;font-size:12px;line-height:1.6;margin-top:14px;overflow-wrap:anywhere}.recovery-status:empty{display:none}.recovery-status.error{background:#fff1f1;border:1px solid #ffd5d5;color:#a52b2b}.recovery-status.success{background:#effbf3;border:1px solid #ccefd8;color:#176b3b}.recovery-status.info{background:#eff6ff;border:1px solid #d6e7ff;color:#245786}.recovery-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.recovery-actions a{font-size:12px;font-weight:800;color:#0b63ce}.recovery-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#082b59;margin-bottom:26px}.recovery-brand img{width:48px;height:48px;object-fit:contain;border-radius:12px}.recovery-brand strong{display:block;font-size:18px}.recovery-brand small{display:block;color:#71839a;font-size:10px;margin-top:3px}
+</style></head>
+<body class="auth-page">
+<main class="auth-shell">
+<section class="auth-visual">
+<a class="recovery-brand" href="/"><img src="/dbh-logo.jpg" alt="DBH logo"><span><strong>DBH</strong><small>D Banjus Homes Nig Ltd</small></span></a>
+<span class="eyebrow">SECURE ACCOUNT RECOVERY</span><h1>Choose a new password.</h1>
+<p>Use the secure link in your DBH email to set a new password. You do not need to enter your current password.</p>
+</section>
+<section class="auth-card recovery-box">
+<div class="auth-card-head"><span class="eyebrow">PASSWORD RESET</span><h1>Set new password</h1><p class="auth-subtitle" id="recovery-intro">Verifying your secure, one-time reset link…</p></div>
+<form id="recovery-password-form" class="auth-form" hidden>
+<label class="auth-field"><span>New password</span><input name="password" type="password" minlength="8" autocomplete="new-password" required></label>
+<label class="auth-field"><span>Confirm new password</span><input name="confirmPassword" type="password" minlength="8" autocomplete="new-password" required></label>
+<p class="recovery-note">Use at least 8 characters. After the password is changed, this reset session is cleared and you will return to sign in.</p>
+<button class="btn btn-primary auth-submit" type="submit">Save new password</button>
+</form>
+<p id="recovery-status" class="recovery-status info" role="status" aria-live="polite">Checking your reset link…</p>
+<div class="recovery-actions"><a id="recovery-login" href="/login.html" hidden>Go to sign in</a><a id="recovery-again" href="/forgot-password.html" hidden>Request a new reset email</a></div>
+</section></main>
+<script src="/assets/js/config.js"></script>
+<script>
+(async()=>{
+ const form=document.getElementById('recovery-password-form');
+ const status=document.getElementById('recovery-status');
+ const intro=document.getElementById('recovery-intro');
+ const login=document.getElementById('recovery-login');
+ const again=document.getElementById('recovery-again');
+ const setStatus=(text,type='info')=>{status.textContent=text;status.className='recovery-status '+type};
+ const showRecoveryLinks=()=>{login.hidden=false;again.hidden=false};
+ let accessToken='';
+ try{
+   const hash=new URLSearchParams(location.hash.replace(/^#/,''));
+   accessToken=hash.get('access_token')||'';
+   const tokenType=hash.get('type')||'';
+   if(!accessToken||tokenType!=='recovery')throw new Error('This reset link is missing, invalid, or already used. Request a new reset email to continue.');
+   history.replaceState({},document.title,location.pathname+location.search);
+   const cfg=window.DBH_CONFIG||{};
+   const verify=await fetch(cfg.supabaseUrl+'/auth/v1/user',{headers:{apikey:cfg.supabaseAnonKey,Authorization:'Bearer '+accessToken}});
+   if(!verify.ok)throw new Error('This reset link has expired or has already been used. Request a new reset email.');
+   form.hidden=false;status.textContent='';status.className='recovery-status';intro.textContent='Your link is verified. Choose your new password.';
+ }catch(err){
+   form.hidden=true;intro.textContent='A new reset email is required to change your password.';
+   setStatus(err.message||'This reset link is invalid or expired. Request a new one.','error');showRecoveryLinks();
+ }
+ form.addEventListener('submit',async event=>{
+   event.preventDefault();
+   const data=new FormData(form),password=String(data.get('password')||''),confirm=String(data.get('confirmPassword')||'');
+   if(password.length<8){setStatus('Your password must contain at least 8 characters.','error');return}
+   if(password!==confirm){setStatus('The passwords do not match.','error');return}
+   const button=form.querySelector('button[type=submit]');button.disabled=true;button.textContent='Updating password…';
+   try{
+     const cfg=window.DBH_CONFIG||{};
+     const response=await fetch(cfg.supabaseUrl+'/auth/v1/user',{method:'PUT',headers:{'Content-Type':'application/json',apikey:cfg.supabaseAnonKey,Authorization:'Bearer '+accessToken},body:JSON.stringify({password})});
+     const result=await response.json().catch(()=>({}));
+     if(!response.ok)throw new Error(result.msg||result.message||result.error_description||'Unable to update your password. Request a fresh reset link if this link has expired.');
+     localStorage.removeItem('dbh_session');
+     form.reset();form.hidden=true;intro.textContent='Your password has been updated successfully.';
+     setStatus('Password changed. This reset session has been cleared. Redirecting you to sign in…','success');
+     showRecoveryLinks();
+     setTimeout(()=>location.replace('/login.html?password_reset=success'),1200);
+   }catch(err){setStatus(err.message||'Unable to update your password.','error');button.disabled=false;button.textContent='Save new password'}
+ });
 })();
-const status=document.getElementById('status'),intro=document.getElementById('intro'),qArea=document.getElementById('question-area'),setup=document.getElementById('setup-area'),pass=document.getElementById('password-area');const session=(()=>{try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}})();const sessionToken=session?.sessionToken||session?.access_token||'';
-const api=(action,body={})=>fetch(C.accountSecurityUri,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+sessionToken},body:JSON.stringify({action,...body})}).then(async r=>{const d=await r.json().catch(()=>({}));if(!r.ok||d.success===false)throw new Error(d.message||d.error||'Security verification failed.');return d});
-function show(el){el.classList.remove('hidden')}function hide(el){el.classList.add('hidden')}function fail(e){status.textContent=e.message||'Unable to verify your recovery session.';status.className='form-message'}
-async function init(){if(!sessionToken){location.href='/login.html?redirect='+encodeURIComponent(location.pathname+location.search);return}try{const r=await fetch(C.accountSecurityUri,{headers:{Authorization:'Bearer '+sessionToken}});const d=await r.json().catch(()=>({}));if(!r.ok||d.success===false)throw new Error(d.message||'Your recovery link is invalid or expired.');if(d.hasSecurityQuestion){intro.textContent='Answer your security question before choosing a new password.';document.getElementById('question').textContent=d.securityQuestion;show(qArea)}else{intro.textContent='Add a security question before completing this recovery.';show(setup)}}catch(e){fail(e)}}
-document.getElementById('verify-security').onclick=async()=>{const answer=document.getElementById('security-answer').value.trim();if(!answer)return fail(new Error('Enter your security answer.'));try{status.textContent='Verifying…';const d=await api('verify_security_question',{answer});if(!d.verified)throw new Error('The security answer was not accepted.');hide(qArea);show(pass);intro.textContent='Identity verified. Choose your new password.';status.textContent='Security question verified.';status.className='form-message success'}catch(e){fail(e)}};
-document.getElementById('save-security').onclick=async()=>{const question=document.getElementById('security-question').value,answer=document.getElementById('security-answer-new').value.trim();if(!question||answer.length<3)return fail(new Error('Choose a question and enter an answer.'));try{status.textContent='Saving your security question…';await api('set_security_question',{question,answer});hide(setup);show(pass);intro.textContent='Security question saved. Choose your new password.';status.textContent='Security question saved.';status.className='form-message success'}catch(e){fail(e)}};
-init();
 </script></body></html>
