@@ -43,8 +43,9 @@ async function getMfaRedirect(nextPath='/dashboard.html'){
 async function recordLoginSecurityEvent(){
   try{
     const s=JSON.parse(localStorage.getItem('dbh_session')||'null');
-    if(!s?.access_token||!DBH_CONFIG.accountSecurityUri)return;
-    const send=(latitude=null,longitude=null,permission=false)=>fetch(DBH_CONFIG.accountSecurityUri,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',Authorization:'Bearer '+s.access_token},body:JSON.stringify({action:'login_event',latitude,longitude,location_permission:permission,user_agent:navigator.userAgent,device_label:navigator.platform||'Browser'})});
+    const token=s?.access_token||s?.sessionToken;
+    if(!token||!DBH_CONFIG.accountSecurityUri)return;
+    const send=(latitude=null,longitude=null,permission=false)=>fetch(DBH_CONFIG.accountSecurityUri,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({action:'login_event',latitude,longitude,location_permission:permission,user_agent:navigator.userAgent,device_label:navigator.platform||'Browser'})});
     if(!navigator.geolocation){await send();return}
     await new Promise(resolve=>{
       let finished=false;
@@ -217,6 +218,15 @@ async function handleGoogleCredential(response){
     }));
 
     sessionStorage.setItem('dbh_google_completed','1');
+
+    // Email-based handling: only a genuinely new account gets the welcome email.
+    // Existing accounts matched by email receive the normal login emails, regardless of provider.
+    if(syncData.created===true){
+      try{await requestCustomerWelcome(syncedUser)}catch(mailError){console.warn('DBH Google signup welcome email was not sent:',mailError)}
+    }else{
+      await recordLoginSecurityEvent();
+    }
+
     const next=await getMfaRedirect('/dashboard.html');
     if(next!=='/dashboard.html'){
       setMessage('Google sign-in successful. Enter your authenticator code…','success');
