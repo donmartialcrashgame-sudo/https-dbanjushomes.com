@@ -44,16 +44,15 @@ async function recordLoginSecurityEvent(){
   try{
     const s=JSON.parse(localStorage.getItem('dbh_session')||'null');
     if(!s?.access_token||!DBH_CONFIG.accountSecurityUri)return;
-    const send=(latitude=null,longitude=null,permission=false)=>{
-      fetch(DBH_CONFIG.accountSecurityUri,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+s.access_token},body:JSON.stringify({action:'login_event',latitude,longitude,location_permission:permission,user_agent:navigator.userAgent,device_label:navigator.platform||'Browser'})}).catch(()=>{});
-    };
-    if(!navigator.geolocation){send();return}
-    navigator.geolocation.getCurrentPosition(
-      p=>send(p.coords.latitude,p.coords.longitude,true),
-      ()=>send(null,null,false),
-      {enableHighAccuracy:false,timeout:7000,maximumAge:300000}
-    );
-  }catch{}
+    const send=(latitude=null,longitude=null,permission=false)=>fetch(DBH_CONFIG.accountSecurityUri,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',Authorization:'Bearer '+s.access_token},body:JSON.stringify({action:'login_event',latitude,longitude,location_permission:permission,user_agent:navigator.userAgent,device_label:navigator.platform||'Browser'})});
+    if(!navigator.geolocation){await send();return}
+    await new Promise(resolve=>{
+      let finished=false;
+      const finish=async(lat=null,lng=null,allowed=false)=>{if(finished)return;finished=true;clearTimeout(timer);try{await send(lat,lng,allowed)}catch{}resolve()};
+      const timer=setTimeout(()=>finish(),1800);
+      navigator.geolocation.getCurrentPosition(p=>finish(p.coords.latitude,p.coords.longitude,true),()=>finish(),{enableHighAccuracy:false,timeout:1800,maximumAge:300000});
+    });
+  }catch(error){console.warn('DBH login security event could not be recorded:',error)}
 }
 async function postAuthRedirect(defaultPath){
   const next=redirect();
@@ -97,13 +96,13 @@ loginForm?.addEventListener('submit',async e=>{
   try{
     const d=await supabaseAuth('token?grant_type=password',{email:String(f.get('email')).trim(),password:f.get('password')});
     localStorage.setItem('dbh_session',JSON.stringify(d));
-    recordLoginSecurityEvent();
+    await recordLoginSecurityEvent();
     setMessage('Signed in. Checking account security…');
     location.href=await getMfaRedirect(await postAuthRedirect('/dashboard.html'));
   }catch(primary){
     try{
       const d=await fallback('/auth/login',{email:String(f.get('email')).trim(),password:f.get('password')});
-      localStorage.setItem('dbh_session',JSON.stringify(d));recordLoginSecurityEvent();location.href=await getMfaRedirect(await postAuthRedirect('/dashboard.html'));
+      localStorage.setItem('dbh_session',JSON.stringify(d));await recordLoginSecurityEvent();location.href=await getMfaRedirect(await postAuthRedirect('/dashboard.html'));
     }catch(error){setMessage(primary.message||'Unable to sign in. Please check your email and password.');setLoading(form,false);}
   }
 });
