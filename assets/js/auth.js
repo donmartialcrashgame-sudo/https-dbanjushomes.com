@@ -45,6 +45,15 @@ async function getRequiredLocation(){
   if(!state||!country)throw new Error('DBH could not determine your state and country from your location. Please enable device location and try again.');
   return {latitude,longitude,state,country,country_code:String(address.country_code||'').toUpperCase(),city:String(address.city||address.town||address.village||address.county||'').trim(),location_permission:true,location_captured_at:new Date().toISOString()};
 }
+async function saveAccountLocation(locationData){
+  try{
+    const s=JSON.parse(localStorage.getItem('dbh_session')||'null');
+    const token=s?.access_token||s?.sessionToken;
+    if(!token||!locationData)return;
+    const response=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/user',{method:'PUT',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+token},body:JSON.stringify({data:{last_known_location:locationData}})});
+    if(!response.ok)console.warn('DBH location metadata could not be saved.');
+  }catch(error){console.warn('DBH location metadata could not be saved:',error)}
+}
 async function recordLoginSecurityEvent(locationData){
   try{
     const s=JSON.parse(localStorage.getItem('dbh_session')||'null');
@@ -99,6 +108,7 @@ loginForm?.addEventListener('submit',async e=>{
     try{d=await supabaseAuth('token?grant_type=password',{email:String(f.get('email')).trim(),password:f.get('password')});}
     catch(primary){try{d=await fallback('/auth/login',{email:String(f.get('email')).trim(),password:f.get('password')});}catch{throw primary;}}
     localStorage.setItem('dbh_session',JSON.stringify(d));
+    await saveAccountLocation(locationData);
     await recordLoginSecurityEvent(locationData);
     setMessage('Signed in. Checking account security…');
     location.href=await getMfaRedirect(await postAuthRedirect('/dashboard.html'));
@@ -132,6 +142,7 @@ registerForm?.addEventListener('submit',async e=>{
     if(d.user?.id){try{await requestCustomerWelcome(d.user)}catch(mailError){console.warn('DBH signup welcome email was not sent:',mailError)}}
     if(d.access_token){
       localStorage.setItem('dbh_session',JSON.stringify(d));
+      await saveAccountLocation(locationData);
       setMessage('Account created. Let us verify your account…');location.href='/verify-account.html?redirect='+encodeURIComponent(redirect());
     }else{
       setMessage('Account created. Please check your email to confirm your account.','success');form.reset();setLoading(form,false);
@@ -208,6 +219,7 @@ async function finishSupabaseOAuthCallback(){
       try{await sb.auth.updateUser({data:{signup_location:authLocation}})}catch(locationError){console.warn('Could not attach signup location metadata:',locationError)}
       try{await requestCustomerWelcome(user)}catch(mailError){console.warn('DBH Google welcome email was not sent:',mailError)}
     }
+    await saveAccountLocation(authLocation);
     await recordLoginSecurityEvent(authLocation);
     const next=await getMfaRedirect(await postAuthRedirect('/dashboard.html'));
     say('Opening your DBH account…');
