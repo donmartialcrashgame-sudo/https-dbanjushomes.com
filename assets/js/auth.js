@@ -253,11 +253,12 @@ forgotForm?.addEventListener('submit',async e=>{
   e.preventDefault();const form=e.currentTarget;setLoading(form,true);
   const email=String(new FormData(form).get('email')).trim();
   try{
-    const r=await fetch(DBH_CONFIG.accountSecurityUri,{method:'POST',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey},body:JSON.stringify({action:'request_password_reset',email})});
-    const d=await r.json().catch(()=>({}));
-    if(!r.ok)throw new Error('Unable to process your request right now. Please try again.');
-    setMessage('If an account exists for that email, a DBH password reset link has been sent. The link expires in 10 minutes. Check your inbox.','success');form.reset();
-  }catch(error){setMessage(error.message||'Unable to send the reset email. Please try again.');}
+    const sb=await loadSupabaseClient();
+    const redirectTo=new URL('/account-recovery.html',location.origin).href;
+    const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo});
+    if(error)throw error;
+    setMessage('If an account exists for that email, Supabase has been asked to send a password-reset link. Check your inbox and Spam/Junk folder.','success');form.reset();
+  }catch(error){console.error('DBH Supabase password reset request failed:',error);setMessage(error?.message||'Unable to send the reset email. Please try again.');}
   setLoading(form,false);
 });
 
