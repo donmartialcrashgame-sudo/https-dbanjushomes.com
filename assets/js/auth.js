@@ -2,7 +2,7 @@ const DBH_CONFIG=window.DBH_CONFIG||{};
 
 const msg=document.getElementById('auth-message');
 
-const isSupabaseOAuthCallback=location.pathname.endsWith('/auth-callback.html')&&location.hash.includes('access_token=');
+const isSupabaseOAuthCallback=location.pathname.endsWith('/auth-callback.html')&&(location.hash.includes('access_token=')||location.hash.includes('error=')||new URLSearchParams(location.search).has('code')||new URLSearchParams(location.search).has('error'));
 if(location.pathname.endsWith('/reset-password.html')){
   const s=hashSession||(()=>{try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}})();
   if((!s?.access_token&&!s?.sessionToken)||(!s?.sessionToken&&s.type!=='recovery')) location.replace('/forgot-password.html');
@@ -171,10 +171,17 @@ async function finishSupabaseOAuthCallback(){
     const params=new URLSearchParams(location.hash.replace(/^#/,'')); 
     const access_token=params.get('access_token');
     const refresh_token=params.get('refresh_token');
-    const errorDescription=params.get('error_description')||params.get('error');
-    if(!access_token||!refresh_token)throw new Error(errorDescription||'Google sign-in did not return a valid Supabase session.');
+    const errorDescription=params.get('error_description')||params.get('error')||new URLSearchParams(location.search).get('error_description')||new URLSearchParams(location.search).get('error');
     const sb=await loadSupabaseClient();
-    const {data,error}=await sb.auth.setSession({access_token,refresh_token});
+    let data,error;
+    const code=new URLSearchParams(location.search).get('code');
+    if(code){
+      ({data,error}=await sb.auth.exchangeCodeForSession(code));
+    }else if(access_token&&refresh_token){
+      ({data,error}=await sb.auth.setSession({access_token,refresh_token}));
+    }else{
+      throw new Error(errorDescription||'Google sign-in did not return a valid Supabase session.');
+    }
     if(error||!data?.session?.user)throw error||new Error('Supabase could not establish your account session.');
     const session=data.session;
     const user=session.user;
