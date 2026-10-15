@@ -2,20 +2,7 @@ const DBH_CONFIG=window.DBH_CONFIG||{};
 
 const msg=document.getElementById('auth-message');
 
-function captureSupabaseSessionFromHash(){
-  const hash=new URLSearchParams(location.hash.replace(/^#/,''));
-  const access_token=hash.get('access_token');
-  const refresh_token=hash.get('refresh_token');
-  if(!access_token)return null;
-  const session={access_token,refresh_token,expires_in:Number(hash.get('expires_in')||0),token_type:hash.get('token_type')||'bearer',type:hash.get('type')||''};
-  localStorage.setItem('dbh_session',JSON.stringify(session));
-  history.replaceState({},document.title,location.pathname+location.search);
-  return session;
-}
-const hashSession=captureSupabaseSessionFromHash();
-if(hashSession && location.pathname.endsWith('/auth-callback.html')){
-  location.replace('/dashboard.html');
-}
+const isSupabaseOAuthCallback=location.pathname.endsWith('/auth-callback.html')&&location.hash.includes('access_token=');
 if(location.pathname.endsWith('/reset-password.html')){
   const s=hashSession||(()=>{try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}})();
   if((!s?.access_token&&!s?.sessionToken)||(!s?.sessionToken&&s.type!=='recovery')) location.replace('/forgot-password.html');
@@ -142,140 +129,83 @@ registerForm?.addEventListener('submit',async e=>{
   }
 });
 
-async function loadGoogleIdentityServices(){
-  if(window.google?.accounts?.id)return;
-  if(window.__dbhGooglePromise)return window.__dbhGooglePromise;
-  window.__dbhGooglePromise=new Promise((resolve,reject)=>{
-    const script=document.createElement('script');
-    script.src='https://accounts.google.com/gsi/client';
-    script.async=true;
-    script.defer=true;
-    script.onload=()=>resolve();
-    script.onerror=()=>reject(new Error('Google Sign-In could not be loaded.'));
-    document.head.appendChild(script);
-  });
-  return window.__dbhGooglePromise;
-}
-
-async function handleGoogleCredential(response){
+async function startGoogleOAuth(){
   const form=document.getElementById('login-form')||document.getElementById('register-form');
   try{
-    if(!response?.credential)throw new Error('Google did not return a sign-in credential.');
     setLoading(form,true);
-    setMessage('Verifying your Google account…');
-
-    // DBH uses Google Identity Services directly. Supabase OAuth/callback is not used.
-    // First synchronize/create the Google user in Supabase through the trusted DBH Edge Function.
-    const syncUri=DBH_CONFIG.googleSyncUri;
-    if(!syncUri)throw new Error('DBH account synchronization is not configured.');
-
-    const syncResponse=await fetch(syncUri,{
-      method:'POST',
-      headers:{'Content-Type':'application/json',Accept:'application/json'},
-      credentials:'omit',
-      body:JSON.stringify({credential:response.credential})
-    });
-    const syncData=await syncResponse.json().catch(()=>({}));
-
-    if(!syncResponse.ok||!syncData?.success||!syncData?.user?.id){
-      throw new Error(syncData?.message||'Your Google account could not be saved to DBH. Please try again.');
-    }
-
-    // DBH uses its own Render authentication server for Google sign-in.
-    // Do NOT call Supabase signInWithIdToken here. Google authentication stays
-    // entirely on the DBH authentication flow.
-
-    // Then let the DBH auth server establish the normal DBH session.
-    const endpoint=DBH_CONFIG.googleLoginUri;
-    if(!endpoint)throw new Error('Google sign-in is not configured.');
-
-    const r=await fetch(endpoint,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      credentials:'include',
-      body:JSON.stringify({credential:response.credential})
-    });
-    const data=await r.json().catch(()=>({}));
-
-    if(!r.ok||!data?.success||!data?.user){
-      throw new Error(data?.message||data?.error||'Google sign-in could not be completed.');
-    }
-
-    const syncedUser={
-      ...data.user,
-      ...syncData.user,
-      supabaseUserId:syncData.user.id,
-      provider:'google'
-    };
-
-    // The DBH Render session is the source of truth for Google authentication.
-    localStorage.setItem('dbh_session',JSON.stringify({
-      ...data,
-      authenticated:true,
+    setMessage('Connecting securely to Google…');
+    const sb=await loadSupabaseClient();
+    const redirectTo=new URL('/auth-callback.html',location.origin).href;
+    const {error}=await sb.auth.signInWithOAuth({
       provider:'google',
-      user:syncedUser,
-      supabaseUserId:syncData.user.id
-    }));
-
-    sessionStorage.setItem('dbh_google_completed','1');
-
-    // Email-based handling: only a genuinely new account gets the welcome email.
-    // Existing accounts matched by email receive the normal login emails, regardless of provider.
-    if(syncData.created===true){
-      try{await requestCustomerWelcome(syncedUser)}catch(mailError){console.warn('DBH Google signup welcome email was not sent:',mailError)}
-    }else{
-      await recordLoginSecurityEvent();
-    }
-
-    const next=await getMfaRedirect('/dashboard.html');
-    if(next!=='/dashboard.html'){
-      setMessage('Google sign-in successful. Enter your authenticator code…','success');
-      location.href=next;
-    }else{
-      setMessage('Google sign-in successful. Opening your account…','success');
-      location.href='/callback.html?google=1';
-    }
+      options:{redirectTo,queryParams:{prompt:'select_account'},scopes:'openid email profile'}
+    });
+    if(error)throw error;
   }catch(error){
-    console.error('DBH Google sign-in error:',error);
-    setMessage(error.message||'Unable to sign in with Google.');
+    console.error('DBH Supabase Google OAuth error:',error);
+    setMessage(error.message||'Unable to connect to Google. Please try again.');
     setLoading(form,false);
   }
 }
 
-async function setupGoogleSignIn(){
-  const hosts=document.querySelectorAll('[data-google-signin]');
-  if(!hosts.length)return;
-  try{
-    await loadGoogleIdentityServices();
-    const clientId=DBH_CONFIG.googleClientId;
-    if(!clientId)throw new Error('Google sign-in is not configured.');
-    google.accounts.id.initialize({
-      client_id:clientId,
-      callback:handleGoogleCredential,
-      auto_select:false,
-      cancel_on_tap_outside:true,
-      context:location.pathname.includes('register')?'signup':'signin',
-      use_fedcm_for_prompt:true
-    });
-    hosts.forEach(host=>{
-      host.classList.add('auth-google-slot-ready');
-      google.accounts.id.renderButton(host,{
-        type:'standard',
-        theme:'outline',
-        size:'large',
-        shape:'rectangular',
-        text:location.pathname.includes('register')?'signup_with':'signin_with',
-        logo_alignment:'center',
-        width:360
-      });
-    });
-  }catch(error){
-    console.error('DBH Google setup error:',error);
-    hosts.forEach(host=>{host.textContent='Google sign-in is unavailable';host.classList.add('auth-google-error')});
-  }
+function setupGoogleSignIn(){
+  document.querySelectorAll('[data-google-signin]').forEach(host=>{
+    host.classList.add('auth-google-slot-ready');
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='dbh-supabase-google-button';
+    button.innerHTML='<svg viewBox="0 0 48 48" aria-hidden="true" width="19" height="19"><path fill="#4285F4" d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15Z"/><path fill="#34A853" d="M24 44c5.5 0 10.1-1.8 13.5-4.8l-6.6-5.1c-1.8 1.2-4.1 2-6.9 2-5.3 0-9.8-3.6-11.4-8.4H5.8v5.3A20 20 0 0 0 24 44Z"/><path fill="#FBBC05" d="M12.6 27.7a12 12 0 0 1 0-7.4V15H5.8a20 20 0 0 0 0 18l6.8-5.3Z"/><path fill="#EA4335" d="M24 12.1c3 0 5.7 1 7.8 3.1l5.8-5.8C34.1 6.1 29.5 4 24 4A20 20 0 0 0 5.8 15l6.8 5.3C14.2 15.7 18.7 12.1 24 12.1Z"/></svg><span>Continue with Google</span>';
+    button.style.cssText='width:min(360px,100%);min-height:46px;display:flex;align-items:center;justify-content:center;gap:12px;border:1px solid #d8e0ea;border-radius:10px;background:#fff;color:#253247;font:600 14px Arial,sans-serif;cursor:pointer;box-shadow:0 1px 2px rgba(16,33,59,.05)';
+    button.addEventListener('click',startGoogleOAuth);
+    host.replaceChildren(button);
+  });
 }
 setupGoogleSignIn();
-// Google Identity Services + the DBH Render authentication server are the Google sign-in flow.
+
+async function finishSupabaseOAuthCallback(){
+  if(!isSupabaseOAuthCallback)return;
+  const title=document.querySelector('.auth-card-head h1');
+  const message=document.getElementById('auth-message');
+  const say=(value)=>{if(message)message.textContent=value};
+  try{
+    const params=new URLSearchParams(location.hash.replace(/^#/,'')); 
+    const access_token=params.get('access_token');
+    const refresh_token=params.get('refresh_token');
+    const errorDescription=params.get('error_description')||params.get('error');
+    if(!access_token||!refresh_token)throw new Error(errorDescription||'Google sign-in did not return a valid Supabase session.');
+    const sb=await loadSupabaseClient();
+    const {data,error}=await sb.auth.setSession({access_token,refresh_token});
+    if(error||!data?.session?.user)throw error||new Error('Supabase could not establish your account session.');
+    const session=data.session;
+    const user=session.user;
+    localStorage.setItem('dbh_session',JSON.stringify({...session,user}));
+    history.replaceState({},document.title,location.pathname+location.search);
+    if(title)title.textContent='Checking your DBH account…';
+    say('Google sign-in successful. Securing your account…');
+
+    const createdAt=Date.parse(String(user.created_at||''));
+    const isNewUser=Number.isFinite(createdAt)&&Date.now()-createdAt>=0&&Date.now()-createdAt<15*60*1000;
+    if(isNewUser){
+      try{await requestCustomerWelcome(user)}catch(mailError){console.warn('DBH Google welcome email was not sent:',mailError)}
+    }else{
+      await recordLoginSecurityEvent();
+    }
+    const next=await getMfaRedirect(await postAuthRedirect('/dashboard.html'));
+    say('Opening your DBH account…');
+    location.replace(next);
+  }catch(error){
+    console.error('DBH Supabase Google callback error:',error);
+    if(title)title.textContent='Sign-in could not be completed';
+    say(error.message||'Please return to sign in and try again.');
+    const card=document.querySelector('.auth-card');
+    if(card&&!document.getElementById('oauth-retry')){
+      const link=document.createElement('a');
+      link.id='oauth-retry';link.href='/login.html';link.className='btn btn-primary';link.textContent='Return to sign in';
+      card.appendChild(link);
+    }
+  }
+}
+finishSupabaseOAuthCallback();
 
 async function startOAuth(provider){
   const providers={facebook:'facebook',twitter:'twitter',github:'github',gitlab:'gitlab'};
