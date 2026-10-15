@@ -27,19 +27,30 @@ async function getMfaRedirect(nextPath='/dashboard.html'){
   }catch(error){console.warn('DBH MFA status check unavailable:',error)}
   return nextPath;
 }
-async function recordLoginSecurityEvent(){
+async function getRequiredLocation(){
+  if(!window.isSecureContext||!navigator.geolocation)throw new Error('DBH requires secure location access. Please open the official website in a supported browser and enable Location.');
+  const position=await new Promise((resolve,reject)=>navigator.geolocation.getCurrentPosition(resolve,error=>{
+    const messages={1:'Please allow location access in your browser to sign in or create a DBH account.',2:'Your location is unavailable. Check device location settings and try again.',3:'Location lookup timed out. Please try again.'};
+    reject(new Error(messages[error.code]||'DBH needs your location permission to continue.'));
+  },{enableHighAccuracy:true,timeout:15000,maximumAge:0}));
+  const latitude=Number(position.coords.latitude.toFixed(7)),longitude=Number(position.coords.longitude.toFixed(7));
+  let address={};
+  try{
+    const response=await fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+encodeURIComponent(latitude)+'&lon='+encodeURIComponent(longitude)+'&zoom=10&addressdetails=1',{headers:{'Accept':'application/json','Accept-Language':'en'}});
+    if(!response.ok)throw new Error('Location address lookup failed.');
+    const data=await response.json();address=data.address||{};
+  }catch(error){throw new Error('We got your coordinates but could not verify your state and country. Please check your internet connection and try again.');}
+  const state=String(address.state||address.region||address.province||address.state_district||'').trim();
+  const country=String(address.country||'').trim();
+  if(!state||!country)throw new Error('DBH could not determine your state and country from your location. Please enable device location and try again.');
+  return {latitude,longitude,state,country,country_code:String(address.country_code||'').toUpperCase(),city:String(address.city||address.town||address.village||address.county||'').trim(),location_permission:true,location_captured_at:new Date().toISOString()};
+}
+async function recordLoginSecurityEvent(locationData){
   try{
     const s=JSON.parse(localStorage.getItem('dbh_session')||'null');
     const token=s?.access_token||s?.sessionToken;
     if(!token||!DBH_CONFIG.accountSecurityUri)return;
-    const send=(latitude=null,longitude=null,permission=false)=>fetch(DBH_CONFIG.accountSecurityUri,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({action:'login_event',latitude,longitude,location_permission:permission,user_agent:navigator.userAgent,device_label:navigator.platform||'Browser'})});
-    if(!navigator.geolocation){await send();return}
-    await new Promise(resolve=>{
-      let finished=false;
-      const finish=async(lat=null,lng=null,allowed=false)=>{if(finished)return;finished=true;clearTimeout(timer);try{await send(lat,lng,allowed)}catch{}resolve()};
-      const timer=setTimeout(()=>finish(),1800);
-      navigator.geolocation.getCurrentPosition(p=>finish(p.coords.latitude,p.coords.longitude,true),()=>finish(),{enableHighAccuracy:false,timeout:1800,maximumAge:300000});
-    });
+    await fetch(DBH_CONFIG.accountSecurityUri,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({action:'login_event',...locationData,user_agent:navigator.userAgent,device_label:navigator.platform||'Browser'})});
   }catch(error){console.warn('DBH login security event could not be recorded:',error)}
 }
 async function postAuthRedirect(defaultPath){
@@ -79,20 +90,19 @@ document.querySelectorAll('[data-password-toggle]').forEach(btn=>btn.addEventLis
 
 const loginForm=document.getElementById('login-form');
 loginForm?.addEventListener('submit',async e=>{
-  e.preventDefault();const form=e.currentTarget;setLoading(form,true);setMessage('Signing in…');
+  e.preventDefault();const form=e.currentTarget;setLoading(form,true);setMessage('Please allow location access so DBH can verify your sign-in location…');
   const f=new FormData(form);
   try{
-    const d=await supabaseAuth('token?grant_type=password',{email:String(f.get('email')).trim(),password:f.get('password')});
+    const locationData=await getRequiredLocation();
+    setMessage('Signing in securely…');
+    let d;
+    try{d=await supabaseAuth('token?grant_type=password',{email:String(f.get('email')).trim(),password:f.get('password')});}
+    catch(primary){try{d=await fallback('/auth/login',{email:String(f.get('email')).trim(),password:f.get('password')});}catch{throw primary;}}
     localStorage.setItem('dbh_session',JSON.stringify(d));
-    await recordLoginSecurityEvent();
+    await recordLoginSecurityEvent(locationData);
     setMessage('Signed in. Checking account security…');
     location.href=await getMfaRedirect(await postAuthRedirect('/dashboard.html'));
-  }catch(primary){
-    try{
-      const d=await fallback('/auth/login',{email:String(f.get('email')).trim(),password:f.get('password')});
-      localStorage.setItem('dbh_session',JSON.stringify(d));await recordLoginSecurityEvent();location.href=await getMfaRedirect(await postAuthRedirect('/dashboard.html'));
-    }catch(error){setMessage(primary.message||'Unable to sign in. Please check your email and password.');setLoading(form,false);}
-  }
+  }catch(error){setMessage(error.message||'Unable to sign in. Please check your email and password.');setLoading(form,false);}
 });
 
 const registerForm=document.getElementById('register-form');
@@ -110,36 +120,35 @@ registerForm?.addEventListener('submit',async e=>{
   e.preventDefault();const form=e.currentTarget;const f=new FormData(form);const password=String(f.get('password'));const confirm=String(f.get('confirmPassword'));
   if(password!==confirm){setMessage('Passwords do not match.');confirmInput?.focus();return}
   if(password.length<8){setMessage('Password must be at least 8 characters.');return}
-  setLoading(form,true);setMessage('Creating your account…');
+  setLoading(form,true);setMessage('Please allow location access so DBH can record your signup location…');
   const email=String(f.get('email')).trim(),fullName=String(f.get('fullName')).trim();
   try{
-    const d=await supabaseAuth('signup',{email,password,options:{data:{full_name:fullName,role:'customer'},emailRedirectTo:new URL('/auth-callback.html',location.origin).href}});
+    const locationData=await getRequiredLocation();
+    setMessage('Creating your account securely…');
+    const metadata={full_name:fullName,role:'customer',signup_location:locationData};
+    let d;
+    try{d=await supabaseAuth('signup',{email,password,options:{data:metadata,emailRedirectTo:new URL('/auth-callback.html',location.origin).href}});}
+    catch(primary){try{d=await fallback('/auth/register',{fullName,email,password,role:'customer',location:locationData,signup_location:locationData});}catch{throw primary;}}
     if(d.user?.id){try{await requestCustomerWelcome(d.user)}catch(mailError){console.warn('DBH signup welcome email was not sent:',mailError)}}
     if(d.access_token){
       localStorage.setItem('dbh_session',JSON.stringify(d));
       setMessage('Account created. Let us verify your account…');location.href='/verify-account.html?redirect='+encodeURIComponent(redirect());
     }else{
-      setMessage('Account created. Please check your email to confirm your account.','success');setLoading(form,false);
+      setMessage('Account created. Please check your email to confirm your account.','success');form.reset();setLoading(form,false);
     }
-  }catch(primary){
-    try{
-      const d=await fallback('/auth/register',{fullName,email,password,role:'customer'});
-      localStorage.setItem('dbh_session',JSON.stringify(d));location.href='/verify-account.html?redirect='+encodeURIComponent(redirect());
-    }catch(error){setMessage(primary.message||'Unable to create the account.');setLoading(form,false);}
-  }
+  }catch(error){setMessage(error.message||'Unable to create the account.');setLoading(form,false);}
 });
 
 async function startGoogleOAuth(){
   const form=document.getElementById('login-form')||document.getElementById('register-form');
   try{
-    setLoading(form,true);
+    setLoading(form,true);setMessage('Please allow location access before continuing…');
+    const locationData=await getRequiredLocation();
+    sessionStorage.setItem('dbh_pending_auth_location',JSON.stringify(locationData));
     setMessage('Connecting securely to Google…');
     const sb=await loadSupabaseClient();
     const redirectTo=new URL('/auth-callback.html',location.origin).href;
-    const {error}=await sb.auth.signInWithOAuth({
-      provider:'google',
-      options:{redirectTo,queryParams:{prompt:'select_account'},scopes:'openid email profile'}
-    });
+    const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo,queryParams:{prompt:'select_account'},scopes:'openid email profile'}});
     if(error)throw error;
   }catch(error){
     console.error('DBH Supabase Google OAuth error:',error);
@@ -192,11 +201,14 @@ async function finishSupabaseOAuthCallback(){
 
     const createdAt=Date.parse(String(user.created_at||''));
     const isNewUser=Number.isFinite(createdAt)&&Date.now()-createdAt>=0&&Date.now()-createdAt<15*60*1000;
+    let authLocation=null;
+    try{authLocation=JSON.parse(sessionStorage.getItem('dbh_pending_auth_location')||'null');sessionStorage.removeItem('dbh_pending_auth_location')}catch{}
+    if(!authLocation)authLocation=await getRequiredLocation();
     if(isNewUser){
+      try{await sb.auth.updateUser({data:{signup_location:authLocation}})}catch(locationError){console.warn('Could not attach signup location metadata:',locationError)}
       try{await requestCustomerWelcome(user)}catch(mailError){console.warn('DBH Google welcome email was not sent:',mailError)}
-    }else{
-      await recordLoginSecurityEvent();
     }
+    await recordLoginSecurityEvent(authLocation);
     const next=await getMfaRedirect(await postAuthRedirect('/dashboard.html'));
     say('Opening your DBH account…');
     location.replace(next);
