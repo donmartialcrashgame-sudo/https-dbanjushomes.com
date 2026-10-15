@@ -85,6 +85,7 @@ async function fallback(path,payload){
   if(!r.ok)throw new Error('Request failed');
   return r.json();
 }
+async function requestCustomerWelcome(user){if(!user?.id||!user?.email||!DBH_CONFIG.accountSecurityUri)return;const r=await fetch(DBH_CONFIG.accountSecurityUri,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'customer_signup_welcome',user_id:user.id,email:user.email})});const d=await r.json().catch(()=>({}));if(!r.ok||d.success!==true)throw new Error(d.message||d.error||'Welcome email not sent');}
 function setMessage(text,type=''){if(!msg)return;msg.textContent=text;msg.className='form-message'+(type?' '+type:'')}
 function setLoading(form,loading){form?.classList.toggle('auth-loading',loading);const b=form?.querySelector('button[type="submit"]');if(b){b.disabled=loading;b.dataset.originalText??=b.textContent;b.textContent=loading?'Please wait…':b.dataset.originalText}}
 document.querySelectorAll('[data-password-toggle]').forEach(btn=>btn.addEventListener('click',()=>{const input=document.getElementById(btn.dataset.passwordToggle);if(!input)return;input.type=input.type==='password'?'text':'password';btn.setAttribute('aria-label',input.type==='password'?'Show password':'Hide password')}));
@@ -126,6 +127,7 @@ registerForm?.addEventListener('submit',async e=>{
   const email=String(f.get('email')).trim(),fullName=String(f.get('fullName')).trim();
   try{
     const d=await supabaseAuth('signup',{email,password,options:{data:{full_name:fullName,role:'customer'},emailRedirectTo:new URL('/auth-callback.html',location.origin).href}});
+    if(d.user?.id){try{await requestCustomerWelcome(d.user)}catch(mailError){console.warn('DBH signup welcome email was not sent:',mailError)}}
     if(d.access_token){
       localStorage.setItem('dbh_session',JSON.stringify(d));
       setMessage('Account created. Let us verify your account…');location.href='/verify-account.html?redirect='+encodeURIComponent(redirect());
