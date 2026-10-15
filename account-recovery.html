@@ -34,47 +34,51 @@
  const intro=document.getElementById('recovery-intro');
  const login=document.getElementById('recovery-login');
  const again=document.getElementById('recovery-again');
- const setStatus=(text,type='info')=>{status.textContent=text;status.className='recovery-status '+type};
- const showRecoveryLinks=()=>{login.hidden=false;again.hidden=false};
  const cfg=window.DBH_CONFIG||{};
- const endpoint=cfg.accountSecurityUri;
- const params=new URLSearchParams(location.search);
- const resetToken=params.get('token')||'';
- let validToken='';
+ const setStatus=(text,type='info')=>{status.textContent=text;status.className='recovery-status '+type};
+ const showLinks=()=>{login.hidden=false;again.hidden=false};
+ let sb=null, recoverySession=false;
  try{
-   if(!endpoint||!resetToken)throw new Error('This reset link is missing or invalid. Request a new reset email.');
-   history.replaceState({},document.title,location.pathname);
-   const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',apikey:cfg.supabaseAnonKey},body:JSON.stringify({action:'validate_password_reset',token:resetToken})});
-   const result=await response.json().catch(()=>({}));
-   if(!response.ok||result.valid!==true)throw new Error('This reset link has expired or has already been used. Request a new reset email.');
-   validToken=resetToken;
-   form.hidden=false;status.textContent='';status.className='recovery-status';
-   intro.textContent='Your secure link is verified. Choose your new password within the 10-minute validity period.';
+   if(!cfg.supabaseUrl||!cfg.supabaseAnonKey)throw new Error('Password recovery is temporarily unavailable. Please request a new email.');
+   const mod=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+   sb=mod.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+   const hash=new URLSearchParams(location.hash.replace(/^#/,''));
+   const query=new URLSearchParams(location.search);
+   const accessToken=hash.get('access_token')||query.get('access_token');
+   const refreshToken=hash.get('refresh_token')||query.get('refresh_token');
+   const type=hash.get('type')||query.get('type');
+   const authError=hash.get('error_description')||query.get('error_description')||query.get('error');
+   if(authError)throw new Error('This password-reset link is invalid or expired. Request a new reset email.');
+   if(accessToken&&refreshToken&&(!type||type==='recovery')){
+     const {error}=await sb.auth.setSession({access_token:accessToken,refresh_token:refreshToken});
+     if(error)throw error;
+     recoverySession=true;
+     history.replaceState({},document.title,location.pathname);
+     form.hidden=false;status.textContent='';status.className='recovery-status';
+     intro.textContent='Choose a new password for your DBH account.';
+   }else{
+     throw new Error('Open the password-reset button from the latest email. If the link has expired, request a new reset email.');
+   }
  }catch(err){
-   form.hidden=true;intro.textContent='A new reset email is required to change your password.';
-   setStatus(err.message||'This reset link is invalid or expired. Request a new one.','error');showRecoveryLinks();
+   form.hidden=true;intro.textContent='A valid Supabase password-reset link is required to change your password.';
+   setStatus(err.message||'This reset link is invalid or expired. Request a new one.','error');showLinks();
  }
  form.addEventListener('submit',async event=>{
    event.preventDefault();
    const data=new FormData(form),password=String(data.get('password')||''),confirm=String(data.get('confirmPassword')||'');
    if(password.length<8){setStatus('Your password must contain at least 8 characters.','error');return}
    if(password!==confirm){setStatus('The passwords do not match.','error');return}
-   if(!validToken){setStatus('This reset link is no longer valid. Request a new reset email.','error');showRecoveryLinks();return}
+   if(!recoverySession||!sb){setStatus('This reset session is invalid or expired. Request a new reset email.','error');showLinks();return}
    const button=form.querySelector('button[type=submit]');button.disabled=true;button.textContent='Updating password…';
    try{
-     const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',apikey:cfg.supabaseAnonKey},body:JSON.stringify({action:'complete_password_reset',token:validToken,password})});
-     const result=await response.json().catch(()=>({}));
-     if(!response.ok||result.success!==true){
-       if(result.error==='invalid_or_expired')throw new Error('This reset link has expired or has already been used. Request a new reset email.');
-       throw new Error('Unable to update your password right now. Please try again.');
-     }
-     validToken='';
+     const {error}=await sb.auth.updateUser({password});
+     if(error)throw error;
+     await sb.auth.signOut().catch(()=>{});
      localStorage.removeItem('dbh_session');
      form.reset();form.hidden=true;intro.textContent='Your password has been updated successfully.';
-     setStatus('Password changed successfully. This link can no longer be used. Redirecting you to sign in…','success');
-     showRecoveryLinks();
+     setStatus('Password changed successfully. Redirecting you to sign in…','success');showLinks();
      setTimeout(()=>location.replace('/login.html?password_reset=success'),1200);
-   }catch(err){setStatus(err.message||'Unable to update your password.','error');button.disabled=false;button.textContent='Save new password'}
+   }catch(err){setStatus(err.message||'Unable to update your password. Please try again.','error');button.disabled=false;button.textContent='Save new password'}
  });
 })();
 </script></body>
