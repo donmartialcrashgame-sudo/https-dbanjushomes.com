@@ -253,11 +253,11 @@ forgotForm?.addEventListener('submit',async e=>{
   e.preventDefault();const form=e.currentTarget;setLoading(form,true);
   const email=String(new FormData(form).get('email')).trim();
   try{
-    const r=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/recover',{method:'POST',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey},body:JSON.stringify({email,redirect_to:new URL('/account-recovery.html',location.origin).href})});
+    const r=await fetch(DBH_CONFIG.accountSecurityUri,{method:'POST',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey},body:JSON.stringify({action:'request_password_reset',email})});
     const d=await r.json().catch(()=>({}));
-    if(!r.ok)throw new Error(d.error_description||d.msg||d.message||'Unable to send the reset email.');
-    setMessage('If an account exists for that email, a password reset link has been sent. Check your inbox.','success');form.reset();
-  }catch(error){setMessage(error.message||'Unable to send the reset email.');}
+    if(!r.ok)throw new Error('Unable to process your request right now. Please try again.');
+    setMessage('If an account exists for that email, a DBH password reset link has been sent. The link expires in 10 minutes. Check your inbox.','success');form.reset();
+  }catch(error){setMessage(error.message||'Unable to send the reset email. Please try again.');}
   setLoading(form,false);
 });
 
