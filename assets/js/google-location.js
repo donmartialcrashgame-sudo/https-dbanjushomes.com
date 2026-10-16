@@ -141,6 +141,11 @@
     input.addEventListener("focus", () => {
       if (!input.value.trim()) promptMenu();
       else if (!menu.childElementCount) promptMenu();
+      if (navigator.permissions && typeof navigator.permissions.query === "function") {
+        navigator.permissions.query({name:"geolocation"}).then(permission => {
+          if (permission.state === "granted" && menu.classList.contains("open")) loadNearby();
+        }).catch(() => {});
+      }
     });
     input.addEventListener("input", () => {
       clearSelection();
