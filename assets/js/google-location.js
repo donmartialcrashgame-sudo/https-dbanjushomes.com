@@ -15,7 +15,7 @@
       body: JSON.stringify(body)
     });
     const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || "Google location search is unavailable.");
+    if (!response.ok) throw new Error(data.error || "Location search is unavailable.");
     return data;
   }
   function attach(options) {
