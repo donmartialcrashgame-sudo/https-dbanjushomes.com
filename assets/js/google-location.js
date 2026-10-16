@@ -46,7 +46,15 @@
     };
     function setField(key, value) {
       const el = getEl(key);
-      if (el) { el.value = value == null ? "" : value; el.dispatchEvent(new Event("change", {bubbles:true})); }
+      if (el) {
+        const nextValue = value == null ? "" : String(value);
+        if (el.tagName === "SELECT" && nextValue && !Array.from(el.options).some(option => option.value === nextValue)) {
+          const option = document.createElement("option"); option.value = nextValue; option.textContent = nextValue; el.appendChild(option);
+        }
+        el.value = nextValue;
+        el.dataset.dbhLocationAutofill = "1";
+        el.dispatchEvent(new Event("change", {bubbles:true}));
+      }
     }
     function clearSelection() {
       selected = false;
