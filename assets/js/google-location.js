@@ -35,7 +35,7 @@
     function setField(key, value) { const el = getEl(key); if (el) { el.value = value == null ? "" : value; el.dispatchEvent(new Event("change", {bubbles:true})); } }
     function clearSelection() {
       selected = false;
-      ["placeId","country","countryCode","latitude","longitude"].forEach(k => { const el = getEl(k); if (el) el.value = ""; });
+      Object.keys(fields).forEach(k => { const el = getEl(k); if (el && el !== input) el.value = ""; });
       status.textContent = ""; status.className = "dbh-place-status";
     }
     function close() { menu.classList.remove("open"); menu.replaceChildren(); }
