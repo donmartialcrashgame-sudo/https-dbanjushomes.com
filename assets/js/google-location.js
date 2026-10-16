@@ -1,4 +1,4 @@
-/* DBH Google Places helper. The Google API key remains server-side in Supabase. */
+/* DBH location picker. The provider API key remains server-side. */
 (function () {
   const ENDPOINT = "https://cpgajlsyuieeengdnamy.supabase.co/functions/v1/dbh-google-location";
   const ANON_KEY = "sb_publishable_fbcJT-QGKyZg0tDkpbDkOQ_CcQf2ugW";
@@ -32,7 +32,7 @@
       const selector = fields[key];
       return selector ? (selector.startsWith("#") || selector.startsWith(".") ? document.querySelector(selector) : document.getElementById(selector)) : null;
     };
-    function setField(key, value) { const el = getEl(key); if (el && value != null) { el.value = value; el.dispatchEvent(new Event("input", {bubbles:true})); el.dispatchEvent(new Event("change", {bubbles:true})); } }
+    function setField(key, value) { const el = getEl(key); if (el) { el.value = value == null ? "" : value; el.dispatchEvent(new Event("input", {bubbles:true})); el.dispatchEvent(new Event("change", {bubbles:true})); } }
     function clearSelection() {
       selected = false;
       ["placeId","country","countryCode","latitude","longitude"].forEach(k => { const el = getEl(k); if (el) el.value = ""; });
@@ -61,10 +61,17 @@
                 const place = await request({action:"details", placeId:item.placeId});
                 input.value = place.address || item.description || "";
                 setField("state", place.state); setField("lga", place.lga); setField("city", place.city);
-                setField("area", place.area); setField("country", place.country); setField("countryCode", place.country_code);
-                setField("placeId", place.placeId); setField("latitude", place.latitude); setField("longitude", place.longitude);
+                setField("area", place.area); setField("country", place.country);
+                const addressEl = getEl("address");
+                if (addressEl && addressEl !== input) setField("address", place.address);
+                setField("countryCode", place.country_code);
+                if (options.authoritative === true) {
+                  setField("placeId", place.placeId); setField("latitude", place.latitude); setField("longitude", place.longitude);
+                } else {
+                  setField("placeId", ""); setField("latitude", ""); setField("longitude", "");
+                }
                 selected = true;
-                status.textContent = "Address selected from Google Maps.";
+                status.textContent = "Location details filled successfully.";
                 status.className = "dbh-place-status success";
                 input.dispatchEvent(new Event("change", {bubbles:true}));
                 if (typeof options.onSelect === "function") options.onSelect(place);
