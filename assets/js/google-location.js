@@ -101,8 +101,10 @@
             const place = await request({action:"details", placeId:item.placeId});
             const primaryValue = options.primaryField ? place[options.primaryField] : place.address;
             input.value = primaryValue || place.address || item.description || "";
-            setField("state", place.state); setField("lga", place.lga); setField("city", place.city);
-            setField("area", place.area); setField("country", place.country);
+            // Some address results omit neighbourhood/LGA components. Preserve what the user already selected or typed instead of blanking it.
+            ["state","lga","city","area","country"].forEach(key => {
+              if (place[key] != null && String(place[key]).trim() !== "") setField(key, place[key]);
+            });
             const addressEl = getEl("address");
             if (addressEl && addressEl !== input) setField("address", place.address);
             setField("countryCode", place.country_code);
