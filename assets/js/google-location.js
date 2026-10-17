@@ -11,6 +11,10 @@
 .dbh-place-option strong{display:block;font-size:12px;font-weight:800}
 .dbh-place-option small{display:block;margin-top:3px;color:#64748b;font-size:10px;line-height:1.4}
 .dbh-place-prompt{padding:9px 10px;color:#64748b;font-size:11px;line-height:1.45}
+.dbh-place-recent-heading{padding:10px 10px 5px;color:#64748b;font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.07em}
+.dbh-place-recent{display:flex;align-items:center;gap:9px;width:100%;border:0;background:#fff;text-align:left;padding:10px;border-radius:8px;cursor:pointer;color:#102033;font-size:12px}
+.dbh-place-recent:hover,.dbh-place-recent:focus{background:#eff6ff;outline:0}
+.dbh-place-recent i{color:#64748b;flex:0 0 auto}
 .dbh-place-nearby{display:block;width:100%;padding:10px;margin:3px 0 5px;border:1px solid #bfdbfe;border-radius:9px;background:#eff6ff;color:#124b91;font-weight:750;font-size:11px;text-align:left;cursor:pointer}
 .dbh-place-nearby:disabled{opacity:.65;cursor:wait}
 .dbh-place-status{font-size:10px;color:#64748b;margin-top:5px}
@@ -68,17 +72,47 @@
       status.textContent = ""; status.className = "dbh-place-status";
     }
     function close() { menu.classList.remove("open"); menu.replaceChildren(); }
-    function showError(message) { status.textContent = message; status.className = "dbh-place-status error"; }
+    const recentKey = options.recentSearches === true ? (options.recentStorageKey || "dbh_recent_location_searches_v1") : "";
+    function getRecent() {
+      if (!recentKey) return [];
+      try { const value = JSON.parse(localStorage.getItem(recentKey) || "[]"); return Array.isArray(value) ? value.filter(x => typeof x === "string" && x.trim()).slice(0,6) : []; } catch { return []; }
+    }
+    function saveRecent(value) {
+      const clean = String(value || "").trim();
+      if (!recentKey || !clean) return;
+      try {
+        const items = [clean, ...getRecent().filter(x => x.toLowerCase() !== clean.toLowerCase())].slice(0,6);
+        localStorage.setItem(recentKey, JSON.stringify(items));
+      } catch {}
+    }
     function promptMenu() {
       menu.replaceChildren();
-      const prompt = document.createElement("div");
-      prompt.className = "dbh-place-prompt";
-      prompt.textContent = "Type to search anywhere in the world, or use your current location for nearby suggestions.";
+      const recent = getRecent();
+      if (recent.length) {
+        const heading = document.createElement("div"); heading.className = "dbh-place-recent-heading"; heading.textContent = "Recent locations";
+        menu.appendChild(heading);
+        recent.forEach(value => {
+          const button = document.createElement("button"); button.type = "button"; button.className = "dbh-place-recent";
+          const icon = document.createElement("i"); icon.className = "fa-solid fa-clock-rotate-left"; icon.setAttribute("aria-hidden", "true");
+          const label = document.createElement("span"); label.textContent = value;
+          button.append(icon, label);
+          button.addEventListener("click", () => {
+            input.value = value; close(); status.textContent = "Recent location selected. Apply filters to search."; status.className = "dbh-place-status";
+            input.dispatchEvent(new Event("change", {bubbles:true}));
+            if (typeof options.onRecentSelect === "function") options.onRecentSelect(value);
+          });
+          menu.appendChild(button);
+        });
+      } else {
+        const prompt = document.createElement("div"); prompt.className = "dbh-place-prompt";
+        prompt.textContent = "Type to search anywhere in the world, or use your current location for nearby suggestions.";
+        menu.appendChild(prompt);
+      }
       const nearby = document.createElement("button");
       nearby.type = "button"; nearby.className = "dbh-place-nearby";
       nearby.textContent = "⌖  Suggest places near my current location";
       nearby.addEventListener("click", loadNearby);
-      menu.append(prompt, nearby); menu.classList.add("open");
+      menu.appendChild(nearby); menu.classList.add("open");
     }
     function renderSuggestions(items, seq) {
       menu.replaceChildren();
@@ -114,6 +148,7 @@
               setField("placeId", ""); setField("latitude", ""); setField("longitude", "");
             }
             selected = true;
+            saveRecent(primaryValue || place.address || item.description || "");
             status.textContent = "Location details filled successfully.";
             status.className = "dbh-place-status success";
             input.dispatchEvent(new Event("change", {bubbles:true}));
