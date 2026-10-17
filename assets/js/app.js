@@ -522,7 +522,7 @@ async function initAuthState(){
     const authBase=(window.DBH_CONFIG?.apiBaseUrl||'').replace(/\/$/,'');
     const sessionHeaders={Accept:'application/json'};
     if(local?.sessionToken)sessionHeaders.Authorization='Bearer '+local.sessionToken;
-    if(!isAuthPage||local?.sessionToken){
+    if((!isAuthPage||local?.sessionToken)&&!(local?.access_token&&!local?.sessionToken)){
     const r=await fetch(authBase+'/api/auth/session',{credentials:'include',headers:sessionHeaders});
     if(r.ok){
       const d=await r.json().catch(()=>null);
