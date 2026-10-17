@@ -812,6 +812,7 @@ function setupNativeNotificationPopups(){
   }
 
   async function ensureWebPushSubscription(){
+    if(!token())return null;
     if(!('serviceWorker' in navigator)||!('PushManager' in window)||!window.isSecureContext)return null;
     const registration=await navigator.serviceWorker.ready;
     if(!registration.pushManager)return null;
@@ -859,7 +860,7 @@ function setupNativeNotificationPopups(){
   }
 
   async function syncExistingPushSubscription(){
-    if(Notification.permission!=='granted')return;
+    if(!token()||Notification.permission!=='granted')return;
     try{await ensureWebPushSubscription()}catch(e){console.warn('DBH existing push subscription:',e)}
   }
 
