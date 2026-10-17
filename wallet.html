@@ -59,7 +59,7 @@
 </main>
 <script src="/assets/js/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/assets/js/app.js?v=20261017-wallet-load-fix2"></script>
+<script src="/assets/js/app.js?v=20261017-wallet-load-fix3"></script>
 <script>
 (function(){
  const endpoint=window.DBH_CONFIG.supabaseUrl+'/functions/v1/dbh-customer-wallet';
@@ -126,7 +126,7 @@ async function recoverDbhToken(){try{const base=(window.DBH_CONFIG?.apiBaseUrl||
   }finally{btn.disabled=false}
  }
  $('flutterwave-refresh').addEventListener('click',loadFlutterwaveBalance);
- async function syncAlertButton(){const button=$('wallet-enable-alerts'),status=$('wallet-alert-message');try{if(!('Notification' in window)||!('serviceWorker' in navigator)||!('PushManager' in window))return;const reg=await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();if(Notification.permission==='granted'&&sub&&typeof window.DBHPrepareNotifications==='function'){const synced=await window.DBHPrepareNotifications();if(synced){button.hidden=true;status.hidden=true;button.dataset.enabled='true';}}}catch(e){console.warn('Could not check DBH notification subscription',e)}}
+ async function syncAlertButton(){const button=$('wallet-enable-alerts'),status=$('wallet-alert-message');if(!button||!status)return;try{if(!('Notification' in window)||!('serviceWorker' in navigator)||!('PushManager' in window))return;const reg=await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();if(Notification.permission==='granted'&&sub&&typeof window.DBHPrepareNotifications==='function'){const synced=await window.DBHPrepareNotifications();if(synced){button.hidden=true;status.hidden=true;button.dataset.enabled='true';}}}catch(e){console.warn('Could not check DBH notification subscription',e)}}
  const alertsButton=$('wallet-enable-alerts');
   if(alertsButton)alertsButton.addEventListener('click',async()=>{
   const button=$('wallet-enable-alerts'),status=$('wallet-alert-message');
