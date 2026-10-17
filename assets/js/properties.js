@@ -68,7 +68,7 @@ function locationMatches(p,query){
  const place=norm([p.area,p.city,p.state,p.lga,p.address,p.country].filter(Boolean).join(' '));
  const tokens=norm(query).split(' ').filter(t=>t&&t!=='nigeria'&&t!=='state'&&t!=='county');
  if(!tokens.length)return true;
- return place.includes(norm(query))||tokens.every(t=>place.includes(t));
+ const matched=tokens.filter(t=>place.includes(t)).length;\n return place.includes(norm(query))||matched>=Math.min(tokens.length,Math.max(1,Math.ceil(tokens.length/2)));
 }
 function apply(){
  const form=document.getElementById('property-filters');
@@ -98,7 +98,7 @@ async function boot(){
   const form=document.getElementById('property-filters');
   const type=document.querySelector('select[name="type"]');
   [...new Set(all.flatMap(p=>[p.property_type,p.category]).filter(Boolean))].forEach(v=>{const o=document.createElement('option');o.value=norm(v);o.textContent=String(v).replace(/\b\w/g,ch=>ch.toUpperCase());if(type&&![...type.options].some(existing=>existing.value===o.value))type.appendChild(o)});
-  if(form){if(requestedType){const wanted=norm(requestedType);form.elements.type.value=wanted;}if(requestedLocation)form.elements.location.value=requestedLocation;if(requestedQ&&form.elements.q)form.elements.q.value=requestedQ;if(requestedMinPrice&&form.elements.minPrice)form.elements.minPrice.value=requestedMinPrice;if(requestedMaxPrice&&form.elements.maxPrice)form.elements.maxPrice.value=requestedMaxPrice;}
+  if(form){if(requestedType){const wanted=norm(requestedType);if(![...form.elements.type.options].some(o=>o.value===wanted)){const option=document.createElement('option');option.value=wanted;option.textContent=wanted.replace(/\\b\\w/g,ch=>ch.toUpperCase());form.elements.type.appendChild(option);}form.elements.type.value=wanted;}if(requestedLocation)form.elements.location.value=requestedLocation;if(requestedQ&&form.elements.q)form.elements.q.value=requestedQ;if(requestedMinPrice&&form.elements.minPrice)form.elements.minPrice.value=requestedMinPrice;if(requestedMaxPrice&&form.elements.maxPrice)form.elements.maxPrice.value=requestedMaxPrice;}
   render(all);
   document.getElementById('property-filters')?.addEventListener('submit',e=>{e.preventDefault();const locationValue=String(new FormData(e.currentTarget).get('location')||'').trim();if(locationValue){try{const key='dbh_recent_location_searches_v1';const old=JSON.parse(localStorage.getItem(key)||'[]');const list=Array.isArray(old)?old.filter(x=>typeof x==='string'):[];localStorage.setItem(key,JSON.stringify([locationValue,...list.filter(x=>x.toLowerCase()!==locationValue.toLowerCase())].slice(0,6)));}catch(error){console.warn('Could not save recent DBH location search.',error)}}apply()});
   document.getElementById('sort-select')?.addEventListener('change',apply);
