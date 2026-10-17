@@ -120,7 +120,8 @@ async function recoverDbhToken(){try{const base=(window.DBH_CONFIG?.apiBaseUrl||
  }
  $('flutterwave-refresh').addEventListener('click',loadFlutterwaveBalance);
  async function syncAlertButton(){const button=$('wallet-enable-alerts'),status=$('wallet-alert-message');try{if(!('Notification' in window)||!('serviceWorker' in navigator)||!('PushManager' in window))return;const reg=await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();if(Notification.permission==='granted'&&sub&&typeof window.DBHPrepareNotifications==='function'){const synced=await window.DBHPrepareNotifications();if(synced){button.hidden=true;status.hidden=true;button.dataset.enabled='true';}}}catch(e){console.warn('Could not check DBH notification subscription',e)}}
- $('wallet-enable-alerts').addEventListener('click',async()=>{
+ const alertsButton=$('wallet-enable-alerts');
+  if(alertsButton)alertsButton.addEventListener('click',async()=>{
   const button=$('wallet-enable-alerts'),status=$('wallet-alert-message');
   button.disabled=true;button.textContent='Enabling alerts…';
   try{
@@ -145,7 +146,18 @@ function renderVirtualAccount(account){
  $('virtual-account-details').innerHTML='<div class="virtual-account-row"><div><span class="virtual-account-label">ACCOUNT NUMBER</span><span class="virtual-account-value" id="dedicated-account-number">'+escAccount(number)+'</span></div><button class="copy-account" id="copy-account-number" type="button" aria-label="Copy account number" title="Copy account number"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button></div><div><span class="virtual-account-label">BANK</span><span class="virtual-account-value">'+escAccount(bank)+'</span></div><div><span class="virtual-account-label">ACCOUNT NAME</span><span class="virtual-account-value">'+escAccount(name)+'</span></div><div><span class="virtual-account-label">STATUS</span><span class="virtual-account-value">'+escAccount(status)+'</span></div><div id="copy-account-message" class="wallet-message" role="status" aria-live="polite"></div>';
  $('copy-account-number').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(number);$('copy-account-message').textContent='Account number copied.';$('copy-account-message').className='wallet-message show success';}catch(e){const el=document.createElement('textarea');el.value=number;el.style.position='fixed';el.style.opacity='0';document.body.appendChild(el);el.select();const ok=document.execCommand('copy');el.remove();$('copy-account-message').textContent=ok?'Account number copied.':'Copy failed. Please select the account number and copy it.';$('copy-account-message').className='wallet-message show '+(ok?'success':'error')}});
 }
-async function loadVirtualAccount(){try{const d=await call('status');if(d.account&&d.account.account_number)renderVirtualAccount(d.account)}catch(e){}}
+async function loadVirtualAccount(){
+ const panel=$('virtual-account-panel'),details=$('virtual-account-details'),status=$('account-message');
+ try{
+  const d=await call('status');
+  if(d.account&&d.account.account_number){renderVirtualAccount(d.account);return;}
+  if(details)details.textContent='No dedicated bank account is linked to this signed-in account yet. If you already generated one, refresh once; if it remains missing, contact DBH support so the account can be linked securely.';
+ }catch(e){
+  console.warn('DBH wallet account lookup failed:',e);
+  if(details)details.textContent='We could not retrieve your existing bank account right now.';
+  if(status){status.textContent=e?.message||'Could not load your dedicated account. Please refresh and try again.';status.className='wallet-message show error';}
+ }
+}
 $('virtual-account-form').addEventListener('submit',async e=>{
  e.preventDefault();
  const btn=$('account-button'),status=$('account-message');
