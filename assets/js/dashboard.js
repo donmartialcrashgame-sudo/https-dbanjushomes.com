@@ -61,6 +61,41 @@
     document.querySelector('[data-header-nav="dashboard"]')?.classList.add('active');
   }
 
+  async function loadHeroWallet(){
+    const balanceEl=document.getElementById('dbh-hero-wallet-balance');
+    const nameEl=document.getElementById('dbh-hero-wallet-account-name');
+    const numberEl=document.getElementById('dbh-hero-wallet-account-number');
+    const bankEl=document.getElementById('dbh-hero-wallet-bank');
+    const statusEl=document.getElementById('dbh-hero-wallet-status');
+    const copyBtn=document.getElementById('dbh-hero-copy-account');
+    if(!balanceEl)return;
+    const s=(()=>{try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}})();
+    const token=s?.access_token||s?.sessionToken||s?.accessToken||s?.session?.access_token||'';
+    const endpoint=(window.DBH_CONFIG?.supabaseUrl||'').replace(/\/$/,'')+'/functions/v1/dbh-customer-wallet';
+    const money=(amount,currency='NGN')=>{try{return new Intl.NumberFormat('en-NG',{style:'currency',currency:currency||'NGN',maximumFractionDigits:2}).format(Number(amount||0))}catch{return '₦'+Number(amount||0).toLocaleString('en-NG')}};
+    if(!token){balanceEl.textContent='Sign in to view';nameEl.textContent='Account unavailable';numberEl.textContent='—';statusEl.textContent='Sign in to access your wallet';return;}
+    try{
+      const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json',apikey:window.DBH_CONFIG?.supabaseAnonKey||'',Authorization:'Bearer '+token},body:JSON.stringify({action:'status'}),cache:'no-store'});
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok||!data.success)throw new Error(data.error||'Wallet balance is temporarily unavailable.');
+      const wallet=data.wallet||{},account=data.account||null;
+      balanceEl.textContent=money(wallet.available_balance,wallet.currency||'NGN');
+      statusEl.textContent=String(wallet.status||'Wallet active').replaceAll('_',' ');
+      if(account?.account_number){
+        nameEl.textContent=account.account_name||'Account name unavailable';
+        numberEl.textContent=account.account_number;
+        bankEl.textContent=[account.bank_name,account.currency||'NGN'].filter(Boolean).join(' · ');
+        copyBtn.hidden=false;
+        copyBtn.onclick=async()=>{try{await navigator.clipboard.writeText(String(account.account_number));copyBtn.textContent='Copied';setTimeout(()=>copyBtn.textContent='Copy',1400)}catch{copyBtn.textContent='Select number'}};
+      }else{
+        nameEl.textContent='No dedicated account yet';numberEl.textContent='Not generated';bankEl.textContent='Create your wallet account to receive transfers';copyBtn.hidden=true;
+      }
+    }catch(error){
+      balanceEl.textContent='Unavailable';nameEl.textContent='Wallet account details';numberEl.textContent='Open wallet to retry';bankEl.textContent='Your wallet data could not be loaded right now';statusEl.textContent='Temporarily unavailable';console.warn('DBH dashboard wallet summary:',error);
+    }
+  }
+  loadHeroWallet();
+
   const dataResponse=await fetch(api+'/api/dashboard',{credentials:'include',headers}).catch(()=>null);
 
   if(!dataResponse?.ok){
