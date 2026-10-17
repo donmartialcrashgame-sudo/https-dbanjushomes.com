@@ -3,7 +3,7 @@
   const api=(window.DBH_CONFIG?.apiBaseUrl||'').replace(/\/$/,'');
   const headers={Accept:'application/json'};
   if(local?.sessionToken)headers.Authorization='Bearer '+local.sessionToken;
-  const sessionResponse=await fetch(api+'/api/auth/session',{credentials:'include',headers}).catch(()=>null);
+  const sessionResponse=(local?.access_token&&!local?.sessionToken)?null:await fetch(api+'/api/auth/session',{credentials:'include',headers}).catch(()=>null);
 
   if(!sessionResponse?.ok){
     if((local?.sessionToken||local?.access_token)&&local?.user){
