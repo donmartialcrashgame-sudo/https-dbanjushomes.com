@@ -55,7 +55,7 @@ function render(rows){
  box.innerHTML=rows.length?rows.map(card).join(''):'<div class="market-empty"><div><div class="market-empty-icon"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></svg></div><strong>No matching properties</strong><p>Try a different location, property type or price range to see more DBH listings.</p><button type="button" id="clear-property-filters">Clear filters</button></div></div>';
  box.querySelectorAll('.reveal').forEach(x=>x.classList.add('visible'));
 }
-function norm(v){return String(v??'').normalize('NFKD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().replace(/\\s+/g,' ')}
+function norm(v){return String(v??'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().replace(/\s+/g,' ')}
 function typeMatches(p,wanted){
  const actual=norm(p.property_type||p.category||'');
  if(!wanted)return true;
@@ -96,9 +96,9 @@ async function boot(){
   const requestedMinPrice=params.get('minPrice');
   const requestedMaxPrice=params.get('maxPrice');
   const form=document.getElementById('property-filters');
-  if(form){if(requestedType)form.elements.type.value=requestedType;if(requestedLocation)form.elements.location.value=requestedLocation;if(requestedQ&&form.elements.q)form.elements.q.value=requestedQ;if(requestedMinPrice&&form.elements.minPrice)form.elements.minPrice.value=requestedMinPrice;if(requestedMaxPrice&&form.elements.maxPrice)form.elements.maxPrice.value=requestedMaxPrice;}
   const type=document.querySelector('select[name="type"]');
-  [...new Set(all.flatMap(p=>[p.property_type,p.category]).filter(Boolean))].forEach(v=>{const o=document.createElement('option');o.value=norm(v);o.textContent=String(v).replace(/\\b\\w/g,ch=>ch.toUpperCase());if(type&&![...type.options].some(existing=>existing.value===o.value))type.appendChild(o)});
+  [...new Set(all.flatMap(p=>[p.property_type,p.category]).filter(Boolean))].forEach(v=>{const o=document.createElement('option');o.value=norm(v);o.textContent=String(v).replace(/\b\w/g,ch=>ch.toUpperCase());if(type&&![...type.options].some(existing=>existing.value===o.value))type.appendChild(o)});
+  if(form){if(requestedType){const wanted=norm(requestedType);form.elements.type.value=wanted;}if(requestedLocation)form.elements.location.value=requestedLocation;if(requestedQ&&form.elements.q)form.elements.q.value=requestedQ;if(requestedMinPrice&&form.elements.minPrice)form.elements.minPrice.value=requestedMinPrice;if(requestedMaxPrice&&form.elements.maxPrice)form.elements.maxPrice.value=requestedMaxPrice;}
   render(all);
   document.getElementById('property-filters')?.addEventListener('submit',e=>{e.preventDefault();const locationValue=String(new FormData(e.currentTarget).get('location')||'').trim();if(locationValue){try{const key='dbh_recent_location_searches_v1';const old=JSON.parse(localStorage.getItem(key)||'[]');const list=Array.isArray(old)?old.filter(x=>typeof x==='string'):[];localStorage.setItem(key,JSON.stringify([locationValue,...list.filter(x=>x.toLowerCase()!==locationValue.toLowerCase())].slice(0,6)));}catch(error){console.warn('Could not save recent DBH location search.',error)}}apply()});
   document.getElementById('sort-select')?.addEventListener('change',apply);
