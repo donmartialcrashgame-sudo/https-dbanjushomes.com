@@ -53,11 +53,11 @@ async function getRequiredLocation(){
       if(!state||!country)throw new Error('The state and country were missing from the address response.');
       locationData={latitude,longitude,state,country,country_code:String(address.country_code||'').toUpperCase(),city:String(address.city||address.town||address.village||address.county||'').trim(),location_permission:true,location_captured_at:new Date().toISOString()};
     }catch(fallbackError){
-      console.warn('DBH fallback reverse-geocoding failed:',fallbackError);
-      throw new Error('DBH received your location permission, but the location service is temporarily unavailable. Please try again in a moment.');
+      console.warn('DBH fallback reverse-geocoding failed; continuing with captured coordinates:',fallbackError);
+      locationData={latitude,longitude,state:'',country:'',country_code:'',city:'',location_permission:true,location_resolution_status:'pending',location_captured_at:new Date().toISOString()};
     }
   }
-  if(!locationData.state||!locationData.country)throw new Error('DBH could not verify your state and country. Please try again.');
+  if(locationData&&!locationData.state&&!locationData.country)locationData.location_resolution_status='pending';
   return locationData;
 }
 async function saveAccountLocation(locationData){
