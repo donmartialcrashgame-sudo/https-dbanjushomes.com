@@ -101,21 +101,28 @@ async function recoverDbhToken(){try{const base=(window.DBH_CONFIG?.apiBaseUrl||
   }).join('');
  }
  async function load(){
-  $('wallet-refresh').disabled=true;
+  const refresh=$('wallet-refresh');
+  if(refresh)refresh.disabled=true;
   try{
    const d=await call('status');
-   $('wallet-balance').textContent=money(d.wallet?.available_balance);
-   $('wallet-status').textContent=d.wallet?.status==='active'?'Active wallet':'Wallet unavailable';
+   const balance=Number(d?.wallet?.available_balance);
+   if(!d?.wallet||!Number.isFinite(balance))throw new Error('DBH could not verify your wallet balance. Please refresh or sign in again.');
+   $('wallet-balance').textContent=money(balance);
+   $('wallet-status').textContent=d.wallet.status==='active'?'Active wallet':'Wallet unavailable';
    $('wallet-owner').textContent='NGN · Secure customer wallet';
    renderTransactions(d.transactions);
-   if(new URLSearchParams(location.search).get('payment')==='return')message('Payment return received. Your balance reflects only payments verified by Flutterwave. Refresh in a moment if the deposit is still pending.','success');
+   const returned=new URLSearchParams(location.search).get('payment')==='return';
+   if(returned)message('Wallet balance refreshed from DBH records. Only deposits verified by Flutterwave are included. If your transfer is still missing, contact DBH support with your bank receipt/reference.','success');
   }catch(e){
-   $('wallet-balance').textContent='Unavailable';$('wallet-status').textContent='Sign-in required';
-   $('wallet-transactions').innerHTML='<tr><td colspan="4"><div class="wallet-empty">'+e.message.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))+'</div></td></tr>';
-   if(!new URLSearchParams(location.search).has('payment'))message(e.message,'error');
-  }finally{$('wallet-refresh').disabled=false}
+   $('wallet-balance').textContent='Unavailable';$('wallet-status').textContent='Unable to verify balance';
+   $('wallet-transactions').innerHTML='<tr><td colspan="4"><div class="wallet-empty">'+String(e.message||'Could not load your wallet.').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))+'</div></td></tr>';
+   message(e.message||'Could not load your wallet. Please try again.','error');
+  }finally{if(refresh)refresh.disabled=false}
  }
  $('wallet-refresh').addEventListener('click',load);
+ window.addEventListener('focus',()=>{if(!document.hidden)load()});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)load()});
+ if(new URLSearchParams(location.search).get('payment')==='return')setTimeout(load,5000);
 async function syncAlertButton(){const button=$('wallet-enable-alerts'),status=$('wallet-alert-message');if(!button||!status)return;try{if(!('Notification' in window)||!('serviceWorker' in navigator)||!('PushManager' in window))return;const reg=await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();if(Notification.permission==='granted'&&sub&&typeof window.DBHPrepareNotifications==='function'){const synced=await window.DBHPrepareNotifications();if(synced){button.hidden=true;status.hidden=true;button.dataset.enabled='true';}}}catch(e){console.warn('Could not check DBH notification subscription',e)}}
  const alertsButton=$('wallet-enable-alerts');
   if(alertsButton)alertsButton.addEventListener('click',async()=>{
