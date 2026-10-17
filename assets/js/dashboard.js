@@ -59,6 +59,7 @@
     const stats=document.getElementById('dashboard-stats');
     if(stats)stats.innerHTML=[['Saved properties',0,'♡'],['Enquiries',0,'↗'],['Notifications',0,'•'],['Listings',0,'＋']].map(x=>'<article class="dbh-dash-stat"><div class="dbh-dash-stat-top"><small>'+x[0]+'</small><span class="dbh-dash-stat-icon">'+x[2]+'</span></div><strong>'+x[1]+'</strong></article>').join('');
     document.querySelector('[data-header-nav="dashboard"]')?.classList.add('active');
+    loadHeroWallet();
   }
 
   async function loadHeroWallet(){
