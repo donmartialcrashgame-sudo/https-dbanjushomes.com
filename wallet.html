@@ -92,6 +92,28 @@ async function recoverDbhToken(){try{const base=(window.DBH_CONFIG?.apiBaseUrl||
   if(!response.ok||data.success===false||data.error)throw new Error(data.error||'Wallet request failed ('+response.status+').');
   return data;
  }
+ function renderTransactions(items){
+  const body=$('wallet-transactions');
+  if(!body)return;
+  const rows=Array.isArray(items)?items:[];
+  if(!rows.length){
+   body.innerHTML='<tr><td colspan="4"><div class="wallet-empty">No wallet transactions yet. Completed and pending transactions will appear here.</div></td></tr>';
+   return;
+  }
+  const safe=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const date=value=>{if(!value)return '—';const d=new Date(value);return Number.isNaN(d.getTime())?'—':d.toLocaleString('en-NG',{dateStyle:'medium',timeStyle:'short'});};
+  body.innerHTML=rows.map(tx=>{
+   const direction=String(tx.direction||'').toLowerCase();
+   const type=String(tx.transaction_type||'Wallet transaction').replace(/[_-]+/g,' ');
+   const status=String(tx.status||'pending').toLowerCase();
+   const credit=direction==='credit';
+   const amount=(credit?'+':'−')+money(tx.amount);
+   const ref=tx.reference?'<div class="wallet-tx-ref">Ref: '+safe(tx.reference)+'</div>':'';
+   const description=tx.description?'<div class="wallet-tx-ref">'+safe(tx.description)+'</div>':'';
+   const stateClass=['posted','pending'].includes(status)?status:'';
+   return '<tr><td><div class="wallet-tx-title">'+safe(type)+'</div>'+description+ref+'</td><td>'+safe(date(tx.created_at||tx.posted_at))+'</td><td><span class="wallet-amount '+(credit?'credit':'debit')+'">'+safe(amount)+'</span></td><td><span class="wallet-pill '+stateClass+'">'+safe(status)+'</span></td></tr>';
+  }).join('');
+ }
  async function load(){
   $('wallet-refresh').disabled=true;
   try{
