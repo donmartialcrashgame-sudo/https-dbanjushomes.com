@@ -59,7 +59,7 @@
 </main>
 <script src="/assets/js/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/assets/js/app.js?v=20261017-wallet-load-fix1"></script>
+<script src="/assets/js/app.js?v=20261017-wallet-load-fix2"></script>
 <script>
 (function(){
  const endpoint=window.DBH_CONFIG.supabaseUrl+'/functions/v1/dbh-customer-wallet';
@@ -84,6 +84,13 @@ async function recoverDbhToken(){try{const base=(window.DBH_CONFIG?.apiBaseUrl||
    if(!token)token=await Promise.race([recoverDbhToken(),new Promise(resolve=>setTimeout(()=>resolve(''),3500))]);
    if(!token)throw new Error('Your sign-in could not be verified. Please sign in again and reopen My Wallet.');
    return token;
+ }
+ async function call(action,extra={}){
+  const accessToken=await getToken();
+  const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json',apikey:window.DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+accessToken},body:JSON.stringify({action,...extra}),cache:'no-store'});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok||data.success===false||data.error)throw new Error(data.error||'Wallet request failed ('+response.status+').');
+  return data;
  }
  async function load(){
   $('wallet-refresh').disabled=true;
