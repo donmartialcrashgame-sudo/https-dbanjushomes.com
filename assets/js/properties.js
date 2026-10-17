@@ -73,14 +73,16 @@ async function boot(){
   const requestedType=params.get('type');
   const requestedLocation=params.get('location');
   const requestedQ=params.get('q');
+  const requestedMinPrice=params.get('minPrice');
+  const requestedMaxPrice=params.get('maxPrice');
   const form=document.getElementById('property-filters');
-  if(form){if(requestedType)form.elements.type.value=requestedType;if(requestedLocation)form.elements.location.value=requestedLocation;if(requestedQ&&form.elements.q)form.elements.q.value=requestedQ;}
+  if(form){if(requestedType)form.elements.type.value=requestedType;if(requestedLocation)form.elements.location.value=requestedLocation;if(requestedQ&&form.elements.q)form.elements.q.value=requestedQ;if(requestedMinPrice&&form.elements.minPrice)form.elements.minPrice.value=requestedMinPrice;if(requestedMaxPrice&&form.elements.maxPrice)form.elements.maxPrice.value=requestedMaxPrice;}
   const type=document.querySelector('select[name="type"]');
   [...new Set(all.map(p=>p.property_type).filter(Boolean))].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v.charAt(0).toUpperCase()+v.slice(1);type?.appendChild(o)});
   render(all);
   document.getElementById('property-filters')?.addEventListener('submit',e=>{e.preventDefault();const locationValue=String(new FormData(e.currentTarget).get('location')||'').trim();if(locationValue){try{const key='dbh_recent_location_searches_v1';const old=JSON.parse(localStorage.getItem(key)||'[]');const list=Array.isArray(old)?old.filter(x=>typeof x==='string'):[];localStorage.setItem(key,JSON.stringify([locationValue,...list.filter(x=>x.toLowerCase()!==locationValue.toLowerCase())].slice(0,6)));}catch(error){console.warn('Could not save recent DBH location search.',error)}}apply()});
   document.getElementById('sort-select')?.addEventListener('change',apply);
-  if(requestedType||requestedLocation||requestedQ)apply();
+  if(requestedType||requestedLocation||requestedQ||requestedMinPrice||requestedMaxPrice)apply();
   document.getElementById('property-results')?.addEventListener('click',e=>{
     const b=e.target.closest('[data-save-id]');
     if(!b)return;
