@@ -55,9 +55,29 @@ function render(rows){
  box.innerHTML=rows.length?rows.map(card).join(''):'<div class="market-empty"><div><div class="market-empty-icon"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></svg></div><strong>No matching properties</strong><p>Try a different location, property type or price range to see more DBH listings.</p><button type="button" id="clear-property-filters">Clear filters</button></div></div>';
  box.querySelectorAll('.reveal').forEach(x=>x.classList.add('visible'));
 }
+function norm(v){return String(v??'').normalize('NFKD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().replace(/\\s+/g,' ')}
+function typeMatches(p,wanted){
+ const actual=norm(p.property_type||p.category||'');
+ if(!wanted)return true;
+ if(actual===wanted||actual.includes(wanted)||wanted.includes(actual))return true;
+ const groups={land:['land','plot','plots','parcel'],commercial:['commercial','shop','office','warehouse','industrial'],residential:['residential','house','home','apartment','flat','duplex','bungalow','terrace','detached','semi detached']};
+ return Object.entries(groups).some(([key,terms])=>(wanted===key||terms.includes(wanted))&&terms.some(term=>actual.includes(term)));
+}
+function locationMatches(p,query){
+ if(!query)return true;
+ const place=norm([p.area,p.city,p.state,p.lga,p.address,p.country].filter(Boolean).join(' '));
+ const tokens=norm(query).split(' ').filter(t=>t&&t!=='nigeria'&&t!=='state'&&t!=='county');
+ if(!tokens.length)return true;
+ return place.includes(norm(query))||tokens.every(t=>place.includes(t));
+}
 function apply(){
- const f=new FormData(document.getElementById('property-filters')),q=String(f.get('q')||'').toLowerCase().trim(),loc=String(f.get('location')||'').toLowerCase().trim(),type=String(f.get('type')||'').toLowerCase(),min=Number(f.get('minPrice')||0),max=Number(f.get('maxPrice')||0);
- let rows=all.filter(p=>{const hay=[p.id,p.property_code,p.title,p.description,p.category,p.property_type,p.area,p.city,p.state,p.lga,p.address,p.price,p.currency].filter(v=>v!==null&&v!==undefined&&v!=='').join(' ').toLowerCase();const place=[p.area,p.city,p.state,p.lga,p.address].filter(Boolean).join(' ').toLowerCase();return(!q||hay.includes(q))&&(!loc||place.includes(loc))&&(!type||String(p.property_type||p.category||'').toLowerCase()===type)&&(!min||Number(p.price)>=min)&&(!max||Number(p.price)<=max)});
+ const form=document.getElementById('property-filters');
+ const f=new FormData(form),q=String(f.get('q')||'').trim(),loc=String(f.get('location')||'').trim(),type=norm(f.get('type')||''),min=Number(f.get('minPrice')||0),max=Number(f.get('maxPrice')||0);
+ let rows=all.filter(p=>{
+  const searchable=norm([p.id,p.property_code,p.title,p.description,p.category,p.property_type,p.area,p.city,p.state,p.lga,p.address,p.price,p.currency].filter(v=>v!==null&&v!==undefined&&v!=='').join(' '));
+  const query=norm(q);
+  return(!query||searchable.includes(query))&&locationMatches(p,loc)&&typeMatches(p,type)&&(!min||Number(p.price)>=min)&&(!max||Number(p.price)<=max);
+ });
  const sort=document.getElementById('sort-select')?.value;
  if(sort==='price_low')rows.sort((a,b)=>Number(a.price||0)-Number(b.price||0));
  if(sort==='price_high')rows.sort((a,b)=>Number(b.price||0)-Number(a.price||0));
@@ -78,7 +98,7 @@ async function boot(){
   const form=document.getElementById('property-filters');
   if(form){if(requestedType)form.elements.type.value=requestedType;if(requestedLocation)form.elements.location.value=requestedLocation;if(requestedQ&&form.elements.q)form.elements.q.value=requestedQ;if(requestedMinPrice&&form.elements.minPrice)form.elements.minPrice.value=requestedMinPrice;if(requestedMaxPrice&&form.elements.maxPrice)form.elements.maxPrice.value=requestedMaxPrice;}
   const type=document.querySelector('select[name="type"]');
-  [...new Set(all.map(p=>p.property_type).filter(Boolean))].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v.charAt(0).toUpperCase()+v.slice(1);type?.appendChild(o)});
+  [...new Set(all.flatMap(p=>[p.property_type,p.category]).filter(Boolean))].forEach(v=>{const o=document.createElement('option');o.value=norm(v);o.textContent=String(v).replace(/\\b\\w/g,ch=>ch.toUpperCase());if(type&&![...type.options].some(existing=>existing.value===o.value))type.appendChild(o)});
   render(all);
   document.getElementById('property-filters')?.addEventListener('submit',e=>{e.preventDefault();const locationValue=String(new FormData(e.currentTarget).get('location')||'').trim();if(locationValue){try{const key='dbh_recent_location_searches_v1';const old=JSON.parse(localStorage.getItem(key)||'[]');const list=Array.isArray(old)?old.filter(x=>typeof x==='string'):[];localStorage.setItem(key,JSON.stringify([locationValue,...list.filter(x=>x.toLowerCase()!==locationValue.toLowerCase())].slice(0,6)));}catch(error){console.warn('Could not save recent DBH location search.',error)}}apply()});
   document.getElementById('sort-select')?.addEventListener('change',apply);
