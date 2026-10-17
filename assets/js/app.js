@@ -176,6 +176,7 @@ function setupCustomerCareWidget(){
   async function resolveToken(){
     const existing=token();
     if(existing)return existing;
+    if(/\/(login|register)\.html$/i.test(location.pathname))return '';
     try{
       const authBase=(window.DBH_CONFIG?.apiBaseUrl||'').replace(/\/$/,'');
       if(!authBase)return '';
@@ -517,9 +518,11 @@ async function initAuthState(){
 
   try{
     const local=getLocalSession();
+    const isAuthPage=/\/(login|register)\.html$/i.test(location.pathname);
     const authBase=(window.DBH_CONFIG?.apiBaseUrl||'').replace(/\/$/,'');
     const sessionHeaders={Accept:'application/json'};
     if(local?.sessionToken)sessionHeaders.Authorization='Bearer '+local.sessionToken;
+    if(!isAuthPage||local?.sessionToken){
     const r=await fetch(authBase+'/api/auth/session',{credentials:'include',headers:sessionHeaders});
     if(r.ok){
       const d=await r.json().catch(()=>null);
@@ -538,6 +541,7 @@ async function initAuthState(){
           sessionToken:local?.sessionToken||d?.sessionToken||null
         }));
       }
+    }
     }
   }catch{}
 
