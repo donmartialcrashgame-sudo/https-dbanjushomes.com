@@ -77,7 +77,7 @@ async function boot(){
   const type=document.querySelector('select[name="type"]');
   [...new Set(all.map(p=>p.property_type).filter(Boolean))].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v.charAt(0).toUpperCase()+v.slice(1);type?.appendChild(o)});
   render(all);
-  document.getElementById('property-filters')?.addEventListener('submit',e=>{e.preventDefault();apply()});
+  document.getElementById('property-filters')?.addEventListener('submit',e=>{e.preventDefault();const locationValue=String(new FormData(e.currentTarget).get('location')||'').trim();if(locationValue){try{const key='dbh_recent_location_searches_v1';const old=JSON.parse(localStorage.getItem(key)||'[]');const list=Array.isArray(old)?old.filter(x=>typeof x==='string'):[];localStorage.setItem(key,JSON.stringify([locationValue,...list.filter(x=>x.toLowerCase()!==locationValue.toLowerCase())].slice(0,6));}catch(error){console.warn('Could not save recent DBH location search.',error)}}apply()});
   document.getElementById('sort-select')?.addEventListener('change',apply);
   if(requestedType||requestedLocation)apply();
   document.getElementById('property-results')?.addEventListener('click',e=>{
