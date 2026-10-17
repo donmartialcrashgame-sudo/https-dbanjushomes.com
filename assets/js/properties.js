@@ -57,7 +57,7 @@ function render(rows){
 }
 function apply(){
  const f=new FormData(document.getElementById('property-filters')),q=String(f.get('q')||'').toLowerCase().trim(),loc=String(f.get('location')||'').toLowerCase().trim(),type=String(f.get('type')||'').toLowerCase(),min=Number(f.get('minPrice')||0),max=Number(f.get('maxPrice')||0);
- let rows=all.filter(p=>{const hay=[p.id,p.property_code,p.title,p.description,p.category,p.property_type,p.area,p.city,p.state,p.lga,p.address,p.price,p.currency].filter(v=>v!==null&&v!==undefined&&v!=='').join(' ').toLowerCase();const place=[p.area,p.city,p.state,p.lga,p.address].filter(Boolean).join(' ').toLowerCase();return(!q||hay.includes(q))&&(!loc||place.includes(loc))&&(!type||String(p.property_type||'').toLowerCase()===type)&&(!min||Number(p.price)>=min)&&(!max||Number(p.price)<=max)});
+ let rows=all.filter(p=>{const hay=[p.id,p.property_code,p.title,p.description,p.category,p.property_type,p.area,p.city,p.state,p.lga,p.address,p.price,p.currency].filter(v=>v!==null&&v!==undefined&&v!=='').join(' ').toLowerCase();const place=[p.area,p.city,p.state,p.lga,p.address].filter(Boolean).join(' ').toLowerCase();return(!q||hay.includes(q))&&(!loc||place.includes(loc))&&(!type||String(p.property_type||p.category||'').toLowerCase()===type)&&(!min||Number(p.price)>=min)&&(!max||Number(p.price)<=max)});
  const sort=document.getElementById('sort-select')?.value;
  if(sort==='price_low')rows.sort((a,b)=>Number(a.price||0)-Number(b.price||0));
  if(sort==='price_high')rows.sort((a,b)=>Number(b.price||0)-Number(a.price||0));
