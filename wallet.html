@@ -27,20 +27,6 @@
   <div class="wallet-label">Available balance</div><div class="wallet-balance" id="wallet-balance">₦—</div>
   <div class="wallet-card-bottom"><span id="wallet-owner">Your DBH account</span><span class="wallet-status" id="wallet-status">Checking wallet…</span></div>
  </section>
- <section class="wallet-panel" id="flutterwave-balance-panel" style="margin-top:18px">
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
-   <div><h2>Flutterwave account balance</h2><p>Live balance retrieved securely from Flutterwave. This is separate from your DBH wallet balance.</p></div>
-   <button class="wallet-refresh" id="flutterwave-refresh" type="button">Refresh Flutterwave balance</button>
-  </div>
-  <div class="wallet-card" style="min-height:0;margin-top:12px;padding:22px;background:linear-gradient(130deg,#102d52,#1768a9 68%,#2d91d6)">
-   <div class="wallet-brand">FLUTTERWAVE · LIVE ACCOUNT</div>
-   <div class="wallet-label">Flutterwave available balance (NGN)</div>
-   <div class="wallet-balance" id="flutterwave-balance">Checking…</div>
-   <div class="wallet-card-bottom"><span id="flutterwave-account-name">AirPay.com · Flutterwave MFB</span><span class="wallet-status" id="flutterwave-status">Secure check</span></div>
-  </div>
-  <div class="wallet-message" id="flutterwave-message" role="status" aria-live="polite"></div>
-  <div class="wallet-note">For privacy, only the configured DBH wallet owner can retrieve this balance. Your Flutterwave secret key stays in Supabase Edge Function secrets.</div>
- </section>
  <div class="wallet-layout">
   <section class="wallet-panel"><h2>Add money to wallet</h2><p>Transfer money to your dedicated bank account below. DBH credits your wallet after your deposit is confirmed.</p>
    <div class="wallet-message" id="wallet-message" role="status" aria-live="polite"></div>
@@ -130,25 +116,7 @@ async function recoverDbhToken(){try{const base=(window.DBH_CONFIG?.apiBaseUrl||
   }finally{$('wallet-refresh').disabled=false}
  }
  $('wallet-refresh').addEventListener('click',load);
- async function loadFlutterwaveBalance(){
-  const btn=$('flutterwave-refresh'),value=$('flutterwave-balance'),status=$('flutterwave-status'),note=$('flutterwave-message');
-  btn.disabled=true;value.textContent='Checking…';status.textContent='Connecting';
-  note.className='wallet-message';note.textContent='';
-  try{
-   const d=await call('flutterwave_balance');
-   const amount=d.balance;
-   if(typeof amount!=='number'||!Number.isFinite(amount))throw new Error('Flutterwave returned no usable balance. Please refresh or contact DBH support.');
-   value.textContent=money(amount);status.textContent='Live balance';
-   $('flutterwave-account-name').textContent=(d.account_name||'AirPay.com')+' · '+(d.bank_name||'Flutterwave MFB');
-   if(d.as_of){note.textContent='Balance checked '+new Date(d.as_of).toLocaleString('en-NG');note.className='wallet-message show success';}
-  }catch(e){
-   value.textContent='Unavailable';status.textContent='Not connected';
-   note.textContent=e.message||'Could not retrieve the Flutterwave balance.';
-   note.className='wallet-message show error';
-  }finally{btn.disabled=false}
- }
- $('flutterwave-refresh').addEventListener('click',loadFlutterwaveBalance);
- async function syncAlertButton(){const button=$('wallet-enable-alerts'),status=$('wallet-alert-message');if(!button||!status)return;try{if(!('Notification' in window)||!('serviceWorker' in navigator)||!('PushManager' in window))return;const reg=await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();if(Notification.permission==='granted'&&sub&&typeof window.DBHPrepareNotifications==='function'){const synced=await window.DBHPrepareNotifications();if(synced){button.hidden=true;status.hidden=true;button.dataset.enabled='true';}}}catch(e){console.warn('Could not check DBH notification subscription',e)}}
+async function syncAlertButton(){const button=$('wallet-enable-alerts'),status=$('wallet-alert-message');if(!button||!status)return;try{if(!('Notification' in window)||!('serviceWorker' in navigator)||!('PushManager' in window))return;const reg=await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();if(Notification.permission==='granted'&&sub&&typeof window.DBHPrepareNotifications==='function'){const synced=await window.DBHPrepareNotifications();if(synced){button.hidden=true;status.hidden=true;button.dataset.enabled='true';}}}catch(e){console.warn('Could not check DBH notification subscription',e)}}
  const alertsButton=$('wallet-enable-alerts');
   if(alertsButton)alertsButton.addEventListener('click',async()=>{
   const button=$('wallet-enable-alerts'),status=$('wallet-alert-message');
