@@ -32,18 +32,33 @@ async function getRequiredLocation(){
   const position=await new Promise((resolve,reject)=>navigator.geolocation.getCurrentPosition(resolve,error=>{
     const messages={1:'Please allow location access in your browser to sign in or create a DBH account.',2:'Your location is unavailable. Check device location settings and try again.',3:'Location lookup timed out. Please try again.'};
     reject(new Error(messages[error.code]||'DBH needs your location permission to continue.'));
-  },{enableHighAccuracy:true,timeout:15000,maximumAge:0}));
+  },{enableHighAccuracy:false,timeout:20000,maximumAge:60000}));
   const latitude=Number(position.coords.latitude.toFixed(7)),longitude=Number(position.coords.longitude.toFixed(7));
-  let address={};
+  const endpoint=DBH_CONFIG.googleLocationUri||(String(DBH_CONFIG.supabaseUrl||'').replace(/\/$/,'')+'/functions/v1/dbh-google-location');
+  let locationData=null,primaryError=null;
   try{
-    const response=await fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+encodeURIComponent(latitude)+'&lon='+encodeURIComponent(longitude)+'&zoom=10&addressdetails=1',{headers:{'Accept':'application/json','Accept-Language':'en'}});
-    if(!response.ok)throw new Error('Location address lookup failed.');
-    const data=await response.json();address=data.address||{};
-  }catch(error){throw new Error('We got your coordinates but could not verify your state and country. Please check your internet connection and try again.');}
-  const state=String(address.state||address.region||address.province||address.state_district||'').trim();
-  const country=String(address.country||'').trim();
-  if(!state||!country)throw new Error('DBH could not determine your state and country from your location. Please enable device location and try again.');
-  return {latitude,longitude,state,country,country_code:String(address.country_code||'').toUpperCase(),city:String(address.city||address.town||address.village||address.county||'').trim(),location_permission:true,location_captured_at:new Date().toISOString()};
+    const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey},body:JSON.stringify({action:'reverse',latitude,longitude}),signal:AbortSignal.timeout(12000)});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok||!data.state||!data.country)throw new Error(data.error||'Google could not verify your state and country.');
+    locationData={latitude,longitude,state:String(data.state).trim(),country:String(data.country).trim(),country_code:String(data.country_code||'').toUpperCase(),city:String(data.city||'').trim(),location_permission:true,location_captured_at:new Date().toISOString()};
+  }catch(error){primaryError=error;console.warn('DBH Google reverse-geocoding unavailable; trying fallback.',error);}
+  if(!locationData){
+    try{
+      const url='https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+encodeURIComponent(latitude)+'&lon='+encodeURIComponent(longitude)+'&zoom=10&addressdetails=1';
+      const response=await fetch(url,{headers:{'Accept':'application/json','Accept-Language':'en'},signal:AbortSignal.timeout(9000)});
+      if(!response.ok)throw new Error('Address lookup returned HTTP '+response.status);
+      const data=await response.json(),address=data.address||{};
+      const state=String(address.state||address.region||address.province||address.state_district||'').trim();
+      const country=String(address.country||'').trim();
+      if(!state||!country)throw new Error('The state and country were missing from the address response.');
+      locationData={latitude,longitude,state,country,country_code:String(address.country_code||'').toUpperCase(),city:String(address.city||address.town||address.village||address.county||'').trim(),location_permission:true,location_captured_at:new Date().toISOString()};
+    }catch(fallbackError){
+      console.warn('DBH fallback reverse-geocoding failed:',fallbackError);
+      throw new Error('DBH received your location permission, but the location service is temporarily unavailable. Please try again in a moment.');
+    }
+  }
+  if(!locationData.state||!locationData.country)throw new Error('DBH could not verify your state and country. Please try again.');
+  return locationData;
 }
 async function saveAccountLocation(locationData){
   try{
