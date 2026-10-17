@@ -57,7 +57,7 @@ function render(rows){
 }
 function apply(){
  const f=new FormData(document.getElementById('property-filters')),q=String(f.get('q')||'').toLowerCase().trim(),loc=String(f.get('location')||'').toLowerCase().trim(),type=String(f.get('type')||'').toLowerCase(),min=Number(f.get('minPrice')||0),max=Number(f.get('maxPrice')||0);
- let rows=all.filter(p=>{const hay=[p.property_code,p.title,p.description,p.category,p.property_type,p.area,p.city,p.state,p.lga].filter(Boolean).join(' ').toLowerCase();const place=[p.area,p.city,p.state,p.lga,p.address].filter(Boolean).join(' ').toLowerCase();return(!q||hay.includes(q))&&(!loc||place.includes(loc))&&(!type||String(p.property_type||'').toLowerCase()===type)&&(!min||Number(p.price)>=min)&&(!max||Number(p.price)<=max)});
+ let rows=all.filter(p=>{const hay=[p.id,p.property_code,p.title,p.description,p.category,p.property_type,p.area,p.city,p.state,p.lga,p.address,p.price,p.currency].filter(v=>v!==null&&v!==undefined&&v!=='').join(' ').toLowerCase();const place=[p.area,p.city,p.state,p.lga,p.address].filter(Boolean).join(' ').toLowerCase();return(!q||hay.includes(q))&&(!loc||place.includes(loc))&&(!type||String(p.property_type||'').toLowerCase()===type)&&(!min||Number(p.price)>=min)&&(!max||Number(p.price)<=max)});
  const sort=document.getElementById('sort-select')?.value;
  if(sort==='price_low')rows.sort((a,b)=>Number(a.price||0)-Number(b.price||0));
  if(sort==='price_high')rows.sort((a,b)=>Number(b.price||0)-Number(a.price||0));
@@ -72,14 +72,15 @@ async function boot(){
   const params=new URLSearchParams(location.search);
   const requestedType=params.get('type');
   const requestedLocation=params.get('location');
+  const requestedQ=params.get('q');
   const form=document.getElementById('property-filters');
-  if(form){if(requestedType)form.elements.type.value=requestedType;if(requestedLocation)form.elements.location.value=requestedLocation;}
+  if(form){if(requestedType)form.elements.type.value=requestedType;if(requestedLocation)form.elements.location.value=requestedLocation;if(requestedQ&&form.elements.q)form.elements.q.value=requestedQ;}
   const type=document.querySelector('select[name="type"]');
   [...new Set(all.map(p=>p.property_type).filter(Boolean))].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v.charAt(0).toUpperCase()+v.slice(1);type?.appendChild(o)});
   render(all);
   document.getElementById('property-filters')?.addEventListener('submit',e=>{e.preventDefault();const locationValue=String(new FormData(e.currentTarget).get('location')||'').trim();if(locationValue){try{const key='dbh_recent_location_searches_v1';const old=JSON.parse(localStorage.getItem(key)||'[]');const list=Array.isArray(old)?old.filter(x=>typeof x==='string'):[];localStorage.setItem(key,JSON.stringify([locationValue,...list.filter(x=>x.toLowerCase()!==locationValue.toLowerCase())].slice(0,6));}catch(error){console.warn('Could not save recent DBH location search.',error)}}apply()});
   document.getElementById('sort-select')?.addEventListener('change',apply);
-  if(requestedType||requestedLocation)apply();
+  if(requestedType||requestedLocation||requestedQ)apply();
   document.getElementById('property-results')?.addEventListener('click',e=>{
     const b=e.target.closest('[data-save-id]');
     if(!b)return;
