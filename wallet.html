@@ -84,7 +84,6 @@ async function recoverDbhToken(){try{const base=(window.DBH_CONFIG?.apiBaseUrl||
    if(!token)token=await Promise.race([recoverDbhToken(),new Promise(resolve=>setTimeout(()=>resolve(''),3500))]);
    if(!token)throw new Error('Your sign-in could not be verified. Please sign in again and reopen My Wallet.');
    return token;
-  }).join('');
  }
  async function load(){
   $('wallet-refresh').disabled=true;
