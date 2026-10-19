@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Add Property | DBH Admin</title>
+<link rel="icon" href="/dbh-logo.jpg">
+<link rel="stylesheet" href="/assets/css/admin.css">
+<link rel="stylesheet" href="/assets/css/consent.css">
+<style>
+.add-property-wrap{max-width:1120px;margin:0 auto;padding:24px}
+.add-property-card{background:var(--card,#fff);border:1px solid var(--line,#dbe4ef);border-radius:16px;padding:22px}
+.add-property-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.add-property-form label{display:block;font-size:14px;font-weight:600;color:var(--text,#172b4d)}
+.add-property-form input:not([type=checkbox]),.add-property-form select,.add-property-form textarea{box-sizing:border-box;display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#172b4d}
+.add-property-form textarea{resize:vertical}
+@media(max-width:600px){.add-property-wrap{padding:14px}.add-property-card{padding:14px}}
+</style>
+</head>
+<body>
+<aside class="admin-sidebar">
+<a class="admin-brand" href="/admin.html"><img src="/dbh-logo.jpg" alt="DBH"></a>
+<a href="/admin.html">← Back to dashboard</a>
+<a href="/add-property.html" aria-current="page">Add Property</a>
+<a href="/admin.html#properties">Properties overview</a>
+<a href="/customer-care.html">Customer Care</a>
+</aside>
+<main class="admin-main">
+<header class="admin-top"><strong>DBH Admin · Add Property</strong><button id="admin-logout" class="btn" type="button">Logout</button><button class="icon-button theme-button" data-theme-toggle aria-label="Change theme">◐</button></header>
+<div class="add-property-wrap">
+<span class="eyebrow">PROPERTY MANAGEMENT</span>
+<h1>Add a new property</h1>
+<p>Fill in the property details and upload photos. Saving publishes the listing immediately; verification remains pending until your team verifies it.</p>
+<div id="admin-property-message" role="status" style="display:none;padding:12px 14px;border-radius:10px;margin:12px 0"></div>
+<div class="add-property-card">
+<form id="admin-add-property-form" class="add-property-form">
+<label>Property title *<input name="title" required maxlength="180" placeholder="e.g. 4-bedroom detached duplex" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></label>
+<label>Property type *<select name="property_type" required style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"><option value="house">Residential property</option><option value="land">Land</option><option value="commercial">Commercial property</option></select></label>
+<label>Category<input name="category" placeholder="For sale / rent / lease" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></label>
+<label>Price<input name="price" type="number" min="0" step="0.01" placeholder="Price" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></label>
+<label>Currency<select name="currency" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"><option>NGN</option><option>USD</option><option>GBP</option><option>EUR</option><option>CAD</option></select></label>
+<label>State *<input name="state" required placeholder="e.g. Ogun" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></label>
+<label>City / town *<input name="city" required placeholder="e.g. Ijebu Ode" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></label>
+<label>Local government area<input name="lga" placeholder="LGA" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></label>
+<label>Area / neighbourhood<input name="area" placeholder="Neighbourhood" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></label>
+<label style="grid-column:1/-1">Full address *<input name="address" required maxlength="500" placeholder="Street, area and nearby landmark" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></label>
+<label>Land size<input name="land_size" type="number" min="0" step="0.01" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></label>
+<label>Land size unit<select name="land_size_unit" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"><option value="sqm">Square metres (sqm)</option><option value="plot">Plot</option><option value="acre">Acre</option><option value="hectare">Hectare</option></select></label>
+<label>Bedrooms<input name="bedrooms" type="number" min="0" step="1" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></label>
+<label>Bathrooms<input name="bathrooms" type="number" min="0" step="1" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></label>
+<label>Parking spaces<input name="parking_spaces" type="number" min="0" step="1" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></label>
+<label>Property title / deed type<input name="title_type" placeholder="C of O, Governor's Consent, etc." style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></label>
+<label>Condition<select name="property_condition" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"><option value="">Select condition</option><option>New</option><option>Excellent</option><option>Good</option><option>Needs renovation</option><option>Under construction</option></select></label>
+<label>Furnishing<select name="furnishing" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"><option value="">Not specified</option><option>Furnished</option><option>Semi-furnished</option><option>Unfurnished</option></select></label>
+<label>Year built<input name="year_built" type="number" min="1800" max="2100" step="1" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></label>
+<label style="grid-column:1/-1">Description<textarea name="description" rows="5" maxlength="12000" placeholder="Describe the property, features and nearby facilities..." style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></textarea></label>
+<label style="grid-column:1/-1">Amenities (comma-separated)<input name="amenities_text" placeholder="Water, electricity, security, road access" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></label>
+<label style="grid-column:1/-1">Features (comma-separated)<input name="features_text" placeholder="Fenced, ensuite bedrooms, fitted kitchen" style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"></label>
+<label style="grid-column:1/-1">Property photos (up to 15; first photo is the cover image)<input id="admin-property-images" name="images" type="file" accept="image/*" multiple style="display:block;width:100%;padding:11px;margin-top:6px;border:1px solid #cbd5e1;border-radius:9px"><small id="admin-property-image-note">Choose clear front and interior photos. Each photo must be under 10 MB.</small><div id="admin-property-image-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"></div></label>
+<label style="display:flex;align-items:center;gap:9px;grid-column:1/-1"><input type="checkbox" name="is_featured" value="true"> Mark this listing as featured</label>
+<div style="grid-column:1/-1;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button id="admin-property-submit" type="submit" class="btn" style="background:#0b63ce;color:white;padding:12px 18px;border:0;border-radius:9px;font-weight:700;cursor:pointer">Save and publish property</button><span style="font-size:12px;color:#64748b">Admin authorization is checked by the server. Listing verification stays pending.</span></div>
+</form>
+</div>
+</div>
+</main>
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/app.js?v=20261001-9"></script>
+<script>
+(function(){
+ const session=localStorage.getItem('dbh_session');
+ if(!session){location.href='/login.html';return}
+ const token=(()=>{try{const s=JSON.parse(session);return s?.access_token||s?.accessToken||s?.session?.access_token||session}catch{return session}})();
+ const c=window.DBH_CONFIG||{};
+ const form=document.getElementById('admin-add-property-form');
+ const msg=document.getElementById('admin-property-message');
+ const images=document.getElementById('admin-property-images');
+ const preview=document.getElementById('admin-property-image-preview');
+ const note=document.getElementById('admin-property-image-note');
+ const submit=document.getElementById('admin-property-submit');
+ document.getElementById('admin-logout').addEventListener('click',()=>{localStorage.removeItem('dbh_session');location.href='/login.html'});
+ const show=(message,ok=false)=>{msg.style.display='block';msg.style.background=ok?'#effaf3':'#fff2f1';msg.style.color=ok?'#166534':'#9d2318';msg.textContent=message;msg.scrollIntoView({behavior:'smooth',block:'nearest'})};
+ images?.addEventListener('change',()=>{
+  const files=Array.from(images.files||[]);preview.innerHTML='';
+  if(files.length>15){show('Choose no more than 15 photos.');images.value='';return}
+  if(note)note.textContent=files.length+' photo(s) selected. The first photo will be the cover image.';
+  files.forEach(file=>{const img=document.createElement('img');img.alt=file.name;img.title=file.name;img.src=URL.createObjectURL(file);img.style.cssText='width:105px;height:85px;object-fit:cover;border-radius:8px;border:1px solid #dbe4ef';preview.appendChild(img)});
+ });
+ form.addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  if(!c.supabaseUrl||!c.supabaseAnonKey){show('Supabase configuration is missing on this page. Please contact support.');return}
+  const fd=new FormData(form);
+  fd.set('is_featured',form.elements.is_featured.checked?'true':'false');
+  fd.set('amenities',JSON.stringify(String(fd.get('amenities_text')||'').split(',').map(x=>x.trim()).filter(Boolean)));
+  fd.set('features',JSON.stringify(String(fd.get('features_text')||'').split(',').map(x=>x.trim()).filter(Boolean)));
+  fd.delete('amenities_text');fd.delete('features_text');
+  submit.disabled=true;submit.textContent='Saving and publishing…';
+  show('Saving property details and uploading photos. Please keep this page open.');
+  try{
+   const res=await fetch(c.supabaseUrl+'/functions/v1/dbh-admin-create-property',{method:'POST',headers:{apikey:c.supabaseAnonKey,Authorization:'Bearer '+token},body:fd,cache:'no-store'});
+   const data=await res.json().catch(()=>({}));
+   if(!res.ok||!data.ok)throw new Error(data.error||'Property could not be saved.');
+   show('Published successfully: '+(data.property?.title||'Property')+'. '+(data.images||0)+' photo(s) uploaded. Verification is still pending.',true);
+   form.reset();preview.innerHTML='';if(note)note.textContent='Choose clear front and interior photos. Each photo must be under 10 MB.';
+  }catch(err){show(err.message||'Property could not be saved.')}
+  finally{submit.disabled=false;submit.textContent='Save and publish property'}
+ });
+})();
+</script>
+<script src="/assets/js/shell.js"></script>
+</body>
+</html>
