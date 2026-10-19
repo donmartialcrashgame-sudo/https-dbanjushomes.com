@@ -30,3 +30,40 @@ async function loadAdminWalletOverview(){
 document.getElementById('admin-wallet-refresh')?.addEventListener('click',loadAdminWalletOverview);
 loadAdminWalletOverview();
 async function loadAdminReports(){const el=document.getElementById('admin-reports');if(!el||!c.supabaseUrl)return;try{const r=await fetch(c.supabaseUrl+'/rest/v1/property_reports?select=*&order=created_at.desc&limit=50',{headers:{apikey:c.supabaseAnonKey,Authorization:'Bearer '+token,Accept:'application/json'}});const rows=await r.json();if(!r.ok)throw Error();if(!Array.isArray(rows)||!rows.length){el.innerHTML='<p>No property reports have been submitted.</p>';return}el.innerHTML='<div class="admin-report-list">'+rows.map(x=>'<article class="admin-report"><div class="admin-report-top"><strong>'+esc(x.report_reference||'Report')+'</strong><span>'+esc(x.status||'new')+'</span></div><h3>'+esc(x.property_title||'Property report')+'</h3><p><b>'+esc(x.reason||'')+'</b></p><p>'+esc(x.details||'')+'</p><small>'+esc(x.first_name||'')+' '+esc(x.surname||'')+' · '+esc(x.email||'')+' · '+new Date(x.created_at).toLocaleString('en-NG')+'</small></article>').join('')+'</div>'}catch(e){el.innerHTML='<p>Reports could not be loaded.</p>'}}loadAdminReports();
+
+const adminPropertyForm=document.getElementById('admin-add-property-form');
+if(adminPropertyForm){
+ const propertyMsg=document.getElementById('admin-property-message');
+ const propertyImages=document.getElementById('admin-property-images');
+ const imagePreview=document.getElementById('admin-property-image-preview');
+ propertyImages?.addEventListener('change',()=>{
+  const files=Array.from(propertyImages.files||[]);
+  imagePreview.innerHTML='';
+  if(files.length>15){propertyMsg.style.display='block';propertyMsg.style.background='#fff2f1';propertyMsg.style.color='#9d2318';propertyMsg.textContent='Choose no more than 15 photos.';propertyImages.value='';return}
+  document.getElementById('admin-property-image-note').textContent=files.length+' photo(s) selected. The first photo will be the cover image.';
+  files.forEach(file=>{const img=document.createElement('img');img.alt=file.name;img.title=file.name;img.src=URL.createObjectURL(file);img.style.cssText='width:105px;height:85px;object-fit:cover;border-radius:8px;border:1px solid #dbe4ef';imagePreview.appendChild(img)});
+ });
+ adminPropertyForm.addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const submit=document.getElementById('admin-property-submit');
+  const show=(message,ok=false)=>{propertyMsg.style.display='block';propertyMsg.style.background=ok?'#effaf3':'#fff2f1';propertyMsg.style.color=ok?'#166534':'#9d2318';propertyMsg.textContent=message};
+  if(!c.supabaseUrl||!c.supabaseAnonKey){show('Supabase configuration is missing on this page.');return}
+  const fd=new FormData(adminPropertyForm);
+  fd.set('is_featured',adminPropertyForm.elements.is_featured.checked?'true':'false');
+  fd.set('amenities',JSON.stringify(String(fd.get('amenities_text')||'').split(',').map(x=>x.trim()).filter(Boolean)));
+  fd.set('features',JSON.stringify(String(fd.get('features_text')||'').split(',').map(x=>x.trim()).filter(Boolean)));
+  fd.delete('amenities_text');fd.delete('features_text');
+  submit.disabled=true;submit.textContent='Saving and publishing…';
+  show('Saving property details and uploading photos. Please keep this page open.');
+  try{
+   const res=await fetch(c.supabaseUrl+'/functions/v1/dbh-admin-create-property',{method:'POST',headers:{apikey:c.supabaseAnonKey,Authorization:'Bearer '+token},body:fd,cache:'no-store'});
+   const data=await res.json().catch(()=>({}));
+   if(!res.ok||!data.ok)throw new Error(data.error||'Property could not be saved.');
+   show('Published successfully: '+(data.property?.title||'Property')+'. '+(data.images||0)+' photo(s) uploaded. Verification is still pending.',true);
+   adminPropertyForm.reset();imagePreview.innerHTML='';document.getElementById('admin-property-image-note').textContent='Choose clear front and interior photos. Each photo must be under 10 MB.';
+   loadAdminOverviewAfterProperty();
+  }catch(err){show(err.message||'Property could not be saved.')}
+  finally{submit.disabled=false;submit.textContent='Save and publish property'}
+ });
+}
+function loadAdminOverviewAfterProperty(){fetch('/admin/overview',{headers:{Authorization:'Bearer '+token},cache:'no-store'}).then(r=>r.json()).then(d=>{const s=d.data?.stats||{};document.getElementById('admin-stats').innerHTML=[['Properties',s.properties??0],['Pending',s.pending??0],['Users',s.users??0],['Agents',s.agents??0]].map(x=>'<div class="stat-card"><span>'+esc(x[0])+'</span><strong>'+esc(x[1])+'</strong></div>').join('');document.getElementById('pending-properties').textContent=(s.pending??0)+' properties waiting for review.'}).catch(()=>{})}
