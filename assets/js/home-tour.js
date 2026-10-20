@@ -1,6 +1,15 @@
 (function(){
 'use strict';
 const KEY='dbh_home_tour_completed_v2';
+const COOKIE_KEY='dbh_home_tour_completed_v2';
+function hasSeenTour(){
+ try{if(localStorage.getItem(KEY)==='1')return true}catch(_){}
+ try{return document.cookie.split(';').some(v=>v.trim()===COOKIE_KEY+'=1')}catch(_){return false}
+}
+function rememberTour(){
+ try{localStorage.setItem(KEY,'1')}catch(_){}
+ try{document.cookie=COOKIE_KEY+'=1; Max-Age=31536000; Path=/; SameSite=Lax; Secure'}catch(_){}
+}
 const steps=[
  {target:'.dbh-header-brand',title:'Welcome to DBH Homes',text:'This is the DBH home page. Use the logo anytime to return here.'},
  {target:'#dbh-hero .hero-copy',title:'Discover DBH',text:'Start here to understand the marketplace and the property opportunities available.'},
@@ -15,7 +24,7 @@ let index=0,overlay,spot,tip,finishing=false;
 function $ (s){return document.querySelector(s)}
 function ensureUI(){
  if($('#dbh-tour-overlay'))return;
- const css=document.createElement('link');css.rel='stylesheet';css.href='/assets/css/home-tour.css?v=20261014-1';document.head.appendChild(css);
+ const css=document.createElement('link');css.rel='stylesheet';css.href='/assets/css/home-tour.css?v=20261020-1';document.head.appendChild(css);
  overlay=document.createElement('div');overlay.id='dbh-tour-overlay';overlay.className='dbh-tour-overlay';
  overlay.innerHTML='<div class="dbh-tour-spotlight" id="dbh-tour-spotlight"></div><section class="dbh-tour-card" id="dbh-tour-card" role="dialog" aria-modal="true" aria-live="polite"><div class="dbh-tour-kicker">DBH HOMES • QUICK TOUR</div><div class="dbh-tour-progress"><span id="dbh-tour-step-label"></span><span class="dbh-tour-progress-track"><i id="dbh-tour-progress-fill"></i></span></div><h2 id="dbh-tour-title"></h2><p id="dbh-tour-text"></p><div class="dbh-tour-actions"><button type="button" id="dbh-tour-back">Back</button><button type="button" id="dbh-tour-end">End tour</button><button type="button" id="dbh-tour-next">Next</button></div></section>';
  document.body.appendChild(overlay);spot=$('#dbh-tour-spotlight');tip=$('#dbh-tour-card');
@@ -71,11 +80,10 @@ function position(target){
 }
 function start(force){
  ensureUI();ensureReplay();
- let alreadySeen=false;try{alreadySeen=localStorage.getItem(KEY)==='1'}catch(_){}
- if(!force&&alreadySeen)return;
+ if(!force&&hasSeenTour())return;
  finishing=false;index=0;
- // Record that the tour has appeared immediately, so reloading mid-tour cannot restart it.
- try{localStorage.setItem(KEY,'1')}catch(_){}
+ // Persist immediately so reloading mid-tour cannot restart it, even if local storage is unavailable.
+ rememberTour();
  overlay.classList.add('is-visible');
  document.body.classList.add('dbh-tour-active');
  go(0);
@@ -99,7 +107,7 @@ function finish(markComplete=true){
 function init(){
  if(!document.querySelector('.with-right-sidebar'))return;
  ensureReplay();
- let seen=false;try{seen=localStorage.getItem(KEY)==='1'}catch(_){}if(!seen)setTimeout(()=>start(false),1100);
+ if(!hasSeenTour())setTimeout(()=>start(false),1100);
  window.addEventListener('resize',()=>{if(document.body.classList.contains('dbh-tour-active')){const t=$(steps[index]?.target);if(t)position(t)}});
  window.addEventListener('scroll',()=>{if(document.body.classList.contains('dbh-tour-active')){const t=$(steps[index]?.target);if(t)position(t)}},{passive:true});
 }
