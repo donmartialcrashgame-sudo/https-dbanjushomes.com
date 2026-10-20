@@ -11,5 +11,5 @@
 .dbh-tour-success-card p{margin:0 auto;max-width:370px;color:#5f738a;font-size:13px;line-height:1.8}
 .dbh-tour-success-tip{display:flex;align-items:flex-start;gap:10px;margin:22px 0;padding:13px 14px;border:1px solid #dbeafe;border-radius:13px;background:#f4f8ff;text-align:left;color:#536b84;font-size:11px;line-height:1.65}
 .dbh-tour-success-tip>span:first-child{color:#0b63ce;font-size:17px}
-.dbh-tour-success-done{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:48px;border:0;border-radius:13px;background:linear-gradient(135deg,#0b63ce,#2f8cff);color:#fff;font:850 13px inherit;cursor:pointer;box-shadow:0 12px 28px rgba(11,99,206,.2)}
+.dbh-tour-success-done{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:48px;border:0;border-radius:13px;background:linear-gradient(135deg,#0b63ce,#2f8cff);color:#fff;font-family:inherit;font-size:13px;font-weight:850;cursor:pointer;box-shadow:0 12px 28px rgba(11,99,206,.2)}
 @media(max-width:560px){.dbh-tour-success{padding:14px}.dbh-tour-success-card{padding:29px 19px 20px;border-radius:21px}.dbh-tour-success-card h2{font-size:26px}}
