@@ -150,6 +150,8 @@ const rawPropertyImages=Array.isArray(p.property_images)?p.property_images:[];
 const imgs=rawPropertyImages.slice().sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)).map(x=>x?.image_url||x?.url||x?.public_url||x?.image).filter(Boolean);
 if(!imgs.length){const fallback=p.og_image_url||p.image_url||p.featured_image||p.cover_image||p.image;if(fallback)imgs.push(fallback);}
 const shareImage=imgs[0]||'/dbh-logo.jpg';
+const videoCandidate=[p.video_url,p.property_video_url,p.video_link,p.video,p.property_video,p.media_url,p.virtual_tour_url,p.video_tour_url].find(v=>typeof v==='string'&&/^https?:\/\//i.test(v.trim()))||rawPropertyImages.map(x=>{const u=String(x?.video_url||x?.media_url||x?.url||x?.public_url||x?.image_url||'');const t=String(x?.media_type||x?.type||x?.file_type||'').toLowerCase();return (/video|mp4|webm|mov|m4v/i.test(t+' '+u))&&/^https?:\/\//i.test(u)?u:''}).find(Boolean)||'';
+const propertyVideoUrl=String(videoCandidate||'').trim();
 const verified=p.is_verified===true;
 const seoTitle=(p.title ? p.title+' | D Banjus Homes' : 'Property for Sale | D Banjus Homes');
 document.title=seoTitle;
@@ -341,6 +343,26 @@ const shareSheetObserver=new MutationObserver(()=>{
 });
 shareSheetObserver.observe(document.body,{childList:true});const gallery=document.createElement('div');gallery.className='detail-gallery-modal';gallery.id='detail-gallery-modal';gallery.innerHTML=`<div class="gallery-modal-head"><div class="gallery-modal-title"><strong>Property photos</strong><span class="gallery-modal-counter" id="gallery-modal-counter"></span></div><button class="gallery-modal-close" id="gallery-modal-close" type="button" aria-label="Close gallery"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="gallery-modal-stage"><button class="gallery-arrow prev" id="gallery-prev" type="button" aria-label="Previous photo"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button><div class="gallery-modal-image-wrap"><img id="gallery-modal-image" class="gallery-modal-image" alt=""><div class="gallery-watermark"><span>D Banjus Homes Nig Ltd</span></div>${verified?`<div class="gallery-verified">${icon('shield')} Verified Property</div>`:''}</div><button class="gallery-arrow next" id="gallery-next" type="button" aria-label="Next photo"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button></div><div class="gallery-modal-thumbs" id="gallery-modal-thumbs"></div></div>`;
 document.body.appendChild(gallery);
+let propertyVideoModal=null;
+function openPropertyVideo(){
+ if(!propertyVideoUrl)return;
+ if(!propertyVideoModal){
+  propertyVideoModal=document.createElement('div');
+  propertyVideoModal.className='dbh-video-modal';
+  propertyVideoModal.id='dbh-property-video-modal';
+  propertyVideoModal.innerHTML='<section class="dbh-video-card" role="dialog" aria-modal="true" aria-label="Property video"><div class="dbh-video-head"><strong>'+esc(p.title||'Property video')+'</strong><button class="dbh-video-close" type="button" aria-label="Close video"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><video class="dbh-video-player" controls playsinline preload="metadata"></video><div class="dbh-video-note">Property video supplied for this listing. Please verify property details and availability with DBH before making a payment.</div></section>';
+  document.body.appendChild(propertyVideoModal);
+  const player=propertyVideoModal.querySelector('video');player.src=propertyVideoUrl;
+  const close=()=>{player.pause();propertyVideoModal.classList.remove('open');document.body.style.overflow='';};
+  propertyVideoModal.querySelector('.dbh-video-close').addEventListener('click',close);
+  propertyVideoModal.addEventListener('click',e=>{if(e.target===propertyVideoModal)close()});
+  propertyVideoModal._close=close;
+ }
+ propertyVideoModal.classList.add('open');document.body.style.overflow='hidden';
+ const player=propertyVideoModal.querySelector('video');player.play().catch(()=>{});
+}
+document.getElementById('view-property-video')?.addEventListener('click',openPropertyVideo);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&propertyVideoModal?.classList.contains('open'))propertyVideoModal._close?.()});
 const galleryImages=imgs;let galleryIndex=0;
 const modalImage=document.getElementById('gallery-modal-image'),modalCounter=document.getElementById('gallery-modal-counter'),modalThumbs=document.getElementById('gallery-modal-thumbs');
 galleryImages.forEach((x,i)=>{const b=document.createElement('button');b.type='button';b.className='gallery-modal-thumb';b.innerHTML='<img src="'+esc(x)+'" alt="">';b.onclick=()=>showGallery(i);modalThumbs.appendChild(b);});
