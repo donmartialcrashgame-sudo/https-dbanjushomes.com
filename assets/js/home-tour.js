@@ -99,10 +99,14 @@ function finish(markComplete=true){
  if(finishing)return;finishing=true;
  if(markComplete){try{localStorage.setItem(KEY,'1')}catch(_){}}
  cleanup();
- const toast=document.createElement('div');toast.className='dbh-tour-success';toast.setAttribute('role','status');toast.setAttribute('aria-live','polite');
- toast.innerHTML='<span class="dbh-tour-success-icon">✓</span><span><strong>Tour completed successfully!</strong><small>You now know how to explore DBH Homes and use the sidebar.</small></span><button type="button" aria-label="Dismiss notification">×</button>';
- document.body.appendChild(toast);toast.querySelector('button').addEventListener('click',()=>toast.remove());
- setTimeout(()=>toast.remove(),6500);
+ const success=document.createElement('div');success.className='dbh-tour-success';success.setAttribute('role','dialog');success.setAttribute('aria-modal','true');success.setAttribute('aria-labelledby','dbh-tour-success-title');
+ success.innerHTML='<section class="dbh-tour-success-card"><button type="button" class="dbh-tour-success-close" aria-label="Close success message">×</button><div class="dbh-tour-success-confetti" aria-hidden="true">🎉</div><span class="dbh-tour-success-kicker"> <span aria-hidden="true">✓</span> TOUR COMPLETED</span><h2 id="dbh-tour-success-title">Congratulations!</h2><p>You have successfully finished your DBH Homes homepage guide. You now know how to search for properties, browse categories and explore locations.</p><div class="dbh-tour-success-tip"><span aria-hidden="true">✦</span><span>You can replay the guide anytime using the <strong>How to use this page</strong> button.</span></div><button type="button" class="dbh-tour-success-done">Great, let’s explore <span aria-hidden="true">→</span></button></section>';
+ document.body.appendChild(success);
+ const dismiss=()=>success.remove();
+ success.querySelector('.dbh-tour-success-close').addEventListener('click',dismiss);
+ success.querySelector('.dbh-tour-success-done').addEventListener('click',dismiss);
+ success.addEventListener('click',e=>{if(e.target===success)dismiss()});
+ success.querySelector('.dbh-tour-success-done').focus();
 }
 function init(){
  if(!document.querySelector('.with-right-sidebar'))return;
