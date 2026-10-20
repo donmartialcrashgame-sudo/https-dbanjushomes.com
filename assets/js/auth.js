@@ -158,7 +158,7 @@ registerForm?.addEventListener('submit',async e=>{
     if(d.access_token){
       localStorage.setItem('dbh_session',JSON.stringify(d));
       await saveAccountLocation(locationData);
-      setMessage('Account created. Let us verify your account…');location.href='/verify-account.html?redirect='+encodeURIComponent(redirect());
+      setMessage('Account created. Let’s personalize your DBH experience…');location.href='/onboarding.html';
     }else{
       setMessage('Account created. Please check your email to confirm your account.','success');form.reset();setLoading(form,false);
     }
@@ -236,7 +236,8 @@ async function finishSupabaseOAuthCallback(){
     }
     await saveAccountLocation(authLocation);
     await recordLoginSecurityEvent(authLocation);
-    const next=await getMfaRedirect(await postAuthRedirect('/dashboard.html'));
+    const nextPath=isNewUser?'/onboarding.html':await postAuthRedirect('/dashboard.html');
+    const next=await getMfaRedirect(nextPath);
     say('Opening your DBH account…');
     location.replace(next);
   }catch(error){
