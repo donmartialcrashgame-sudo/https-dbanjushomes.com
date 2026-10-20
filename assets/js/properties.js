@@ -92,7 +92,7 @@ async function boot(){
   all=await fetchProperties();
   if(!Array.isArray(all))throw Error('Invalid response');
   const params=new URLSearchParams(location.search);
-  const requestedType=params.get('type');
+  const requestedType=params.get('type')||(location.pathname.toLowerCase().endsWith('/rentals.html')?'rental':null);
   const requestedLocation=params.get('location');
   const requestedQ=params.get('q');
   const requestedMinPrice=params.get('minPrice');
