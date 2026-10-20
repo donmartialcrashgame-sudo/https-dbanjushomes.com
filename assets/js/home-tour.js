@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const KEY='dbh_home_tour_completed_v1';
+const KEY='dbh_home_tour_completed_v2';
 const steps=[
  {target:'.dbh-header-brand',title:'Welcome to DBH Homes',text:'This is the DBH home page. Use the logo anytime to return here.'},
  {target:'#dbh-hero .hero-copy',title:'Discover DBH',text:'Start here to understand the marketplace and the property opportunities available.'},
@@ -21,8 +21,8 @@ function ensureUI(){
  document.body.appendChild(overlay);spot=$('#dbh-tour-spotlight');tip=$('#dbh-tour-card');
  $('#dbh-tour-back').addEventListener('click',()=>go(index-1));
  $('#dbh-tour-next').addEventListener('click',()=>index===steps.length-1?finish():go(index+1));
- $('#dbh-tour-end').addEventListener('click',cleanup);
- overlay.addEventListener('click',e=>{if(e.target===overlay)cleanup()});
+ $('#dbh-tour-end').addEventListener('click',()=>finish(true,false));
+ overlay.addEventListener('click',e=>{if(e.target===overlay)finish(true,false)});
  document.addEventListener('keydown',onKey);
 }
 function ensureReplay(){
@@ -30,7 +30,7 @@ function ensureReplay(){
  const b=document.createElement('button');b.type='button';b.id='dbh-tour-replay';b.className='dbh-tour-replay';b.innerHTML='<span aria-hidden="true">✦</span> How to use this page';
  b.addEventListener('click',()=>start(true));document.body.appendChild(b);
 }
-function onKey(e){if(!overlay||!document.body.classList.contains('dbh-tour-active'))return;if(e.key==='Escape')cleanup();if(e.key==='ArrowRight')index===steps.length-1?finish():go(index+1);if(e.key==='ArrowLeft'&&index>0)go(index-1)}
+function onKey(e){if(!overlay||!document.body.classList.contains('dbh-tour-active'))return;if(e.key==='Escape')finish(true,false);if(e.key==='ArrowRight')index===steps.length-1?finish():go(index+1);if(e.key==='ArrowLeft'&&index>0)go(index-1)}
 function revealSidebar(){
  const sidebar=$('#dbh-sidebar');
  const mobile=$('#mobile-menu-button');
@@ -71,7 +71,11 @@ function position(target){
 }
 function start(force){
  ensureUI();ensureReplay();
+ let alreadySeen=false;try{alreadySeen=localStorage.getItem(KEY)==='1'}catch(_){}
+ if(!force&&alreadySeen)return;
  finishing=false;index=0;
+ // Record that the tour has appeared immediately, so reloading mid-tour cannot restart it.
+ try{localStorage.setItem(KEY,'1')}catch(_){}
  overlay.classList.add('is-visible');
  document.body.classList.add('dbh-tour-active');
  go(0);
@@ -83,11 +87,11 @@ function cleanup(){
  document.removeEventListener('keydown',onKey);
  if(document.documentElement.classList.contains('sidebar-open'))$('#mobile-menu-button')?.click();
 }
-function finish(){
+function finish(markComplete=true){
  if(finishing)return;finishing=true;
- localStorage.setItem(KEY,'1');
+ if(markComplete){try{localStorage.setItem(KEY,'1')}catch(_){}}
  cleanup();
- const toast=document.createElement('div');toast.className='dbh-tour-success';toast.setAttribute('role','status');
+ const toast=document.createElement('div');toast.className='dbh-tour-success';toast.setAttribute('role','status');toast.setAttribute('aria-live','polite');
  toast.innerHTML='<span class="dbh-tour-success-icon">✓</span><span><strong>Tour completed successfully!</strong><small>You now know how to explore DBH Homes and use the sidebar.</small></span><button type="button" aria-label="Dismiss notification">×</button>';
  document.body.appendChild(toast);toast.querySelector('button').addEventListener('click',()=>toast.remove());
  setTimeout(()=>toast.remove(),6500);
@@ -95,7 +99,7 @@ function finish(){
 function init(){
  if(!document.querySelector('.with-right-sidebar'))return;
  ensureReplay();
- if(!localStorage.getItem(KEY))setTimeout(()=>start(false),1100);
+ let seen=false;try{seen=localStorage.getItem(KEY)==='1'}catch(_){}if(!seen)setTimeout(()=>start(false),1100);
  window.addEventListener('resize',()=>{if(document.body.classList.contains('dbh-tour-active')){const t=$(steps[index]?.target);if(t)position(t)}});
  window.addEventListener('scroll',()=>{if(document.body.classList.contains('dbh-tour-active')){const t=$(steps[index]?.target);if(t)position(t)}},{passive:true});
 }
