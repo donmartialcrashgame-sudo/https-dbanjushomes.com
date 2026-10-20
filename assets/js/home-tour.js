@@ -24,7 +24,7 @@ let index=0,overlay,spot,tip,finishing=false;
 function $ (s){return document.querySelector(s)}
 function ensureUI(){
  if($('#dbh-tour-overlay'))return;
- const css=document.createElement('link');css.rel='stylesheet';css.href='/assets/css/home-tour.css?v=20261020-1';document.head.appendChild(css);
+ const css=document.createElement('link');css.rel='stylesheet';css.href='/assets/css/home-tour.css?v=20261020-2';document.head.appendChild(css);
  overlay=document.createElement('div');overlay.id='dbh-tour-overlay';overlay.className='dbh-tour-overlay';
  overlay.innerHTML='<div class="dbh-tour-spotlight" id="dbh-tour-spotlight"></div><section class="dbh-tour-card" id="dbh-tour-card" role="dialog" aria-modal="true" aria-live="polite"><div class="dbh-tour-kicker">DBH HOMES • QUICK TOUR</div><div class="dbh-tour-progress"><span id="dbh-tour-step-label"></span><span class="dbh-tour-progress-track"><i id="dbh-tour-progress-fill"></i></span></div><h2 id="dbh-tour-title"></h2><p id="dbh-tour-text"></p><div class="dbh-tour-actions"><button type="button" id="dbh-tour-back">Back</button><button type="button" id="dbh-tour-end">End tour</button><button type="button" id="dbh-tour-next">Next</button></div></section>';
  document.body.appendChild(overlay);spot=$('#dbh-tour-spotlight');tip=$('#dbh-tour-card');
@@ -92,13 +92,13 @@ function cleanup(){
  overlay?.classList.remove('is-visible');
  document.body.classList.remove('dbh-tour-active');
  document.querySelectorAll('.dbh-tour-target').forEach(el=>el.classList.remove('dbh-tour-target'));
- document.removeEventListener('keydown',onKey);
- if(document.documentElement.classList.contains('sidebar-open'))$('#mobile-menu-button')?.click();
+  if(document.documentElement.classList.contains('sidebar-open'))$('#mobile-menu-button')?.click();
 }
-function finish(markComplete=true){
+function finish(markComplete=true,showSuccess=true){
  if(finishing)return;finishing=true;
  if(markComplete){try{localStorage.setItem(KEY,'1')}catch(_){}}
  cleanup();
+ if(!showSuccess)return;
  const success=document.createElement('div');success.className='dbh-tour-success';success.setAttribute('role','dialog');success.setAttribute('aria-modal','true');success.setAttribute('aria-labelledby','dbh-tour-success-title');
  success.innerHTML='<section class="dbh-tour-success-card"><button type="button" class="dbh-tour-success-close" aria-label="Close success message">×</button><div class="dbh-tour-success-confetti" aria-hidden="true">🎉</div><span class="dbh-tour-success-kicker"> <span aria-hidden="true">✓</span> TOUR COMPLETED</span><h2 id="dbh-tour-success-title">Congratulations!</h2><p>You have successfully finished your DBH Homes homepage guide. You now know how to search for properties, browse categories and explore locations.</p><div class="dbh-tour-success-tip"><span aria-hidden="true">✦</span><span>You can replay the guide anytime using the <strong>How to use this page</strong> button.</span></div><button type="button" class="dbh-tour-success-done">Great, let’s explore <span aria-hidden="true">→</span></button></section>';
  document.body.appendChild(success);
