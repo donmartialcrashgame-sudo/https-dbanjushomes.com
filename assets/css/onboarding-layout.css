@@ -1,0 +1,120 @@
+/* Customer onboarding: left-aligned layout and reliable SVG icons */
+body.dbh-onboarding-page{
+  min-height:100vh;
+  padding:clamp(16px,2.5vw,34px) clamp(12px,3vw,44px) 42px;
+  background:linear-gradient(135deg,#f5faff 0%,#fff 48%,#edf6ff 100%);
+}
+body.dbh-onboarding-page .dbh-onboarding-shell{
+  width:min(1120px,100%);
+  margin:0 auto 0 0;
+}
+body.dbh-onboarding-page .dbh-onboarding-head{
+  grid-template-columns:56px minmax(0,1fr);
+  align-items:start;
+  gap:16px;
+  padding:6px 0 24px;
+  max-width:950px;
+}
+body.dbh-onboarding-page .dbh-onboarding-head>a{display:block;width:56px;height:56px}
+body.dbh-onboarding-page .dbh-onboarding-head>a img{
+  display:block;width:56px;height:56px;object-fit:contain;border-radius:14px;
+}
+body.dbh-onboarding-page .dbh-onboarding-head>div:nth-child(2){min-width:0}
+body.dbh-onboarding-page .dbh-onboarding-head h1{
+  font-size:clamp(25px,3vw,36px);line-height:1.14;letter-spacing:-.035em;
+  margin:4px 0 8px;color:#082f63;
+}
+body.dbh-onboarding-page .dbh-onboarding-head p{font-size:13px;line-height:1.65;max-width:650px}
+body.dbh-onboarding-page .dbh-progress{
+  grid-column:2;display:flex;gap:6px;margin-top:4px;justify-content:flex-start;
+}
+body.dbh-onboarding-page .dbh-progress span{width:34px;height:5px}
+body.dbh-onboarding-page .dbh-onboarding-form{
+  width:100%;max-width:1120px;margin:0;padding:clamp(18px,2.6vw,32px);
+  border-radius:20px;box-shadow:0 14px 42px rgba(9,45,99,.075);
+}
+body.dbh-onboarding-page .dbh-onboarding-section{padding-bottom:25px;margin-bottom:24px}
+body.dbh-onboarding-page .dbh-section-title{align-items:center;gap:13px;margin-bottom:18px}
+body.dbh-onboarding-page .dbh-section-number{
+  width:40px;height:40px;flex-basis:40px;border-radius:12px;font-size:12px;
+}
+body.dbh-onboarding-page .dbh-section-title h2{font-size:19px;line-height:1.35}
+body.dbh-onboarding-page .dbh-section-title p{font-size:12px;line-height:1.6}
+body.dbh-onboarding-page .dbh-form-grid{gap:16px}
+body.dbh-onboarding-page .dbh-onboarding-field{min-width:0;gap:8px}
+body.dbh-onboarding-page .dbh-onboarding-field>span{font-size:12px;line-height:1.4}
+body.dbh-onboarding-page .dbh-onboarding-field input,
+body.dbh-onboarding-page .dbh-onboarding-field select,
+body.dbh-onboarding-page .dbh-onboarding-field textarea{
+  height:50px;min-width:0;font-size:14px;border-radius:11px;
+}
+body.dbh-onboarding-page .dbh-onboarding-field small{font-size:11px;line-height:1.6;color:#647891}
+body.dbh-onboarding-page .dbh-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+body.dbh-onboarding-page .dbh-choice{
+  min-width:0;min-height:82px;padding:15px;gap:12px;align-items:center;
+}
+body.dbh-onboarding-page .dbh-choice-icon{
+  width:44px;height:44px;flex:0 0 44px;border-radius:12px;
+}
+body.dbh-onboarding-page .dbh-choice-icon svg{
+  display:block;width:23px;height:23px;overflow:visible;
+  fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+body.dbh-onboarding-page .dbh-choice>span:last-child{min-width:0}
+body.dbh-onboarding-page .dbh-choice b{font-size:13px;line-height:1.4;margin-bottom:4px}
+body.dbh-onboarding-page .dbh-choice small{font-size:11px;line-height:1.5}
+body.dbh-onboarding-page .dbh-onboarding-actions{justify-content:flex-start;gap:18px;padding-top:4px}
+body.dbh-onboarding-page .dbh-onboarding-actions .auth-modern-submit{
+  width:auto;min-width:220px;min-height:50px;border-radius:12px;font-size:14px;
+}
+body.dbh-onboarding-page .dbh-onboarding-actions>a{font-size:12px;padding:12px 0}
+body.dbh-onboarding-page .dbh-onboarding-note{
+  align-items:flex-start;font-size:11px;line-height:1.6;max-width:780px;
+}
+body.dbh-onboarding-page .dbh-onboarding-note svg{
+  display:block;width:18px;height:18px;flex:0 0 18px;overflow:visible;
+}
+body.dbh-onboarding-page .dbh-onboarding-note svg path{
+  fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+}
+body.dbh-onboarding-page .dbh-onboarding-message{overflow-wrap:anywhere}
+@media(max-width:760px){
+  body.dbh-onboarding-page{padding:16px 12px 30px}
+  body.dbh-onboarding-page .dbh-onboarding-shell{width:100%;margin:0}
+  body.dbh-onboarding-page .dbh-onboarding-head{grid-template-columns:46px minmax(0,1fr);gap:11px;padding:3px 0 18px}
+  body.dbh-onboarding-page .dbh-onboarding-head>a{width:46px;height:46px}
+  body.dbh-onboarding-page .dbh-onboarding-head>a img{width:46px;height:46px}
+  body.dbh-onboarding-page .dbh-onboarding-head h1{font-size:25px}
+  body.dbh-onboarding-page .dbh-onboarding-head p{font-size:12px}
+  body.dbh-onboarding-page .dbh-progress{grid-column:2}
+  body.dbh-onboarding-page .dbh-onboarding-form{padding:20px 16px;border-radius:17px}
+  body.dbh-onboarding-page .dbh-form-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  body.dbh-onboarding-page .dbh-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  body.dbh-onboarding-page .dbh-choice{padding:12px;gap:9px;align-items:flex-start}
+  body.dbh-onboarding-page .dbh-choice-icon{width:36px;height:36px;flex-basis:36px}
+  body.dbh-onboarding-page .dbh-choice-icon svg{width:21px;height:21px}
+  body.dbh-onboarding-page .dbh-choice b{font-size:12px}
+  body.dbh-onboarding-page .dbh-choice small{font-size:10px}
+  body.dbh-onboarding-page .dbh-onboarding-actions{align-items:stretch}
+  body.dbh-onboarding-page .dbh-onboarding-actions .auth-modern-submit{min-width:0}
+}
+@media(max-width:480px){
+  body.dbh-onboarding-page{padding:12px 9px 24px}
+  body.dbh-onboarding-page .dbh-onboarding-head{grid-template-columns:40px minmax(0,1fr);gap:9px}
+  body.dbh-onboarding-page .dbh-onboarding-head>a,
+  body.dbh-onboarding-page .dbh-onboarding-head>a img{width:40px;height:40px}
+  body.dbh-onboarding-page .dbh-onboarding-head h1{font-size:22px}
+  body.dbh-onboarding-page .dbh-onboarding-head p{font-size:11px}
+  body.dbh-onboarding-page .dbh-progress span{width:27px}
+  body.dbh-onboarding-page .dbh-onboarding-form{padding:17px 12px}
+  body.dbh-onboarding-page .dbh-form-grid,
+  body.dbh-onboarding-page .dbh-choice-grid{grid-template-columns:minmax(0,1fr)}
+  body.dbh-onboarding-page .dbh-choice{align-items:center;min-height:70px}
+  body.dbh-onboarding-page .dbh-choice-icon{width:40px;height:40px;flex-basis:40px}
+  body.dbh-onboarding-page .dbh-section-title h2{font-size:16px}
+  body.dbh-onboarding-page .dbh-section-title p{font-size:11px}
+  body.dbh-onboarding-page .dbh-onboarding-actions{flex-direction:column-reverse;align-items:stretch}
+  body.dbh-onboarding-page .dbh-onboarding-actions .auth-modern-submit{width:100%}
+  body.dbh-onboarding-page .dbh-onboarding-actions>a{text-align:left}
+}
