@@ -88,6 +88,10 @@ async function postAuthRedirect(defaultPath){
     const r=await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/profiles?select=role&id=eq.'+encodeURIComponent(uid),{headers:{apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+s.access_token,Accept:'application/json'}});
     const p=await r.json().catch(()=>[]);
     if(p?.[0]?.role==='customer'){
+      // First-time customers complete onboarding before the identity-verification step.
+      const onboardingResponse=await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/user_onboarding?select=user_id&user_id=eq.'+encodeURIComponent(uid)+'&limit=1',{headers:{apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+s.access_token,Accept:'application/json'}});
+      const onboardingRows=await onboardingResponse.json().catch(()=>[]);
+      if(onboardingResponse.ok&&(!Array.isArray(onboardingRows)||onboardingRows.length===0))return '/onboarding.html';
       const vr=await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/identity_verification_requests?select=status&user_id=eq.'+encodeURIComponent(uid)+'&limit=1',{headers:{apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+s.access_token,Accept:'application/json'}});
       const rows=await vr.json().catch(()=>[]);
       if(!rows?.[0]||rows[0].status!=='verified') return '/verify-account.html?redirect='+encodeURIComponent(next);
