@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b63ce"><meta name="robots" content="noindex,nofollow,noarchive"><title>Tell us about you | DBH</title><link rel="icon" href="/dbh-logo.jpg"><link rel="stylesheet" href="/assets/css/styles.css"></head>
 <body class="dbh-onboarding-page">
 <main class="dbh-onboarding-shell">
-<header class="dbh-onboarding-head"><a href="/"><img src="/dbh-logo.jpg" alt="DBH"></a><div><span class="eyebrow">WELCOME TO DBH</span><h1>Tell us what you are looking for.</h1><p>This takes about a minute and helps us make your DBH experience more relevant.</p></div><div class="dbh-progress"><span class="active"></span><span></span><span></span></div></header>
+<header class="dbh-onboarding-head"><a href="/"><img src="/dbh-logo.jpg" alt="DBH"></a><div><span class="eyebrow">WELCOME TO DBH</span><h1>Tell us what you are looking for.</h1><p>This takes about a minute and helps us make your DBH experience more relevant.</p></div><div class="dbh-progress"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span></div></header>
 <form id="onboarding-form" class="dbh-onboarding-form">
 <section class="dbh-onboarding-section">
 <div class="dbh-section-title"><span class="dbh-section-number">01</span><div><h2>About you</h2><p>We use this to keep your account details accurate.</p></div></div>
@@ -22,7 +22,27 @@
 </div>
 </section>
 <section class="dbh-onboarding-section">
-<div class="dbh-section-title"><span class="dbh-section-number">03</span><div><h2>How did you hear about DBH?</h2><p>This helps us understand how people discover us.</p></div></div>
+<div class="dbh-section-title"><span class="dbh-section-number">03</span><div><h2>Your property preferences</h2><p>Help us focus your search on the right listings. Budget and timing are optional.</p></div></div>
+<div class="dbh-form-grid">
+<label class="dbh-onboarding-field"><span>Property type</span><select name="preferredPropertyType" id="preferred-property-type"><option value="any">Any property type</option><option value="house">House / home</option><option value="land">Land</option><option value="commercial">Commercial property</option></select></label>
+<label class="dbh-onboarding-field"><span>When are you planning to buy or rent?</span><select name="purchaseTimeline" id="purchase-timeline"><option value="">Not decided yet</option><option value="asap">As soon as possible</option><option value="within_1_month">Within one month</option><option value="within_3_months">Within three months</option><option value="within_6_months">Within six months</option><option value="researching">Just researching</option></select></label>
+<label class="dbh-onboarding-field"><span>Minimum budget (optional, NGN)</span><input name="budgetMin" id="budget-min" type="number" min="0" step="1000" inputmode="numeric" placeholder="e.g. 5000000"></label>
+<label class="dbh-onboarding-field"><span>Maximum budget (optional, NGN)</span><input name="budgetMax" id="budget-max" type="number" min="0" step="1000" inputmode="numeric" placeholder="e.g. 25000000"></label>
+<label class="dbh-onboarding-field"><span>How should DBH contact you?</span><select name="contactPreference" id="contact-preference"><option value="email">Email</option><option value="phone">Phone call</option><option value="whatsapp">WhatsApp</option><option value="no_contact">Only contact me when I make an enquiry</option></select></label>
+</div>
+<div style="margin-top:20px">
+<label class="dbh-onboarding-field"><span>Where would you like to find property? *</span><input name="preferredLocation" id="onboarding-preferred-location" autocomplete="off" required placeholder="Search state, city, area or landmark"><small>Choose a suggested location so DBH can match listings in the right area. You can search worldwide or use the nearby-location option.</small></label>
+<div class="dbh-form-grid" style="margin-top:12px">
+<label class="dbh-onboarding-field"><span>State / region</span><input id="preferred-state" readonly placeholder="Filled from selected location"></label>
+<label class="dbh-onboarding-field"><span>City</span><input id="preferred-city" readonly placeholder="Filled from selected location"></label>
+<label class="dbh-onboarding-field"><span>Country</span><input id="preferred-country" readonly placeholder="Filled from selected location"></label>
+<label class="dbh-onboarding-field"><span>Area / neighbourhood</span><input id="preferred-area" readonly placeholder="Filled from selected location"></label>
+</div>
+<input type="hidden" id="preferred-place-id"><input type="hidden" id="preferred-latitude"><input type="hidden" id="preferred-longitude"><input type="hidden" id="preferred-country-code">
+</div>
+</section>
+<section class="dbh-onboarding-section">
+<div class="dbh-section-title"><span class="dbh-section-number">04</span><div><h2>How did you hear about DBH?</h2><p>This helps us understand how people discover us.</p></div></div>
 <div class="dbh-choice-grid dbh-source-grid">
 <label class="dbh-choice"><input type="radio" name="heardAbout" value="google_search" required><span class="dbh-choice-icon"><svg viewBox="0 0 24 24" aria-hidden="true">circle cx="11" cy="11" r="6"/path d="m16 16 5 5"</svg></span><span><b>Google / search</b><small>I found DBH through search.</small></span></label>
 <label class="dbh-choice"><input type="radio" name="heardAbout" value="social_media"><span class="dbh-choice-icon"><svg viewBox="0 0 24 24" aria-hidden="true">path d="M7 3h10v18H7z"/path d="M10 18h4"</svg></span><span><b>Social media</b><small>Facebook, Instagram, X or another platform.</small></span></label>
@@ -37,10 +57,12 @@
 <p class="dbh-onboarding-note"><svg viewBox="0 0 24 24" aria-hidden="true">path d="M12 3 20 6v5.5c0 4.8-3.3 7.8-8 9.5-4.7-1.7-8-4.7-8-9.5V6l8-3Z"</svg> Your answers are stored with your DBH account and used to personalize your experience.</p>
 </form>
 </main>
-<script src="/assets/js/config.js"></script><script>
+<script src="/assets/js/config.js?v=20261020-customer-onboarding-1"></script><script src="/assets/js/google-location.js?v=20261020-1"></script><script>
 function iconSvg(s){return '<svg viewBox="0 0 24 24" aria-hidden="true">'+s+'</svg>'}
 (async function(){
- const form=document.getElementById('onboarding-form'),msg=document.getElementById('onboarding-message'),nameInput=document.getElementById('onboarding-name'),otherWrap=document.getElementById('other-source-wrap'),otherInput=document.getElementById('heard-about-other');
+ const form=document.getElementById('onboarding-form'),msg=document.getElementById('onboarding-message'),nameInput=document.getElementById('onboarding-name'),otherWrap=document.getElementById('other-source-wrap'),otherInput=document.getElementById('heard-about-other'),locationInput=document.getElementById('onboarding-preferred-location');
+ let locationPicker=null;
+ if(window.DBHGoogleLocation){locationPicker=window.DBHGoogleLocation.attach({input:locationInput,authoritative:true,primaryField:'address',fields:{state:'preferred-state',city:'preferred-city',country:'preferred-country',area:'preferred-area',placeId:'preferred-place-id',latitude:'preferred-latitude',longitude:'preferred-longitude',countryCode:'preferred-country-code'},recentSearches:true,recentStorageKey:'dbh_customer_preferred_locations_v1'});}
  let session=null;try{session=JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{}
  if(!session?.access_token){location.replace('/login.html?redirect='+encodeURIComponent('/onboarding.html'));return}
  const headers={apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+session.access_token,Accept:'application/json'};
@@ -51,9 +73,15 @@ function iconSvg(s){return '<svg viewBox="0 0 24 24" aria-hidden="true">'+s+'</s
  }catch(e){msg.textContent=e.message;return}
  document.querySelectorAll('input[name="heardAbout"]').forEach(r=>r.addEventListener('change',()=>{otherWrap.hidden=r.value!=='other'||!r.checked;otherInput.required=r.value==='other'&&r.checked}));
  form.addEventListener('submit',async e=>{
-   e.preventDefault();msg.textContent='Saving your preferences…';const f=new FormData(form);
+   e.preventDefault();const f=new FormData(form);
+   if(!locationPicker?.selected){msg.textContent='Please search for and select your preferred property location from the suggestions.';locationInput.focus();return}
+   const budgetMin=f.get('budgetMin')===''?null:Number(f.get('budgetMin')),budgetMax=f.get('budgetMax')===''?null:Number(f.get('budgetMax'));
+   if(budgetMin!==null&&(!Number.isFinite(budgetMin)||budgetMin<0)){msg.textContent='Please enter a valid minimum budget.';return}
+   if(budgetMax!==null&&(!Number.isFinite(budgetMax)||budgetMax<0)){msg.textContent='Please enter a valid maximum budget.';return}
+   if(budgetMin!==null&&budgetMax!==null&&budgetMax<budgetMin){msg.textContent='Maximum budget must be greater than or equal to minimum budget.';return}
+   msg.textContent='Saving your profile and preferences…';
    const user=await (await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/user',{headers})).json();
-   const payload={user_id:user.id,full_name:String(f.get('fullName')).trim(),phone:String(f.get('phone')).trim(),goal:String(f.get('goal')),heard_about:String(f.get('heardAbout')),heard_about_other:String(f.get('heardAboutOther')||'').trim()||null};
+   const payload={user_id:user.id,full_name:String(f.get('fullName')).trim(),phone:String(f.get('phone')).trim(),goal:String(f.get('goal')),heard_about:String(f.get('heardAbout')),heard_about_other:String(f.get('heardAboutOther')||'').trim()||null,preferred_property_type:String(f.get('preferredPropertyType')||'any'),budget_min:budgetMin,budget_max:budgetMax,purchase_timeline:String(f.get('purchaseTimeline')||'')||null,preferred_location:locationInput.value.trim(),preferred_state:document.getElementById('preferred-state').value.trim()||null,preferred_country:document.getElementById('preferred-country').value.trim()||null,preferred_city:document.getElementById('preferred-city').value.trim()||null,preferred_area:document.getElementById('preferred-area').value.trim()||null,preferred_latitude:document.getElementById('preferred-latitude').value?Number(document.getElementById('preferred-latitude').value):null,preferred_longitude:document.getElementById('preferred-longitude').value?Number(document.getElementById('preferred-longitude').value):null,preferred_google_place_id:document.getElementById('preferred-place-id').value||null,contact_preference:String(f.get('contactPreference')||'email')};
    if(payload.heard_about==='other'&&!payload.heard_about_other){msg.textContent='Please tell us how you heard about DBH.';return}
    try{
      const p=await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/profiles?on_conflict=id',{method:'POST',headers:{...headers,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify({id:user.id,full_name:payload.full_name,email:user.email||'',role:'customer'})});
@@ -61,7 +89,10 @@ function iconSvg(s){return '<svg viewBox="0 0 24 24" aria-hidden="true">'+s+'</s
      const o=await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/user_onboarding?on_conflict=user_id',{method:'POST',headers:{...headers,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify(payload)});
      if(!o.ok){const d=await o.json().catch(()=>({}));throw new Error(d.message||'Could not save your onboarding details.')}
      try{const current=JSON.parse(localStorage.getItem('dbh_session')||'{}');current.user={...(current.user||{}),user_metadata:{...(current.user?.user_metadata||{}),full_name:payload.full_name}};localStorage.setItem('dbh_session',JSON.stringify(current))}catch{}
-     msg.textContent='All set. Opening your DBH dashboard…';setTimeout(()=>location.replace('/dashboard.html'),450);
+     msg.textContent='Your DBH profile is saved. Checking your account verification…';
+     let next='/verify-account.html?redirect='+encodeURIComponent('/dashboard.html');
+     try{const vr=await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/identity_verification_requests?select=status&user_id=eq.'+encodeURIComponent(user.id)+'&limit=1',{headers});const rows=await vr.json().catch(()=>[]);if(vr.ok&&rows?.[0]?.status==='verified')next='/dashboard.html'}catch{}
+     setTimeout(()=>location.replace(next),700);
    }catch(e){msg.textContent=e.message||'Unable to save your details.'}
  });
 })();
