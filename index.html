@@ -339,6 +339,60 @@ img,svg,video,canvas{max-width:100%}
  .hero-background-slider .hero-slide,.dbh-visual-bg-slide,.hero-orb,.hero-grid-lines{animation:none!important;transition:none!important}
 }
 
+
+  /* DBH premium homepage refresh — clearer hierarchy, polished search and responsive layout */
+  .site-header{background:rgba(255,255,255,.96);box-shadow:0 8px 28px rgba(8,35,72,.055)}
+  .dbh-header-brand strong{letter-spacing:-.04em}
+  .dbh-header-brand small{letter-spacing:.025em}
+  .dbh-header-nav-link{transition:color .18s,background .18s}
+  .dbh-header-nav-link:hover{color:#0758b8}
+  .hero{min-height:700px;background:#071f42}
+  .hero-background-slider .hero-slide{transform:scale(1.025);transition:opacity 1s ease,transform 8s ease}
+  .hero-background-slider .hero-slide.active{transform:scale(1)}
+  .hero-blue-overlay{background:linear-gradient(90deg,rgba(3,20,45,.9) 0%,rgba(4,31,68,.76) 48%,rgba(4,31,68,.36) 100%)}
+  .hero-inner{width:min(1240px,calc(100% - 64px));margin:0 auto;padding:86px 0 78px}
+  .hero-copy{max-width:760px}
+  .hero-copy .eyebrow{display:inline-flex;align-items:center;padding:9px 13px;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(255,255,255,.1);backdrop-filter:blur(10px)}
+  .hero h1{max-width:760px;font-size:clamp(48px,6.2vw,82px);line-height:1.01;letter-spacing:-.055em}
+  .hero p{max-width:650px;font-size:clamp(15px,1.5vw,18px);color:rgba(245,249,255,.88)}
+  .hero-pills span{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);backdrop-filter:blur(10px)}
+  .search-card{width:min(1100px,100%);margin-top:34px;padding:24px;border:1px solid rgba(255,255,255,.72);border-radius:24px;box-shadow:0 30px 90px rgba(0,12,35,.32)}
+  .search-card-head h2{font-size:clamp(20px,2vw,25px);letter-spacing:-.035em}
+  .search-card .tab{border-radius:11px;padding:11px 16px}
+  #property-search input,#property-search select{min-height:48px;border-radius:12px}
+  .stats-strip{position:relative;z-index:3;width:min(1240px,calc(100% - 64px));margin:-1px auto 0;border:1px solid #e5edf6;border-radius:0 0 20px 20px;box-shadow:0 15px 38px rgba(9,45,99,.065);overflow:hidden}
+  .stats-strip>div{padding:25px 24px}
+  .stats-strip strong{font-size:29px;letter-spacing:-.04em}
+  .section{padding-top:84px;padding-bottom:84px}
+  .section-heading{margin-bottom:30px}
+  .section-heading h2,.page-heading h1{font-size:clamp(27px,3.2vw,38px);letter-spacing:-.045em;color:#102f52}
+  .property-card{border-radius:21px;box-shadow:0 10px 32px rgba(9,45,99,.065)}
+  .property-card:hover{box-shadow:0 22px 48px rgba(9,45,99,.13)}
+  .dbh-home-category-card{min-height:124px;border-radius:19px}
+  .dbh-about-copy article,.dbh-leader-card{border-radius:20px}
+  .cta-section{border-radius:26px}
+  @media(max-width:1080px){.hero-inner{width:calc(100% - 44px);padding:68px 0}.stats-strip{width:calc(100% - 44px)}}
+  @media(max-width:700px){
+    .hero{min-height:0}
+    .hero-inner{width:calc(100% - 30px);padding:58px 0 48px}
+    .hero h1{font-size:clamp(39px,10vw,55px);line-height:1.02}
+    .hero p{font-size:14px;line-height:1.7}
+    .hero-pills{gap:7px}
+    .hero-pills span{font-size:9px;padding:8px 9px}
+    .search-card{margin-top:25px;padding:17px;border-radius:19px}
+    .search-card-head{align-items:flex-start}
+    .search-card-head h2{font-size:20px}
+    .stats-strip{width:calc(100% - 24px);border-radius:0 0 16px 16px}
+    .stats-strip>div{padding:15px 12px}
+    .stats-strip strong{font-size:23px}
+    .stats-strip span{font-size:10px}
+    .section{width:calc(100% - 30px);margin-left:15px;margin-right:15px;padding:54px 0}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .hero-background-slider .hero-slide{transform:none!important;transition:none!important}
+    .dbh-header-nav-link{transition:none!important}
+  }
+
 </style>
 </head>
 <body>
@@ -348,8 +402,8 @@ img,svg,video,canvas{max-width:100%}
   <p>Dream it, we build it.</p>
 </div>
 
-<header class="site-header" aria-label="DBH site navigation"><div class="dbh-header-inner"><a class="dbh-header-brand" href="/" aria-label="D Banjus Homes"><img src="/dbh-logo.jpg" alt="DBH"><span><strong>DBH</strong><small>D Banjus Homes Nig Ltd</small></span></a><nav class="dbh-top-nav" aria-label="Main navigation"><a class="dbh-header-nav-link" href="/">Home</a><a class="dbh-header-nav-link" href="/properties.html">Properties</a><a class="dbh-header-nav-link" href="/properties.html?type=land">Land</a><a class="dbh-header-nav-link" href="/properties.html?type=commercial">Commercial</a><a class="dbh-header-nav-link" href="/rentals.html">Rentals</a><a class="dbh-header-nav-link" href="/list-property.html">List Property</a><a class="dbh-header-nav-link" href="/help.html">Help</a><a class="dbh-header-nav-link" href="/contact.html">Contact</a><a class="dbh-header-nav-link" href="/agents.html">Find an Agent</a><a class="dbh-header-nav-link" href="/our-team.html">Our Team</a></nav><div class="dbh-header-tools"><a class="header-auth-icon" href="/login.html" aria-label="Sign in">Sign in</a><button id="mobile-menu-button" class="mobile-menu-button" type="button" aria-label="Open navigation" aria-expanded="false" onclick="document.documentElement.classList.add(\'sidebar-open\');this.setAttribute(\'aria-expanded\',\'true\')"><span class="hamburger-lines"><i></i><i></i><i></i></span></button></div></div></header>
-<aside id="dbh-sidebar" class="dbh-sidebar" aria-label="DBH navigation"><div class="drawer-head"><a href="/" class="sidebar-logo"><img src="/dbh-logo.jpg" alt="DBH"></a><button id="sidebar-close" class="drawer-close" type="button" aria-label="Close navigation" onclick="document.documentElement.classList.remove(\'sidebar-open\');document.getElementById(\'mobile-menu-button\')?.setAttribute(\'aria-expanded\',\'false\')">×</button></div><nav class="sidebar-nav"><a href="/"><span class="nav-icon">⌂</span><span class="nav-label">Home</span></a><a href="/properties.html"><span class="nav-icon">⌕</span><span class="nav-label">Properties for Sale</span></a><a href="/properties.html?type=land"><span class="nav-icon">◇</span><span class="nav-label">Land for Sale</span></a><a href="/agents.html"><span class="nav-icon">♙</span><span class="nav-label">Find an Agent</span></a><a href="/our-team.html"><span class="nav-icon">♧</span><span class="nav-label">Our Team</span></a><a href="/properties.html?type=commercial"><span class="nav-icon">▦</span><span class="nav-label">Commercial Property</span></a><a href="/save.html"><span class="nav-icon">♡</span><span class="nav-label">Saved properties</span></a><a href="/help.html"><span class="nav-icon">?</span><span class="nav-label">Help and FAQs</span></a><a href="/contact.html"><span class="nav-icon">✉</span><span class="nav-label">Contact us</span></a><a href="/list-property.html"><span class="nav-icon">＋</span><span class="nav-label">List a property</span></a></nav></aside><div id="sidebar-backdrop" class="sidebar-backdrop" onclick="document.documentElement.classList.remove(\'sidebar-open\')"></div>
+<header class="site-header" aria-label="DBH site navigation"><div class="dbh-header-inner"><a class="dbh-header-brand" href="/home" aria-label="D Banjus Homes"><img src="/dbh-logo.jpg" alt="DBH"><span><strong>DBH</strong><small>D Banjus Homes Nig Ltd</small></span></a><nav class="dbh-top-nav" aria-label="Main navigation"><a class="dbh-header-nav-link" href="/home" aria-current="page">Home</a><a class="dbh-header-nav-link" href="/properties.html">Properties</a><a class="dbh-header-nav-link" href="/properties.html?type=land">Land</a><a class="dbh-header-nav-link" href="/properties.html?type=commercial">Commercial</a><a class="dbh-header-nav-link" href="/rentals.html">Rentals</a><a class="dbh-header-nav-link" href="/list-property.html">List Property</a><a class="dbh-header-nav-link" href="/help.html">Help</a><a class="dbh-header-nav-link" href="/contact.html">Contact</a><a class="dbh-header-nav-link" href="/agents.html">Find an Agent</a><a class="dbh-header-nav-link" href="/our-team.html">Our Team</a></nav><div class="dbh-header-tools"><a class="header-auth-icon" href="/login.html" aria-label="Sign in">Sign in</a><button id="mobile-menu-button" class="mobile-menu-button" type="button" aria-label="Open navigation" aria-expanded="false" onclick="document.documentElement.classList.add(\'sidebar-open\');this.setAttribute(\'aria-expanded\',\'true\')"><span class="hamburger-lines"><i></i><i></i><i></i></span></button></div></div></header>
+<aside id="dbh-sidebar" class="dbh-sidebar" aria-label="DBH navigation"><div class="drawer-head"><a href="/home" class="sidebar-logo"><img src="/dbh-logo.jpg" alt="DBH"></a><button id="sidebar-close" class="drawer-close" type="button" aria-label="Close navigation" onclick="document.documentElement.classList.remove(\'sidebar-open\');document.getElementById(\'mobile-menu-button\')?.setAttribute(\'aria-expanded\',\'false\')">×</button></div><nav class="sidebar-nav"><a href="/home" aria-current="page"><span class="nav-icon">⌂</span><span class="nav-label">Home</span></a><a href="/properties.html"><span class="nav-icon">⌕</span><span class="nav-label">Properties for Sale</span></a><a href="/properties.html?type=land"><span class="nav-icon">◇</span><span class="nav-label">Land for Sale</span></a><a href="/agents.html"><span class="nav-icon">♙</span><span class="nav-label">Find an Agent</span></a><a href="/our-team.html"><span class="nav-icon">♧</span><span class="nav-label">Our Team</span></a><a href="/properties.html?type=commercial"><span class="nav-icon">▦</span><span class="nav-label">Commercial Property</span></a><a href="/save.html"><span class="nav-icon">♡</span><span class="nav-label">Saved properties</span></a><a href="/help.html"><span class="nav-icon">?</span><span class="nav-label">Help and FAQs</span></a><a href="/contact.html"><span class="nav-icon">✉</span><span class="nav-label">Contact us</span></a><a href="/list-property.html"><span class="nav-icon">＋</span><span class="nav-label">List a property</span></a></nav></aside><div id="sidebar-backdrop" class="sidebar-backdrop" onclick="document.documentElement.classList.remove(\'sidebar-open\')"></div>
 <a id="dbh-care-fallback" href="/customer-care.html" aria-label="Open DBH customer care" style="position:fixed;right:16px;bottom:16px;z-index:2147483000;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:#0b63ce;color:#fff;box-shadow:0 12px 30px rgba(11,99,206,.35);font-size:25px;text-decoration:none" title="DBH Customer Care">☏</a>
 
 <main class="with-right-sidebar">
