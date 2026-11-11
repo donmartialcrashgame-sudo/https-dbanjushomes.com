@@ -531,7 +531,7 @@ app.get('/sitemap.xml', async (_req, res) => {
       if (providerName && !isDbhBrand && !agentNames.has(providerKey)) {
         agentNames.add(providerKey);
         urls.push({
-          loc: 'https://dbanjushomes.online/view-agent.html?name=' + encodeURIComponent(providerName),
+          loc: 'https://dbanjushomes.online/view-agent?name=' + encodeURIComponent(providerName),
           lastmod: property.updated_at || property.created_at || new Date().toISOString()
         });
       }
@@ -626,7 +626,7 @@ app.get('/view-agent', async (req, res, next) => {
     });
     const rows = response.ok ? await response.json().catch(() => []) : [];
     const publicRows = Array.isArray(rows) ? rows : [];
-    const profileUrl = 'https://dbanjushomes.online/view-agent.html?name=' + encodeURIComponent(name);
+    const profileUrl = 'https://dbanjushomes.online/view-agent?name=' + encodeURIComponent(name);
     const locations = [...new Set(publicRows.map(row => [row.area, row.city, row.state].filter(Boolean).join(', ')).filter(Boolean))].slice(0, 8);
     const description = publicRows.length
       ? 'Explore ' + publicRows.length + ' published and verified property listing' + (publicRows.length === 1 ? '' : 's') + ' associated with ' + name + ' on D Banjus Homes in Nigeria' + (locations.length ? ', including ' + locations.join('; ') : '') + '.'
@@ -797,8 +797,8 @@ app.get(['/property/:key','/property/:key/'], (req, res) => {
 });
 
 app.use((req, res, next) => {
-  if (/\\.html$/i.test(req.path)) {
-    const cleanPath = req.path.replace(/\\.html$/i, '');
+  if (/\.html$/i.test(req.path)) {
+    const cleanPath = req.path.replace(/\.html$/i, '');
     return res.redirect(301, cleanPath + (req.url.slice(req.path.length) || ''));
   }
   next();
