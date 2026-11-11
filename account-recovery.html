@@ -24,7 +24,7 @@
 <button class="btn btn-primary auth-submit" type="submit">Save new password</button>
 </form>
 <p id="recovery-status" class="recovery-status info" role="status" aria-live="polite">Checking your reset link…</p>
-<div class="recovery-actions"><a id="recovery-login" href="/login.html" hidden>Go to sign in</a><a id="recovery-again" href="/forgot-password.html" hidden>Request a new reset email</a></div>
+<div class="recovery-actions"><a id="recovery-login" href="/login" hidden>Go to sign in</a><a id="recovery-again" href="/forgot-password" hidden>Request a new reset email</a></div>
 </section></main>
 <script src="/assets/js/config.js"></script>
 <script>
@@ -77,7 +77,7 @@
      localStorage.removeItem('dbh_session');
      form.reset();form.hidden=true;intro.textContent='Your password has been updated successfully.';
      setStatus('Password changed successfully. Redirecting you to sign in…','success');showLinks();
-     setTimeout(()=>location.replace('/login.html?password_reset=success'),1200);
+     setTimeout(()=>location.replace('/login?password_reset=success'),1200);
    }catch(err){setStatus(err.message||'Unable to update your password. Please try again.','error');button.disabled=false;button.textContent='Save new password'}
  });
 })();
