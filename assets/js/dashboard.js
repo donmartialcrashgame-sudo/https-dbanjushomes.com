@@ -13,14 +13,14 @@
       return;
     }
     localStorage.removeItem('dbh_session');
-    location.replace('/login?redirect=/dashboard.html');
+    location.replace('/login?redirect=/dashboard');
     return;
   }
 
   const session=await sessionResponse.json().catch(()=>({}));
   if(!session?.authenticated||!session?.user){
     localStorage.removeItem('dbh_session');
-    location.replace('/login?redirect=/dashboard.html');
+    location.replace('/login?redirect=/dashboard');
     return;
   }
 
