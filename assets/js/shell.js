@@ -68,7 +68,7 @@ async function initConsent(){
  }
 }
 function initTheme(){document.querySelectorAll('[data-theme-toggle]').forEach(b=>{b.onclick=e=>{e.preventDefault();const dark=!root.classList.contains('dbh-dark');try{const s=JSON.parse(localStorage.getItem('dbh_ui_settings')||'{}');s.mode=dark?'dark':'light';localStorage.setItem('dbh_ui_settings',JSON.stringify(s))}catch{}root.classList.toggle('dbh-dark',dark)}})}
-function initProfile(){const p=$('#profile-button');if(p)p.onclick=()=>location.href='/dashboard.html'}
+function initProfile(){const p=$('#profile-button');if(p)p.onclick=()=>location.href='/dashboard'}
 function init(){
  hideLoader();initSidebar();initTheme();initProfile();
  setTimeout(()=>initConsent().catch(console.error),350);
