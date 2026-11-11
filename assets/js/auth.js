@@ -2,19 +2,19 @@ const DBH_CONFIG=window.DBH_CONFIG||{};
 
 const msg=document.getElementById('auth-message');
 
-const isSupabaseOAuthCallback=location.pathname.endsWith('/auth-callback.html')&&(location.hash.includes('access_token=')||location.hash.includes('error=')||new URLSearchParams(location.search).has('code')||new URLSearchParams(location.search).has('error'));
-if(location.pathname.endsWith('/reset-password.html')){
+const isSupabaseOAuthCallback=location.pathname.endsWith('/auth-callback')&&(location.hash.includes('access_token=')||location.hash.includes('error=')||new URLSearchParams(location.search).has('code')||new URLSearchParams(location.search).has('error'));
+if(location.pathname.endsWith('/reset-password')){
   const s=hashSession||(()=>{try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}})();
-  if((!s?.access_token&&!s?.sessionToken)||(!s?.sessionToken&&s.type!=='recovery')) location.replace('/forgot-password.html');
+  if((!s?.access_token&&!s?.sessionToken)||(!s?.sessionToken&&s.type!=='recovery')) location.replace('/forgot-password');
 }
-const redirect=()=>new URLSearchParams(location.search).get('redirect')||'/dashboard.html';
+const redirect=()=>new URLSearchParams(location.search).get('redirect')||'/dashboard';
 async function loadSupabaseClient(){
   if(window.__dbhSupabaseClient)return window.__dbhSupabaseClient;
   const mod=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
   window.__dbhSupabaseClient=mod.createClient(DBH_CONFIG.supabaseUrl,DBH_CONFIG.supabaseAnonKey,{auth:{persistSession:false,autoRefreshToken:true,detectSessionInUrl:false}});
   return window.__dbhSupabaseClient;
 }
-async function getMfaRedirect(nextPath='/dashboard.html'){
+async function getMfaRedirect(nextPath='/dashboard'){
   const s=(()=>{try{return JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{return null}})();
   if(!s?.access_token||!s?.refresh_token)return nextPath;
   try{
@@ -23,7 +23,7 @@ async function getMfaRedirect(nextPath='/dashboard.html'){
     if(error)throw error;
     const {data,error:aalError}=await sb.auth.mfa.getAuthenticatorAssuranceLevel();
     if(aalError)throw aalError;
-    if(data?.currentLevel==='aal1'&&data?.nextLevel==='aal2')return '/totp.html?redirect='+encodeURIComponent(nextPath);
+    if(data?.currentLevel==='aal1'&&data?.nextLevel==='aal2')return '/totp?redirect='+encodeURIComponent(nextPath);
   }catch(error){console.warn('DBH MFA status check unavailable:',error)}
   return nextPath;
 }
@@ -79,7 +79,7 @@ async function recordLoginSecurityEvent(locationData){
 }
 async function postAuthRedirect(defaultPath){
   const next=redirect();
-  if(next!=='/dashboard.html') return next;
+  if(next!=='/dashboard') return next;
   try{
     const s=JSON.parse(localStorage.getItem('dbh_session')||'null');
     const u=s?.user||null;
@@ -91,10 +91,10 @@ async function postAuthRedirect(defaultPath){
       // First-time customers complete onboarding before the identity-verification step.
       const onboardingResponse=await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/user_onboarding?select=user_id&user_id=eq.'+encodeURIComponent(uid)+'&limit=1',{headers:{apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+s.access_token,Accept:'application/json'}});
       const onboardingRows=await onboardingResponse.json().catch(()=>[]);
-      if(onboardingResponse.ok&&(!Array.isArray(onboardingRows)||onboardingRows.length===0))return '/onboarding.html';
+      if(onboardingResponse.ok&&(!Array.isArray(onboardingRows)||onboardingRows.length===0))return '/onboarding';
       const vr=await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/identity_verification_requests?select=status&user_id=eq.'+encodeURIComponent(uid)+'&limit=1',{headers:{apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+s.access_token,Accept:'application/json'}});
       const rows=await vr.json().catch(()=>[]);
-      if(!rows?.[0]||rows[0].status!=='verified') return '/verify-account.html?redirect='+encodeURIComponent(next);
+      if(!rows?.[0]||rows[0].status!=='verified') return '/verify-account?redirect='+encodeURIComponent(next);
     }
   }catch{}
   return defaultPath||next;
@@ -130,7 +130,7 @@ loginForm?.addEventListener('submit',async e=>{
     await saveAccountLocation(locationData);
     await recordLoginSecurityEvent(locationData);
     setMessage('Signed in. Checking account security…');
-    location.href=await getMfaRedirect(await postAuthRedirect('/dashboard.html'));
+    location.href=await getMfaRedirect(await postAuthRedirect('/dashboard'));
   }catch(error){setMessage(error.message||'Unable to sign in. Please check your email and password.');setLoading(form,false);}
 });
 
@@ -156,13 +156,13 @@ registerForm?.addEventListener('submit',async e=>{
     setMessage('Creating your account securely…');
     const metadata={full_name:fullName,role:'customer',signup_location:locationData};
     let d;
-    try{d=await supabaseAuth('signup',{email,password,options:{data:metadata,emailRedirectTo:new URL('/auth-callback.html',location.origin).href}});}
+    try{d=await supabaseAuth('signup',{email,password,options:{data:metadata,emailRedirectTo:new URL('/auth-callback',location.origin).href}});}
     catch(primary){try{d=await fallback('/auth/register',{fullName,email,password,role:'customer',location:locationData,signup_location:locationData});}catch{throw primary;}}
     if(d.user?.id){try{await requestCustomerWelcome(d.user)}catch(mailError){console.warn('DBH signup welcome email was not sent:',mailError)}}
     if(d.access_token){
       localStorage.setItem('dbh_session',JSON.stringify(d));
       await saveAccountLocation(locationData);
-      setMessage('Account created. Let’s personalize your DBH experience…');location.href='/onboarding.html';
+      setMessage('Account created. Let’s personalize your DBH experience…');location.href='/onboarding';
     }else{
       setMessage('Account created. Please check your email to confirm your account.','success');form.reset();setLoading(form,false);
     }
@@ -177,7 +177,7 @@ async function startGoogleOAuth(){
     sessionStorage.setItem('dbh_pending_auth_location',JSON.stringify(locationData));
     setMessage('Connecting securely to Google…');
     const sb=await loadSupabaseClient();
-    const redirectTo=new URL('/auth-callback.html',location.origin).href;
+    const redirectTo=new URL('/auth-callback',location.origin).href;
     const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo,queryParams:{prompt:'select_account'},scopes:'openid email profile'}});
     if(error)throw error;
   }catch(error){
@@ -240,7 +240,7 @@ async function finishSupabaseOAuthCallback(){
     }
     await saveAccountLocation(authLocation);
     await recordLoginSecurityEvent(authLocation);
-    const nextPath=isNewUser?'/onboarding.html':await postAuthRedirect('/dashboard.html');
+    const nextPath=isNewUser?'/onboarding':await postAuthRedirect('/dashboard');
     const next=await getMfaRedirect(nextPath);
     say('Opening your DBH account…');
     location.replace(next);
@@ -251,7 +251,7 @@ async function finishSupabaseOAuthCallback(){
     const card=document.querySelector('.auth-card');
     if(card&&!document.getElementById('oauth-retry')){
       const link=document.createElement('a');
-      link.id='oauth-retry';link.href='/login.html';link.className='btn btn-primary';link.textContent='Return to sign in';
+      link.id='oauth-retry';link.href='/login';link.className='btn btn-primary';link.textContent='Return to sign in';
       card.appendChild(link);
     }
   }
@@ -263,7 +263,7 @@ async function startOAuth(provider){
   const selected=providers[provider];
   if(!selected)return setMessage('This sign-in provider is not available.');
   setMessage('Connecting securely…');
-  const redirectTo=new URL('/auth-callback.html',location.origin).href;
+  const redirectTo=new URL('/auth-callback',location.origin).href;
   location.href=DBH_CONFIG.supabaseUrl+'/auth/v1/authorize?provider='+encodeURIComponent(selected)+'&redirect_to='+encodeURIComponent(redirectTo);
 }
 document.querySelectorAll('[data-oauth-provider]').forEach(btn=>btn.addEventListener('click',()=>startOAuth(btn.dataset.oauthProvider)));
@@ -274,7 +274,7 @@ forgotForm?.addEventListener('submit',async e=>{
   const email=String(new FormData(form).get('email')).trim();
   try{
     const sb=await loadSupabaseClient();
-    const redirectTo=new URL('/account-recovery.html',location.origin).href;
+    const redirectTo=new URL('/account-recovery',location.origin).href;
     const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo});
     if(error)throw error;
     setMessage('If an account exists for that email, Supabase has been asked to send a password-reset link. Check your inbox and Spam/Junk folder.','success');form.reset();
@@ -300,7 +300,7 @@ resetForm?.addEventListener('submit',async e=>{
       const r=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/user',{method:'PUT',headers:{'Content-Type':'application/json',apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+token},body:JSON.stringify({password})});
       d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error_description||d.msg||d.message||'Unable to update your password.');
     }
-    localStorage.removeItem('dbh_session');setMessage('Password updated successfully. Redirecting to sign in…','success');setTimeout(()=>location.href='/login.html',1200);
+    localStorage.removeItem('dbh_session');setMessage('Password updated successfully. Redirecting to sign in…','success');setTimeout(()=>location.href='/login',1200);
   }catch(error){setMessage(error.message||'Unable to update your password.');}
   setLoading(form,false);
 });
