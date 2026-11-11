@@ -7,7 +7,7 @@
   try {
     var hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
     if (hash.get("type") === "recovery" && hash.get("access_token")) {
-      window.location.replace("/account-recovery.html" + window.location.hash);
+      window.location.replace("/account-recovery" + window.location.hash);
     }
   } catch (e) {
     console.warn("Could not route password recovery link.", e);
@@ -402,9 +402,9 @@ img,svg,video,canvas{max-width:100%}
   <p>Dream it, we build it.</p>
 </div>
 
-<header class="site-header" aria-label="DBH site navigation"><div class="dbh-header-inner"><a class="dbh-header-brand" href="/home" aria-label="D Banjus Homes"><img src="/dbh-logo.jpg" alt="DBH"><span><strong>DBH</strong><small>D Banjus Homes Nig Ltd</small></span></a><nav class="dbh-top-nav" aria-label="Main navigation"><a class="dbh-header-nav-link" href="/home" aria-current="page">Home</a><a class="dbh-header-nav-link" href="/properties.html">Properties</a><a class="dbh-header-nav-link" href="/properties.html?type=land">Land</a><a class="dbh-header-nav-link" href="/properties.html?type=commercial">Commercial</a><a class="dbh-header-nav-link" href="/rentals.html">Rentals</a><a class="dbh-header-nav-link" href="/list-property.html">List Property</a><a class="dbh-header-nav-link" href="/help.html">Help</a><a class="dbh-header-nav-link" href="/contact.html">Contact</a><a class="dbh-header-nav-link" href="/agents.html">Find an Agent</a><a class="dbh-header-nav-link" href="/our-team.html">Our Team</a></nav><div class="dbh-header-tools"><a class="header-auth-icon" href="/login.html" aria-label="Sign in">Sign in</a><button id="mobile-menu-button" class="mobile-menu-button" type="button" aria-label="Open navigation" aria-expanded="false" onclick="document.documentElement.classList.add(\'sidebar-open\');this.setAttribute(\'aria-expanded\',\'true\')"><span class="hamburger-lines"><i></i><i></i><i></i></span></button></div></div></header>
-<aside id="dbh-sidebar" class="dbh-sidebar" aria-label="DBH navigation"><div class="drawer-head"><a href="/home" class="sidebar-logo"><img src="/dbh-logo.jpg" alt="DBH"></a><button id="sidebar-close" class="drawer-close" type="button" aria-label="Close navigation" onclick="document.documentElement.classList.remove(\'sidebar-open\');document.getElementById(\'mobile-menu-button\')?.setAttribute(\'aria-expanded\',\'false\')">×</button></div><nav class="sidebar-nav"><a href="/home" aria-current="page"><span class="nav-icon">⌂</span><span class="nav-label">Home</span></a><a href="/properties.html"><span class="nav-icon">⌕</span><span class="nav-label">Properties for Sale</span></a><a href="/properties.html?type=land"><span class="nav-icon">◇</span><span class="nav-label">Land for Sale</span></a><a href="/agents.html"><span class="nav-icon">♙</span><span class="nav-label">Find an Agent</span></a><a href="/our-team.html"><span class="nav-icon">♧</span><span class="nav-label">Our Team</span></a><a href="/properties.html?type=commercial"><span class="nav-icon">▦</span><span class="nav-label">Commercial Property</span></a><a href="/save.html"><span class="nav-icon">♡</span><span class="nav-label">Saved properties</span></a><a href="/help.html"><span class="nav-icon">?</span><span class="nav-label">Help and FAQs</span></a><a href="/contact.html"><span class="nav-icon">✉</span><span class="nav-label">Contact us</span></a><a href="/list-property.html"><span class="nav-icon">＋</span><span class="nav-label">List a property</span></a></nav></aside><div id="sidebar-backdrop" class="sidebar-backdrop" onclick="document.documentElement.classList.remove(\'sidebar-open\')"></div>
-<a id="dbh-care-fallback" href="/customer-care.html" aria-label="Open DBH customer care" style="position:fixed;right:16px;bottom:16px;z-index:2147483000;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:#0b63ce;color:#fff;box-shadow:0 12px 30px rgba(11,99,206,.35);font-size:25px;text-decoration:none" title="DBH Customer Care">☏</a>
+<header class="site-header" aria-label="DBH site navigation"><div class="dbh-header-inner"><a class="dbh-header-brand" href="/" aria-label="D Banjus Homes"><img src="/dbh-logo.jpg" alt="DBH"><span><strong>DBH</strong><small>D Banjus Homes Nig Ltd</small></span></a><nav class="dbh-top-nav" aria-label="Main navigation"><a class="dbh-header-nav-link" href="/" aria-current="page">Home</a><a class="dbh-header-nav-link" href="/properties">Properties</a><a class="dbh-header-nav-link" href="/properties?type=land">Land</a><a class="dbh-header-nav-link" href="/properties?type=commercial">Commercial</a><a class="dbh-header-nav-link" href="/rentals">Rentals</a><a class="dbh-header-nav-link" href="/list-property">List Property</a><a class="dbh-header-nav-link" href="/help">Help</a><a class="dbh-header-nav-link" href="/contact">Contact</a><a class="dbh-header-nav-link" href="/agents">Find an Agent</a><a class="dbh-header-nav-link" href="/our-team">Our Team</a></nav><div class="dbh-header-tools"><a class="header-auth-icon" href="/login" aria-label="Sign in">Sign in</a><button id="mobile-menu-button" class="mobile-menu-button" type="button" aria-label="Open navigation" aria-expanded="false" onclick="document.documentElement.classList.add(\'sidebar-open\');this.setAttribute(\'aria-expanded\',\'true\')"><span class="hamburger-lines"><i></i><i></i><i></i></span></button></div></div></header>
+<aside id="dbh-sidebar" class="dbh-sidebar" aria-label="DBH navigation"><div class="drawer-head"><a href="/" class="sidebar-logo"><img src="/dbh-logo.jpg" alt="DBH"></a><button id="sidebar-close" class="drawer-close" type="button" aria-label="Close navigation" onclick="document.documentElement.classList.remove(\'sidebar-open\');document.getElementById(\'mobile-menu-button\')?.setAttribute(\'aria-expanded\',\'false\')">×</button></div><nav class="sidebar-nav"><a href="/" aria-current="page"><span class="nav-icon">⌂</span><span class="nav-label">Home</span></a><a href="/properties"><span class="nav-icon">⌕</span><span class="nav-label">Properties for Sale</span></a><a href="/properties?type=land"><span class="nav-icon">◇</span><span class="nav-label">Land for Sale</span></a><a href="/agents"><span class="nav-icon">♙</span><span class="nav-label">Find an Agent</span></a><a href="/our-team"><span class="nav-icon">♧</span><span class="nav-label">Our Team</span></a><a href="/properties?type=commercial"><span class="nav-icon">▦</span><span class="nav-label">Commercial Property</span></a><a href="/save"><span class="nav-icon">♡</span><span class="nav-label">Saved properties</span></a><a href="/help"><span class="nav-icon">?</span><span class="nav-label">Help and FAQs</span></a><a href="/contact"><span class="nav-icon">✉</span><span class="nav-label">Contact us</span></a><a href="/list-property"><span class="nav-icon">＋</span><span class="nav-label">List a property</span></a></nav></aside><div id="sidebar-backdrop" class="sidebar-backdrop" onclick="document.documentElement.classList.remove(\'sidebar-open\')"></div>
+<a id="dbh-care-fallback" href="/customer-care" aria-label="Open DBH customer care" style="position:fixed;right:16px;bottom:16px;z-index:2147483000;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:#0b63ce;color:#fff;box-shadow:0 12px 30px rgba(11,99,206,.35);font-size:25px;text-decoration:none" title="DBH Customer Care">☏</a>
 
 <main class="with-right-sidebar">
 <section class="hero" id="dbh-hero">
@@ -472,27 +472,27 @@ img,svg,video,canvas{max-width:100%}
     <div><span class="eyebrow">BROWSE BY NEED</span><h2>Start with a property category.</h2><p>Go directly to the part of the marketplace that matches what you need.</p></div>
   </div>
   <div class="dbh-home-category-grid">
-    <a class="dbh-home-category-card" href="/properties.html">
+    <a class="dbh-home-category-card" href="/properties">
       <span class="dbh-home-category-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8v9.2a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z"></path></svg></span>
       <span class="dbh-home-category-copy"><strong>Homes & Properties</strong><span>Explore published homes and property opportunities.</span></span>
       <span class="dbh-home-category-arrow"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></span>
     </a>
-    <a class="dbh-home-category-card" href="/properties.html?type=land">
+    <a class="dbh-home-category-card" href="/properties?type=land">
       <span class="dbh-home-category-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg></span>
       <span class="dbh-home-category-copy"><strong>Land for Sale</strong><span>Find land opportunities by location and property type.</span></span>
       <span class="dbh-home-category-arrow"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></span>
     </a>
-    <a class="dbh-home-category-card" href="/properties.html?type=commercial">
+    <a class="dbh-home-category-card" href="/properties?type=commercial">
       <span class="dbh-home-category-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h8v18M14 9h4a2 2 0 0 1 2 2v10"></path><path d="M7 7h3M7 11h3M7 15h3M16 13h2M16 17h2"></path></svg></span>
       <span class="dbh-home-category-copy"><strong>Commercial Property</strong><span>Discover spaces and commercial opportunities for sale.</span></span>
       <span class="dbh-home-category-arrow"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></span>
     </a>
-    <a class="dbh-home-category-card" href="/rentals.html">
+    <a class="dbh-home-category-card" href="/rentals">
       <span class="dbh-home-category-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8v9.2a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z"></path><path d="M15 4h4v4"></path></svg></span>
       <span class="dbh-home-category-copy"><strong>Rental Properties</strong><span>Browse properties available for rent, with rental periods and fees.</span></span>
       <span class="dbh-home-category-arrow"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></span>
     </a>
-    <a class="dbh-home-category-card" href="/list-property.html">
+    <a class="dbh-home-category-card" href="/list-property">
       <span class="dbh-home-category-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M12 8v8M8 12h8"></path></svg></span>
       <span class="dbh-home-category-copy"><strong>List a Property</strong><span>Send a property for DBH review and publication.</span></span>
       <span class="dbh-home-category-arrow"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"></path></svg></span>
@@ -501,7 +501,7 @@ img,svg,video,canvas{max-width:100%}
 </section>
 
 <section class="section">
-  <div class="section-heading"><div><span class="eyebrow">DISCOVER</span><h2>Featured properties</h2><p>Fresh opportunities selected from the DBH marketplace.</p></div><a href="/properties.html">View all <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 7l5 5-5 5"></path></svg></a></div>
+  <div class="section-heading"><div><span class="eyebrow">DISCOVER</span><h2>Featured properties</h2><p>Fresh opportunities selected from the DBH marketplace.</p></div><a href="/properties">View all <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 7l5 5-5 5"></path></svg></a></div>
   <div id="featured-properties" class="property-grid"><div class="panel">Loading DBH properties…</div></div>
 </section>
 
@@ -525,7 +525,7 @@ img,svg,video,canvas{max-width:100%}
       <p>Move through homes, land and commercial opportunities across Nigeria with a marketplace designed around clear property information, location discovery and direct enquiries.</p>
       <div class="dbh-visual-pills"><span>Verified opportunities</span><span>Homes for sale</span><span>Land for sale</span><span>Commercial spaces</span></div>
     </div>
-    <div class="dbh-visual-card"><span class="eyebrow">DBH HOMES</span><strong>Dream it.<br>We build it.</strong><span>Browse the latest approved listings and open any property for full details, photos, location and enquiry options.</span><a class="btn btn-primary" style="margin-top:18px" href="/properties.html">Explore the marketplace</a></div>
+    <div class="dbh-visual-card"><span class="eyebrow">DBH HOMES</span><strong>Dream it.<br>We build it.</strong><span>Browse the latest approved listings and open any property for full details, photos, location and enquiry options.</span><a class="btn btn-primary" style="margin-top:18px" href="/properties">Explore the marketplace</a></div>
   </div>
   <div class="dbh-visual-dots" aria-label="Visual slides"><button class="active" data-visual-slide="0" aria-label="Show visual 1"></button><button data-visual-slide="1" aria-label="Show visual 2"></button><button data-visual-slide="2" aria-label="Show visual 3"></button><button data-visual-slide="3" aria-label="Show visual 4"></button></div>
 </section>
@@ -533,15 +533,15 @@ img,svg,video,canvas{max-width:100%}
 <section class="section">
   <div class="section-heading"><div><span class="eyebrow">SEE THE POSSIBILITIES</span><h2>Spaces for different goals.</h2><p>Use the marketplace to discover the kind of opportunity that fits your next move.</p></div></div>
   <div class="dbh-photo-mosaic">
-    <a class="dbh-photo-mosaic-card" href="/properties.html?type=house"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1800&q=86" loading="lazy" alt="Modern home exterior"><span class="dbh-photo-caption"><strong>Homes & residences</strong><span>Explore homes and residential properties available on DBH.</span></span></a>
+    <a class="dbh-photo-mosaic-card" href="/properties?type=house"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1800&q=86" loading="lazy" alt="Modern home exterior"><span class="dbh-photo-caption"><strong>Homes & residences</strong><span>Explore homes and residential properties available on DBH.</span></span></a>
     <div class="dbh-photo-mosaic-stack">
-      <a class="dbh-photo-mosaic-card small" href="/properties.html?type=land"><img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1800&q=86" loading="lazy" alt="Property land and development"><span class="dbh-photo-caption"><strong>Land opportunities</strong><span>Find land by location and property type.</span></span></a>
-      <a class="dbh-photo-mosaic-card small" href="/properties.html?type=commercial"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=86" loading="lazy" alt="Commercial property building"><span class="dbh-photo-caption"><strong>Commercial property</strong><span>Discover spaces for business and investment.</span></span></a>
+      <a class="dbh-photo-mosaic-card small" href="/properties?type=land"><img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1800&q=86" loading="lazy" alt="Property land and development"><span class="dbh-photo-caption"><strong>Land opportunities</strong><span>Find land by location and property type.</span></span></a>
+      <a class="dbh-photo-mosaic-card small" href="/properties?type=commercial"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=86" loading="lazy" alt="Commercial property building"><span class="dbh-photo-caption"><strong>Commercial property</strong><span>Discover spaces for business and investment.</span></span></a>
     </div>
   </div>
 </section>
 
-<section class="image-feature-section"><div class="image-feature-main"><img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1400&q=85" alt="Modern living space" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=1400&q=85';"></div><div class="image-feature-copy"><span class="eyebrow">LIVING SPACES</span><h2>Spaces that look as good as they feel.</h2><p>Explore a growing marketplace for homes, land and commercial property across Nigeria.</p><a class="btn btn-primary" href="/properties.html">Explore properties</a></div></section>
+<section class="image-feature-section"><div class="image-feature-main"><img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1400&q=85" alt="Modern living space" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=1400&q=85';"></div><div class="image-feature-copy"><span class="eyebrow">LIVING SPACES</span><h2>Spaces that look as good as they feel.</h2><p>Explore a growing marketplace for homes, land and commercial property across Nigeria.</p><a class="btn btn-primary" href="/properties">Explore properties</a></div></section>
 
 <section class="why-section">
   <div class="why-inner">
@@ -607,14 +607,14 @@ img,svg,video,canvas{max-width:100%}
 
 <section class="cta-section">
   <div><span class="eyebrow">PROPERTY OWNERS & AGENTS</span><h2>Have a property to sell?</h2><p>Send your property to DBH for review and publication.</p></div>
-  <a class="btn btn-primary" href="/list-property.html">List a property <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"></path></svg></a>
+  <a class="btn btn-primary" href="/list-property">List a property <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"></path></svg></a>
 </section>
 </main>
 
 <footer class="site-footer">
   <div><strong>DBH</strong><p>D Banjus Homes Nig Ltd</p><small>Dream it, we build it.</small></div>
-  <div><h3>Explore</h3><a href="/properties.html">Properties</a><a href="/properties.html?type=land">Land</a><a href="/properties.html?type=commercial">Commercial</a></div>
-  <div><h3>Company</h3><a href="/about.html">About</a><a href="/help.html">Help & FAQs</a><a href="/contact.html">Contact</a><a href="/privacy.html">Privacy</a></div>
+  <div><h3>Explore</h3><a href="/properties">Properties</a><a href="/properties?type=land">Land</a><a href="/properties?type=commercial">Commercial</a></div>
+  <div><h3>Company</h3><a href="/about">About</a><a href="/help">Help & FAQs</a><a href="/contact">Contact</a><a href="/privacy">Privacy</a></div>
 </footer>
 
 <script>
