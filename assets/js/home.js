@@ -70,7 +70,7 @@ function card(p){
   const verified=p.is_verified===true;
 
   return '<article class="property-card reveal">'+
-    '<a class="property-media" href="/property.html?id='+encodeURIComponent(id)+'">'+
+    '<a class="property-media" href="/property?id='+encodeURIComponent(id)+'">'+
       '<img loading="lazy" src="'+esc(img)+'" alt="'+esc(p.title||'DBH property')+'" onerror="this.onerror=null;this.src=&quot;/dbh-logo.jpg&quot;">'+
       '<span class="property-badges">'+
         '<span class="property-category-badge">'+esc(p.category||p.property_type||'Property')+'</span>'+
@@ -78,7 +78,7 @@ function card(p){
       '</span>'+
     '</a>'+
     '<div class="property-body">'+
-      '<h3 class="property-title"><a href="/property.html?id='+encodeURIComponent(id)+'">'+esc(p.title||'Property')+'</a></h3>'+
+      '<h3 class="property-title"><a href="/property?id='+encodeURIComponent(id)+'">'+esc(p.title||'Property')+'</a></h3>'+
       '<div class="property-price">'+money(p.price,p.currency||'NGN')+'</div>'+
       '<div class="property-meta property-location"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg><span>'+esc(locationName(p))+'</span></div>'+
       '<div class="property-provider"><span class="provider-avatar">DBH</span><span class="provider-copy"><small>Provider</small><strong>'+esc(p.provider_name||p.agency_name||'D Banjus Homes Nig Ltd')+'</strong></span></div>'+
@@ -112,7 +112,7 @@ function populateLocations(rows){
   }
 
   box.innerHTML=places.map(([name,count])=>
-    '<a class="location-card" href="/properties.html?location='+encodeURIComponent(name)+'">'+
+    '<a class="location-card" href="/properties?location='+encodeURIComponent(name)+'">'+
       '<span>'+esc(name)+'</span>'+
       '<small>'+count+' '+(count===1?'listing':'listings')+'</small>'+
     '</a>'
@@ -169,7 +169,7 @@ function setupSearch(rows){
     if(min)params.set('minPrice',min);
     if(max)params.set('maxPrice',max);
     const query=params.toString();
-    location.href='/properties.html'+(query?'?'+query:'');
+    location.href='/properties'+(query?'?'+query:'');
   });
 }
 
