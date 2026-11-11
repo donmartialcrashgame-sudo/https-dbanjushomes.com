@@ -176,7 +176,7 @@
 
       const t=await resolveToken();
       if(!t){
-        note.innerHTML='Please <a href="/login.html?redirect='+encodeURIComponent(location.pathname+location.search||'/')+'">sign in</a> to chat with DBH AI. Your message has not been sent.';
+        note.innerHTML='Please <a href="/login?redirect='+encodeURIComponent(location.pathname+location.search||'/')+'">sign in</a> to chat with DBH AI. Your message has not been sent.';
         note.style.display='block';
         input.focus();
         return;
