@@ -1,18 +1,18 @@
 const CACHE_NAME="dbh-shell-v20";
 const CORE=[
   "/",
-  "/index.html",
-  "/properties.html",
-  "/land.html",
-  "/agents.html",
+  "/index",
+  "/properties",
+  "/land",
   "/agents",
-  "/our-team.html",
-  "/property.html",
-  "/contact.html",
-  "/help.html",
-  "/profile.html",
-  "/save.html",
-  "/offline.html",
+  "/agents",
+  "/our-team",
+  "/property",
+  "/contact",
+  "/help",
+  "/profile",
+  "/save",
+  "/offline",
   "/manifest.webmanifest",
   "/dbh-logo.jpg",
   "/assets/css/styles.css",
@@ -55,7 +55,7 @@ self.addEventListener("push",event=>{
 
 self.addEventListener("notificationclick",event=>{
   event.notification.close();
-  const target=event.notification?.data?.link||"/dashboard.html";
+  const target=event.notification?.data?.link||"/dashboard";
   event.waitUntil((async()=>{
     const absolute=new URL(target,self.location.origin).href;
     const clientsList=await self.clients.matchAll({type:"window",includeUncontrolled:true});
@@ -78,7 +78,7 @@ self.addEventListener("fetch",event=>{
         const clone=res.clone();
         caches.open(CACHE_NAME).then(cache=>cache.put(req,clone)).catch(()=>{});
         return res;
-      }).catch(()=>caches.match(req).then(cached=>cached||caches.match("/offline.html")))
+      }).catch(()=>caches.match(req).then(cached=>cached||caches.match("/offline")))
     );
     return;
   }
