@@ -504,3 +504,148 @@ img,svg,video,canvas{max-width:100%}
 .dbh-care-widget{position:fixed!important;right:max(14px,env(safe-area-inset-right))!important;bottom:max(14px,env(safe-area-inset-bottom))!important;z-index:2147483000!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;}
 .dbh-care-launcher{display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;}
 @media(max-width:650px){.dbh-care-widget{right:14px!important;bottom:14px!important}.dbh-care-launcher{width:58px!important;height:58px!important}}
+
+
+/* DBH premium sidebar refresh */
+.dbh-sidebar{
+  width:min(390px,90vw)!important;
+  padding:18px 18px 26px!important;
+  color:#172b49!important;
+  background:linear-gradient(180deg,#f7faff 0%,#fff 34%,#fff 100%)!important;
+  border-left:1px solid #dce8f6;
+  box-shadow:-28px 0 80px rgba(5,29,67,.24)!important;
+  scrollbar-width:thin;
+  scrollbar-color:#bfd2e8 transparent;
+}
+.drawer-head{
+  position:relative;
+  margin:-18px -18px 0;
+  padding:19px 18px 18px!important;
+  background:linear-gradient(128deg,#062b5d 0%,#0b55a5 58%,#1479d5 100%);
+  border:0!important;
+}
+.drawer-head:after{
+  content:"";position:absolute;width:190px;height:190px;right:-65px;top:-105px;
+  border:1px solid rgba(255,255,255,.15);border-radius:50%;
+  box-shadow:0 0 0 24px rgba(255,255,255,.045),0 0 0 48px rgba(255,255,255,.025);
+  pointer-events:none;
+}
+.drawer-head .sidebar-logo{position:relative;z-index:1;display:flex;align-items:center;gap:11px}
+.drawer-head .sidebar-logo:after{
+  content:"D BANJUS HOMES";display:block;color:#fff;font-size:12px;font-weight:900;
+  letter-spacing:.11em;white-space:nowrap
+}
+.drawer-head .sidebar-logo img{
+  width:48px!important;height:48px!important;border-radius:14px!important;
+  border:2px solid rgba(255,255,255,.72);box-shadow:0 7px 18px rgba(0,0,0,.18)
+}
+.drawer-close{
+  position:relative;z-index:2;width:39px!important;height:39px!important;
+  display:grid;place-items:center;background:rgba(255,255,255,.13)!important;
+  border:1px solid rgba(255,255,255,.24)!important;color:#fff!important;
+  border-radius:12px!important;transition:background .2s,transform .2s
+}
+.drawer-close:hover{background:rgba(255,255,255,.24)!important;transform:rotate(90deg)}
+.drawer-close svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.sidebar-user{
+  position:relative;display:flex;align-items:center;gap:12px;
+  margin:17px 0 15px;padding:14px;border-radius:17px;
+  background:linear-gradient(115deg,#eaf3ff,#f7fbff);
+  border:1px solid #d9e8fa;box-shadow:0 8px 20px rgba(16,75,140,.07)
+}
+.sidebar-user-avatar{
+  width:45px!important;height:45px!important;display:grid;place-items:center;flex:none;
+  border-radius:14px!important;background:linear-gradient(145deg,#0b5fbd,#258de9)!important;
+  color:#fff!important;font-size:14px;font-weight:950;
+  border:2px solid #fff;box-shadow:0 5px 13px rgba(11,95,189,.22)
+}
+.sidebar-user strong{display:block;color:#153452;font-size:13px;font-weight:900}
+.sidebar-user small{display:block;margin-top:4px;color:#66809d;font-size:10px;font-weight:750}
+.sidebar-auth{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 15px}
+.sidebar-auth a{
+  display:flex;justify-content:center;align-items:center;min-height:43px;
+  border-radius:12px;font-size:12px;font-weight:900;transition:transform .2s,box-shadow .2s
+}
+.sidebar-auth a:hover{transform:translateY(-2px)}
+.sidebar-register{background:linear-gradient(135deg,#0b5fbd,#2788e4);color:#fff!important;box-shadow:0 8px 18px rgba(11,95,189,.2)}
+.sidebar-signin{background:#fff;color:#155ca9!important;border:1px solid #cbdff4}
+.sidebar-section-title{
+  display:flex;align-items:center;gap:9px;
+  padding:20px 8px 9px!important;color:#7890aa!important;
+  font-size:9px!important;font-weight:950!important;letter-spacing:.16em!important
+}
+.sidebar-section-title:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,#dce7f3,transparent)}
+.sidebar-nav{display:grid;gap:5px}
+.sidebar-nav a{
+  position:relative;display:grid!important;grid-template-columns:38px 1fr 18px!important;
+  align-items:center;gap:10px!important;min-height:46px;padding:7px 10px!important;
+  border:1px solid transparent;border-radius:13px!important;
+  color:#344b67!important;font-size:12px!important;font-weight:800;
+  transition:background .2s,border-color .2s,transform .2s,color .2s!important
+}
+.sidebar-nav a .nav-icon{
+  width:35px;height:35px;display:grid;place-items:center;
+  border-radius:11px;background:#edf4fc;color:#3976b8;
+  font-size:19px;transition:background .2s,color .2s,transform .2s
+}
+.sidebar-nav a .nav-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sidebar-nav a b{font-size:20px!important;color:#9aacc0!important;transition:transform .2s,color .2s}
+.sidebar-nav a:hover{
+  transform:translateX(-3px);background:#f0f6ff!important;
+  border-color:#dceafa!important;color:#105eaf!important
+}
+.sidebar-nav a:hover .nav-icon{background:#dcecff;color:#075ebc;transform:scale(1.04)}
+.sidebar-nav a:hover b{transform:translateX(-2px);color:#176fc5!important}
+.sidebar-nav a.active{
+  color:#075bb4!important;background:linear-gradient(100deg,#e6f1ff,#f5f9ff)!important;
+  border-color:#cfe2f8!important;box-shadow:inset 3px 0 0 #1476d2,0 5px 14px rgba(18,91,164,.055)
+}
+.sidebar-nav a.active .nav-icon{background:linear-gradient(145deg,#0b62bd,#2789e5);color:#fff}
+.sidebar-nav a.active b{color:#176fc5!important}
+.sidebar-preferences{
+  padding:8px;border:1px solid #e0eaf5;border-radius:16px;
+  background:linear-gradient(145deg,#f8fbff,#fff);box-shadow:0 7px 20px rgba(20,62,108,.045)
+}
+.sidebar-preferences>button,.sidebar-preferences>.sidebar-setting{
+  width:100%;min-height:47px;display:grid;
+  grid-template-columns:30px 1fr auto;align-items:center;gap:8px;
+  padding:8px 7px;border:0;border-bottom:1px solid #edf2f8;
+  border-radius:10px;background:transparent;color:#3a526e;
+  text-align:left;font-size:11px;font-weight:850;cursor:pointer
+}
+.sidebar-preferences>*:last-child{border-bottom:0}
+.sidebar-preferences>button:hover,.sidebar-preferences>.sidebar-setting:hover{background:#edf5ff}
+.sidebar-preferences .nav-icon{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:#eaf2fc;color:#236bb4}
+.sidebar-preferences .nav-icon svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.theme-options,.text-options{display:flex;align-items:center;gap:4px}
+.theme-options b,.text-options b{
+  padding:6px 7px;border-radius:7px;background:#eef3f9;color:#647a92;
+  font-size:9px;font-weight:900;transition:background .2s,color .2s
+}
+.theme-options b.active,.text-options b.active{background:#dcecff;color:#075db7;box-shadow:inset 0 0 0 1px #c4ddf7}
+.currency-setting select{
+  max-width:90px;padding:7px 8px;border:1px solid #d8e5f2;border-radius:8px;
+  background:#fff;color:#1b5e9f;font-size:10px;font-weight:900;outline:none
+}
+.sidebar-bottom{
+  margin-top:19px!important;padding:16px 0 0!important;
+  border-top:1px solid #e3ebf4!important
+}
+.sidebar-listing{
+  min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:0 16px;border-radius:14px;
+  background:linear-gradient(115deg,#0754a5 0%,#0b70cb 62%,#2794ed 100%);
+  color:#fff!important;font-size:12px;font-weight:950;
+  box-shadow:0 11px 24px rgba(9,91,170,.22);transition:transform .2s,box-shadow .2s
+}
+.sidebar-listing:hover{transform:translateY(-2px);box-shadow:0 15px 28px rgba(9,91,170,.28)}
+.sidebar-listing b{font-size:19px;color:#ffe2a6}
+.sidebar-backdrop{background:rgba(3,18,42,.56)!important;backdrop-filter:blur(4px)}
+@media(max-width:560px){
+  .dbh-sidebar{width:min(370px,92vw)!important;padding:16px 16px 24px!important}
+  .drawer-head{margin:-16px -16px 0;padding:17px 16px!important}
+  .sidebar-nav a{min-height:47px}
+}
+@media(prefers-reduced-motion:reduce){
+  .dbh-sidebar,.dbh-sidebar *,.sidebar-backdrop{transition:none!important;animation:none!important}
+}
