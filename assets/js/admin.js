@@ -1,5 +1,5 @@
 const session=localStorage.getItem('dbh_session');
-if(!session) location.href='/login.html';
+if(!session) location.href='/login';
 document.getElementById('admin-logout').onclick=()=>{localStorage.removeItem('dbh_session');location.href='/'};
 const c=window.DBH_CONFIG||{};
 const token=(()=>{try{const s=JSON.parse(session);return s?.access_token||s?.accessToken||s?.session?.access_token||session}catch{return session}})();
