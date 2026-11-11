@@ -17,7 +17,7 @@
   <h1 id="callback-title">Welcome to DBH</h1>
   <p id="callback-message">Checking your DBH session…</p>
   <div id="callback-error" class="dbh-callback-error" hidden></div>
-  <a id="callback-back" class="btn btn-primary" href="/login.html" hidden>Return to sign in</a>
+  <a id="callback-back" class="btn btn-primary" href="/login" hidden>Return to sign in</a>
 </main>
 <script>
 (async function(){
@@ -47,7 +47,7 @@
 
     title.textContent='You are all set';
     msg.textContent='Opening your DBH account…';
-    setTimeout(()=>location.replace('/dashboard.html'),350);
+    setTimeout(()=>location.replace('/dashboard'),350);
   }catch(e){
     spinner.style.display='none';
     title.textContent='We could not finish setup';
