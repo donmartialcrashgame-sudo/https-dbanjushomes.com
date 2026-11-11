@@ -61,7 +61,7 @@
     </div>
     <span class="save-count"><i></i><b id="save-count">0</b> saved</span>
   </section>
-  <div class="save-toolbar"><span class="save-toolbar-text" id="save-account-note">Loading your saved properties…</span><a class="btn btn-outline" href="/properties.html">Browse properties</a></div>
+  <div class="save-toolbar"><span class="save-toolbar-text" id="save-account-note">Loading your saved properties…</span><a class="btn btn-outline" href="/properties">Browse properties</a></div>
   <section id="saved-property-results">
     <div class="save-loading"><div><div class="save-spinner"></div>Loading saved properties…</div></div>
   </section>
@@ -82,7 +82,7 @@
   if(!user?.email){
     count.textContent='0';
     note.textContent='Sign in to keep properties saved to your DBH account.';
-    root.innerHTML='<div class="save-empty"><div class="save-empty-icon">'+iconHeart+'</div><h2>Your saved list is waiting</h2><p>Sign in to save properties and access them here whenever you return to DBH.</p><a class="btn btn-primary" href="/login.html?redirect='+encodeURIComponent(location.href)+'">Sign in</a></div>';
+    root.innerHTML='<div class="save-empty"><div class="save-empty-icon">'+iconHeart+'</div><h2>Your saved list is waiting</h2><p>Sign in to save properties and access them here whenever you return to DBH.</p><a class="btn btn-primary" href="/login?redirect='+encodeURIComponent(location.href)+'">Sign in</a></div>';
     return;
   }
   note.textContent='Saved for '+String(user.email).trim().toLowerCase();
@@ -112,10 +112,10 @@
   function render(rows){
     count.textContent=String(rows.length);
     if(!rows.length){
-      root.innerHTML='<div class="save-empty"><div class="save-empty-icon">'+iconHeart+'</div><h2>No saved properties yet</h2><p>When you click the heart-shaped Save button on a property, it turns red and the property is added here automatically.</p><a class="btn btn-primary" href="/properties.html">Find a property</a></div>';
+      root.innerHTML='<div class="save-empty"><div class="save-empty-icon">'+iconHeart+'</div><h2>No saved properties yet</h2><p>When you click the heart-shaped Save button on a property, it turns red and the property is added here automatically.</p><a class="btn btn-primary" href="/properties">Find a property</a></div>';
       return;
     }
-    root.innerHTML='<div class="save-grid">'+rows.map((p,i)=>'<article class="save-card" data-id="'+esc(p.id)+'"><a class="save-card-image" href="/property.html?'+(p.slug?'slug='+encodeURIComponent(p.slug):'id='+encodeURIComponent(p.id))+'"><img src="'+esc(p.cover_image||p.og_image_url||'/dbh-logo.jpg')+'" alt="'+esc(p.title||'Saved property')+'" loading="lazy" onerror="this.onerror=null;this.src=\'/dbh-logo.jpg\'"><span class="save-card-watermark">D BANJUS HOMES NIG LTD</span><span class="save-card-saved">'+iconHeart+' Saved</span></a><div class="save-card-body"><span class="save-card-type">'+esc(p.property_type||p.category||'Property')+'</span><a href="/property.html?'+(p.slug?'slug='+encodeURIComponent(p.slug):'id='+encodeURIComponent(p.id))+'" class="save-card-title">'+esc(p.title||'Saved property')+'</a><div class="save-card-location">'+iconPin+esc(p.location||[p.area,p.city,p.state].filter(Boolean).join(', ')||'Nigeria')+'</div><div class="save-card-price">'+money(p.price,p.currency||'NGN')+'</div><div class="save-card-ref">Reference: '+esc(p.property_code||p.id||'—')+'</div><div class="save-card-actions"><a class="btn btn-primary" href="/property.html?'+(p.slug?'slug='+encodeURIComponent(p.slug):'id='+encodeURIComponent(p.id))+'">View property</a><button type="button" class="btn save-remove" data-remove="'+i+'">Remove</button></div></div></article>').join('')+'</div>';
+    root.innerHTML='<div class="save-grid">'+rows.map((p,i)=>'<article class="save-card" data-id="'+esc(p.id)+'"><a class="save-card-image" href="/property?'+(p.slug?'slug='+encodeURIComponent(p.slug):'id='+encodeURIComponent(p.id))+'"><img src="'+esc(p.cover_image||p.og_image_url||'/dbh-logo.jpg')+'" alt="'+esc(p.title||'Saved property')+'" loading="lazy" onerror="this.onerror=null;this.src=\'/dbh-logo.jpg\'"><span class="save-card-watermark">D BANJUS HOMES NIG LTD</span><span class="save-card-saved">'+iconHeart+' Saved</span></a><div class="save-card-body"><span class="save-card-type">'+esc(p.property_type||p.category||'Property')+'</span><a href="/property?'+(p.slug?'slug='+encodeURIComponent(p.slug):'id='+encodeURIComponent(p.id))+'" class="save-card-title">'+esc(p.title||'Saved property')+'</a><div class="save-card-location">'+iconPin+esc(p.location||[p.area,p.city,p.state].filter(Boolean).join(', ')||'Nigeria')+'</div><div class="save-card-price">'+money(p.price,p.currency||'NGN')+'</div><div class="save-card-ref">Reference: '+esc(p.property_code||p.id||'—')+'</div><div class="save-card-actions"><a class="btn btn-primary" href="/property?'+(p.slug?'slug='+encodeURIComponent(p.slug):'id='+encodeURIComponent(p.id))+'">View property</a><button type="button" class="btn save-remove" data-remove="'+i+'">Remove</button></div></div></article>').join('')+'</div>';
     root.querySelectorAll('[data-remove]').forEach(btn=>btn.addEventListener('click',()=>{
       const index=Number(btn.dataset.remove), target=rows[index];
       window.DBHSaved?.remove?.(target.id);
