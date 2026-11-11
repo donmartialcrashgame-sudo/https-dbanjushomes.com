@@ -9,7 +9,7 @@
 <meta property="og:title" content="Enquire about a property | DBH Homes">
 <meta property="og:description" content="Contact D Banjus Homes Nig Ltd about a property listing.">
 <meta property="og:image" content="https://dbanjushomes.com/dbh-logo.jpg">
-<link rel="canonical" id="canonical-url" href="https://dbanjushomes.com/contact.html">
+<link rel="canonical" id="canonical-url" href="https://dbanjushomes.com/contact">
 <link rel="icon" href="/dbh-logo.jpg">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -88,7 +88,7 @@
 
 <main class="with-right-sidebar">
   <div class="dbh-contact-page">
-    <a class="dbh-back" href="/properties.html">
+    <a class="dbh-back" href="/properties">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
       Back to properties
     </a>
@@ -149,7 +149,7 @@
 
             <div class="dbh-contact-actions">
               <button class="btn btn-primary" type="submit">Send property enquiry</button>
-              <a class="btn btn-outline" id="view-property-link" href="/properties.html">Browse properties</a>
+              <a class="btn btn-outline" id="view-property-link" href="/properties">Browse properties</a>
             </div>
           </form>
         </div>
@@ -191,9 +191,9 @@
       <h2 style="margin:6px 0 8px">Choose the best way to reach DBH.</h2>
       <p style="margin:0;color:#6e8198;font-size:12px;line-height:1.7">For quick answers, start with Help & FAQs. For a conversation, open Customer Care. For a general message, email DBH directly. For a property-specific question, keep the listing code in your message.</p>
       <div class="dbh-contact-actions" style="margin-top:16px">
-        <a class="btn btn-primary" href="/help.html">Help & FAQs</a>
+        <a class="btn btn-primary" href="/help">Help & FAQs</a>
         <a class="btn btn-outline" href="mailto:info@dbanjushomes.com">Email DBH</a>
-        <a class="btn btn-outline" href="/properties.html">Browse properties</a>
+        <a class="btn btn-outline" href="/properties">Browse properties</a>
       </div>
     </div>
   </div>
@@ -241,14 +241,14 @@
       ? '<span class="dbh-pill verified"><svg viewBox="0 0 24 24"><path d="M12 3 20 6v5.5c0 4.8-3.3 7.8-8 9.5-4.7-1.7-8-4.7-8-9.5V6l8-3Z"></path><path d="m8.5 11.8 2.2 2.2 4.8-5"></path></svg>Verified Property</span>'
       : '<span class="dbh-pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v5M12 16h.01"></path></svg>Verification pending</span>';
     const image=esc(p.cover_image||p.og_image_url||'/dbh-logo.jpg');
-    const href='/property.html?id='+encodeURIComponent(p.property_code||p.id);
+    const href='/property?id='+encodeURIComponent(p.property_code||p.id);
     els.preview.hidden=false;
     els.preview.innerHTML='<div class="dbh-property-preview"><img src="'+image+'" alt="'+esc(p.title||'DBH property')+'" onerror="this.onerror=null;this.src=&quot;/dbh-logo.jpg&quot;"><div class="dbh-property-preview-copy"><div class="dbh-property-meta">'+badge+'<span class="dbh-pill">'+esc(p.property_code||'DBH listing')+'</span></div><h2>'+esc(p.title||'Property')+'</h2><div class="dbh-property-meta"><span>'+esc(locationText)+'</span><span>•</span><span>'+money(p.price,p.currency||'NGN')+'</span></div></div></div>';
     els.view.href=href;
     els.view.textContent='View property';
     document.title='Enquire about '+(p.title||'property')+' | DBH Homes';
     document.getElementById('meta-description')?.setAttribute('content','Send an enquiry about '+(p.title||'a DBH property')+' to D Banjus Homes Nig Ltd.');
-    document.getElementById('canonical-url')?.setAttribute('href',location.origin+'/contact.html?property='+encodeURIComponent(p.slug||p.property_code||p.id));
+    document.getElementById('canonical-url')?.setAttribute('href',location.origin+'/contact?property='+encodeURIComponent(p.slug||p.property_code||p.id));
   }
 
   async function loadProperty(){
