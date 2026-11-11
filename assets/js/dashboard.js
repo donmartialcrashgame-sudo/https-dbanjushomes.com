@@ -60,6 +60,23 @@
     if(stats)stats.innerHTML=[['Saved properties',0,'♡'],['Enquiries',0,'↗'],['Notifications',0,'•'],['Listings',0,'＋']].map(x=>'<article class="dbh-dash-stat"><div class="dbh-dash-stat-top"><small>'+x[0]+'</small><span class="dbh-dash-stat-icon">'+x[2]+'</span></div><strong>'+x[1]+'</strong></article>').join('');
     document.querySelector('[data-header-nav="dashboard"]')?.classList.add('active');
     loadHeroWallet();
+
+  async function loadInspectionBookings(){
+    const mount=document.getElementById('customer-inspection-bookings');if(!mount)return;
+    try{
+      const cfg=window.DBH_CONFIG||{}, client=window.supabase?.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
+      if(!client)throw new Error('Account service unavailable');
+      const {data:{session}}=await client.auth.getSession();
+      if(!session?.user){mount.innerHTML='<div class="dbh-empty">Sign in to view your inspection bookings.</div>';return}
+      const {data,error}=await client.from('inspection_bookings').select('id,property_title,property_code,appointment_at,status,response_note,created_at').order('created_at',{ascending:false}).limit(30);
+      if(error)throw error;
+      if(!data?.length){mount.innerHTML='<div class="dbh-empty">You have no inspection bookings yet. Open a property and choose Book an inspection.</div>';return}
+      const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+      mount.innerHTML=data.map(b=>'<article style="padding:14px;border:1px solid #e2eaf3;border-radius:13px;margin:9px 0;background:#fff"><strong>'+esc(b.property_title)+'</strong><div style="font-size:11px;color:#72839a;margin-top:5px">'+esc(b.property_code||'DBH property')+' · '+new Date(b.appointment_at).toLocaleString('en-NG',{dateStyle:'medium',timeStyle:'short'})+'</div><span style="display:inline-block;margin-top:8px;padding:5px 9px;border-radius:20px;background:'+(b.status==='confirmed'?'#e8f8ef':b.status==='declined'?'#fff0f0':'#fff6df')+';font-size:10px;font-weight:800;text-transform:capitalize">'+esc(b.status)+'</span>'+(b.response_note?'<p style="font-size:11px;color:#52657b;margin:8px 0 0">Provider note: '+esc(b.response_note)+'</p>':'')+'</article>').join('');
+    }catch(e){mount.innerHTML='<div class="dbh-empty">Inspection bookings could not be loaded right now. Please refresh.</div>';console.warn('DBH customer bookings:',e)}
+  }
+  loadInspectionBookings();
+
   }
 
   async function loadHeroWallet(){
