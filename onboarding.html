@@ -64,7 +64,7 @@ function iconSvg(s){return '<svg viewBox="0 0 24 24" aria-hidden="true">'+s+'</s
  let locationPicker=null;
  if(window.DBHGoogleLocation){locationPicker=window.DBHGoogleLocation.attach({input:locationInput,authoritative:true,primaryField:'address',fields:{state:'preferred-state',city:'preferred-city',country:'preferred-country',area:'preferred-area',placeId:'preferred-place-id',latitude:'preferred-latitude',longitude:'preferred-longitude',countryCode:'preferred-country-code'},recentSearches:true,recentStorageKey:'dbh_customer_preferred_locations_v1'});}
  let session=null;try{session=JSON.parse(localStorage.getItem('dbh_session')||'null')}catch{}
- if(!session?.access_token){location.replace('/login.html?redirect='+encodeURIComponent('/onboarding.html'));return}
+ if(!session?.access_token){location.replace('/login?redirect='+encodeURIComponent('/onboarding'));return}
  const headers={apikey:DBH_CONFIG.supabaseAnonKey,Authorization:'Bearer '+session.access_token,Accept:'application/json'};
  try{
    const r=await fetch(DBH_CONFIG.supabaseUrl+'/auth/v1/user',{headers}),u=await r.json();
@@ -90,8 +90,8 @@ function iconSvg(s){return '<svg viewBox="0 0 24 24" aria-hidden="true">'+s+'</s
      if(!o.ok){const d=await o.json().catch(()=>({}));throw new Error(d.message||'Could not save your onboarding details.')}
      try{const current=JSON.parse(localStorage.getItem('dbh_session')||'{}');current.user={...(current.user||{}),user_metadata:{...(current.user?.user_metadata||{}),full_name:payload.full_name}};localStorage.setItem('dbh_session',JSON.stringify(current))}catch{}
      msg.textContent='Your DBH profile is saved. Checking your account verification…';
-     let next='/verify-account.html?redirect='+encodeURIComponent('/dashboard.html');
-     try{const vr=await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/identity_verification_requests?select=status&user_id=eq.'+encodeURIComponent(user.id)+'&limit=1',{headers});const rows=await vr.json().catch(()=>[]);if(vr.ok&&rows?.[0]?.status==='verified')next='/dashboard.html'}catch{}
+     let next='/verify-account?redirect='+encodeURIComponent('/dashboard');
+     try{const vr=await fetch(DBH_CONFIG.supabaseUrl+'/rest/v1/identity_verification_requests?select=status&user_id=eq.'+encodeURIComponent(user.id)+'&limit=1',{headers});const rows=await vr.json().catch(()=>[]);if(vr.ok&&rows?.[0]?.status==='verified')next='/dashboard'}catch{}
      setTimeout(()=>location.replace(next),700);
    }catch(e){msg.textContent=e.message||'Unable to save your details.'}
  });
