@@ -673,6 +673,11 @@ app.get('/view-agent.html', async (req, res, next) => {
   }
 });
 
+// Clean homepage URL: /home serves the existing homepage without exposing index.html.
+app.get(['/home', '/home/'], (_req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.get(['/properties','/properties/'], (_req, res) => {
   res.redirect(301, '/properties.html');
 });
