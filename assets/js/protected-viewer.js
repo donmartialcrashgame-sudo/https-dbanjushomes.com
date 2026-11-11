@@ -142,7 +142,7 @@ async function openViewer(opts){
  document.getElementById('dbh-protected-doc').textContent=opts.documentType||'Legal document';
  document.getElementById('dbh-protected-pages').innerHTML='';
  const t=getToken();
- if(!t){gate('Sign in required','Your DBH session could not be found.','<a class="btn btn-primary" href="/login.html?redirect='+encodeURIComponent(location.href)+'">Sign in</a>','user');return}
+ if(!t){gate('Sign in required','Your DBH session could not be found.','<a class="btn btn-primary" href="/login?redirect='+encodeURIComponent(location.href)+'">Sign in</a>','user');return}
  gate('Location permission required','Allow browser location access to continue. The document will remain hidden if permission is denied.','<button class="btn btn-primary" id="dbh-enable-location" type="button">Allow location & continue</button>','location');
  document.getElementById('dbh-enable-location').onclick=async function(){
    this.disabled=true;this.textContent='Checking location…';
