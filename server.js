@@ -407,7 +407,7 @@ function escapeHtml(value) {
 }
 
 function propertyPreviewUrl(req, property) {
-  const base = 'https://dbanjushomes.online/property.html';
+  const base = 'https://dbanjushomes.online/property';
   if (property?.slug) return base + '?slug=' + encodeURIComponent(property.slug);
   if (property?.property_code) return base + '?id=' + encodeURIComponent(property.property_code);
   return base + '?id=' + encodeURIComponent(property?.id || '');
@@ -485,16 +485,16 @@ app.get('/sitemap.xml', async (_req, res) => {
     const rows = response.ok ? await response.json().catch(() => []) : [];
     const pages = [
       '/',
-      '/properties.html',
-      '/land.html',
-      '/commercial.html',
-      '/agents.html',
-      '/our-team.html',
-      '/about.html',
-      '/contact.html',
-      '/help.html',
-      '/privacy-policy.html',
-      '/agreement.html'
+      '/properties',
+      '/land',
+      '/commercial',
+      '/agents',
+      '/our-team',
+      '/about',
+      '/contact',
+      '/help',
+      '/privacy-policy',
+      '/agreement'
     ];
 
     const escXml = (value) =>
@@ -515,7 +515,7 @@ app.get('/sitemap.xml', async (_req, res) => {
       const key = property?.slug || property?.property_code;
       if (key) {
         urls.push({
-          loc: 'https://dbanjushomes.online/property.html?' +
+          loc: 'https://dbanjushomes.online/property?' +
             (property.slug
               ? 'slug=' + encodeURIComponent(property.slug)
               : 'id=' + encodeURIComponent(property.property_code)),
@@ -543,8 +543,8 @@ app.get('/sitemap.xml', async (_req, res) => {
       urls.map((item) =>
         '<url><loc>' + escXml(item.loc) + '</loc>' +
         '<lastmod>' + escXml(new Date(item.lastmod).toISOString()) + '</lastmod>' +
-        '<changefreq>' + (item.loc.includes('/property.html?') ? 'weekly' : 'daily') + '</changefreq>' +
-        '<priority>' + (item.loc.includes('/property.html?') ? '0.9' : '0.7') + '</priority></url>'
+        '<changefreq>' + (item.loc.includes('/property?') ? 'weekly' : 'daily') + '</changefreq>' +
+        '<priority>' + (item.loc.includes('/property?') ? '0.9' : '0.7') + '</priority></url>'
       ).join('') +
       '</urlset>';
 
@@ -599,7 +599,7 @@ app.get('/api/property-preview-image', async (req, res) => {
 });
 
 
-app.get('/view-agent.html', async (req, res, next) => {
+app.get('/view-agent', async (req, res, next) => {
   try {
     const file = path.join(__dirname, 'view-agent.html');
     let html = require('fs').readFileSync(file, 'utf8');
@@ -662,7 +662,7 @@ app.get('/view-agent.html', async (req, res, next) => {
     const fallback = publicRows.length
       ? '<noscript><section><h2>Published and verified listings by ' + escapeHtml(name) + '</h2><p>' + escapeHtml(description) + '</p><ul>' + publicRows.map(row => {
           const key = row.slug ? 'slug=' + encodeURIComponent(row.slug) : 'id=' + encodeURIComponent(row.property_code || '');
-          return '<li><a href="/property.html?' + key + '">' + escapeHtml(row.title || 'Property for sale') + '</a>' + (row.city || row.state ? ' — ' + escapeHtml([row.city, row.state].filter(Boolean).join(', ')) : '') + '</li>';
+          return '<li><a href="/property?' + key + '">' + escapeHtml(row.title || 'Property for sale') + '</a>' + (row.city || row.state ? ' — ' + escapeHtml([row.city, row.state].filter(Boolean).join(', ')) : '') + '</li>';
         }).join('') + '</ul></section></noscript>'
       : '<noscript><p>This public agent profile has no currently published and verified listings.</p></noscript>';
     html = html.replace('<main>', '<main>' + fallback);
@@ -673,16 +673,11 @@ app.get('/view-agent.html', async (req, res, next) => {
   }
 });
 
-// Clean homepage URL: /home serves the existing homepage without exposing index.html.
-app.get(['/home', '/home/'], (_req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
 app.get(['/properties','/properties/'], (_req, res) => {
-  res.redirect(301, '/properties.html');
+  res.redirect(301, '/properties');
 });
 
-app.get('/property.html', async (req, res, next) => {
+app.get('/property', async (req, res, next) => {
   try {
     const file = path.join(__dirname, 'property.html');
     let html = require('fs').readFileSync(file, 'utf8');
@@ -796,9 +791,17 @@ app.get('/property.html', async (req, res, next) => {
 
 app.get(['/property/:key','/property/:key/'], (req, res) => {
   const key=String(req.params.key||'').trim();
-  if(!key)return res.redirect(301,'/properties.html');
-  const target='https://dbanjushomes.online/property.html?slug='+encodeURIComponent(key);
+  if(!key)return res.redirect(301,'/properties');
+  const target='https://dbanjushomes.online/property?slug='+encodeURIComponent(key);
   res.redirect(301,target);
+});
+
+app.use((req, res, next) => {
+  if (/\\.html$/i.test(req.path)) {
+    const cleanPath = req.path.replace(/\\.html$/i, '');
+    return res.redirect(301, cleanPath + (req.url.slice(req.path.length) || ''));
+  }
+  next();
 });
 
 app.use(express.static(path.join(__dirname), {
