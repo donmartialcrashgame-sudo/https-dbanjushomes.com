@@ -147,7 +147,7 @@ async function heartbeat(){
  try{const r=await fetch(api+'?action=heartbeat',{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'});const d=await r.json().catch(()=>({}));$('cc-presence').innerHTML=d?.staff?'<b>● You are online</b><br>DBH can show human support as available.':'This account is not an active DBH customer-care staff account.'}catch{$('cc-presence').textContent='Staff presence could not be checked.'}
 }
 async function load(){
- const t=token();if(!t){location.href='/login.html?redirect=/customer-care.html';return}
+ const t=token();if(!t){location.href='/login?redirect=/customer-care';return}
  $('cc-list').innerHTML='<div class="cc-empty">Loading conversations…</div>';
  try{
    const r=await fetch(api+'?action=staff-inbox',{headers:{Accept:'application/json',Authorization:'Bearer '+t},cache:'no-store'});
@@ -159,7 +159,7 @@ async function load(){
  }catch(e){$('cc-list').innerHTML='<div class="cc-error">'+esc(e.message||'Customer care could not be loaded.')+'</div>'}
 }
 $('cc-refresh').onclick=load;
-$('cc-logout').onclick=async()=>{localStorage.removeItem('dbh_session');try{await fetch((window.DBH_CONFIG?.apiBaseUrl||'')+'/api/auth/logout',{method:'POST',credentials:'include'})}catch{}location.href='/login.html'};
+$('cc-logout').onclick=async()=>{localStorage.removeItem('dbh_session');try{await fetch((window.DBH_CONFIG?.apiBaseUrl||'')+'/api/auth/logout',{method:'POST',credentials:'include'})}catch{}location.href='/login'};
 $('cc-menu').onclick=()=>document.body.classList.add('cc-open');
 $('cc-side-backdrop').onclick=()=>document.body.classList.remove('cc-open');
 $('cc-send').onclick=async()=>{
