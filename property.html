@@ -458,10 +458,8 @@ saveButton?.addEventListener('click',togglePropertySaved);
 
 const inspectionButton=document.getElementById('book-inspection');
 inspectionButton?.addEventListener('click',async()=>{
-  const client=window.DBHSupabaseClient||(window.DBHSupabaseClient=window.supabase?.createClient(c.supabaseUrl,c.supabaseAnonKey));
-  if(!client){dbhToast('Sign-in service is unavailable. Please refresh and try again.','error');return}
-  const {data:{session}}=await client.auth.getSession();
-  if(!session?.user){location.href='/login?redirect='+encodeURIComponent(location.href);return}
+  const local=typeof getLocalSession==='function'?getLocalSession():null;const token=typeof getAccessToken==='function'?getAccessToken():'';
+  if(!local?.user||!token){location.href='/login?redirect='+encodeURIComponent(location.href);return}
   let overlay=document.getElementById('dbh-inspection-overlay');
   if(!overlay){
     overlay=document.createElement('div');overlay.id='dbh-inspection-overlay';overlay.className='dbh-inspection-overlay';
@@ -475,8 +473,8 @@ inspectionButton?.addEventListener('click',async()=>{
       try{
         const local=String(data.get('appointment')||'');const appointment=new Date(local);
         if(!local||!Number.isFinite(appointment.getTime())||appointment<=new Date())throw new Error('Choose a future date and time.');
-        const result=await client.rpc('create_inspection_booking',{p_property_id:p.id,p_appointment_at:appointment.toISOString(),p_customer_note:String(data.get('note')||'').trim()});
-        if(result.error)throw result.error;
+        const result=await fetch(c.supabaseUrl+'/rest/v1/rpc/create_inspection_booking',{method:'POST',headers:{apikey:c.supabaseAnonKey,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({p_property_id:p.id,p_appointment_at:appointment.toISOString(),p_customer_note:String(data.get('note')||'').trim()})});
+        if(!result.ok){const detail=await result.json().catch(()=>({}));throw new Error(detail.message||detail.error||'Booking could not be saved.')}
         status.textContent='Your inspection request has been sent. You can follow it in your DBH account.';status.classList.add('success');form.reset();submit.textContent='Request sent';
         setTimeout(()=>overlay.classList.remove('open'),1800);
       }catch(err){status.textContent=err.message||'We could not send your booking. Please try again.';submit.disabled=false;submit.textContent='Send booking request'}
